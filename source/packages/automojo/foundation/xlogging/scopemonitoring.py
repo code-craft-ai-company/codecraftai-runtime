@@ -23,7 +23,7 @@ import uuid
 
 from datetime import datetime, timedelta
 
-from automojo.waiting import TimeoutContext
+from automojo.waiting.waitmodel import TimeoutContext
 
 from automojo.foundation.collections.helpers import insert_into_ordered_list_ascending
 

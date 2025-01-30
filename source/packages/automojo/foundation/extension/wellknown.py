@@ -18,7 +18,7 @@ from automojo.errors.exceptions import SemanticError
 
 from automojo.foundation.startup.startupvariables import AM_STARTUP_VARIABLES, resolve_startup_variables
 
-from automojo.extension.extensionsuperfactory import ExtensionSuperFactory
+from automojo.foundation.extension.extensionsuperfactory import ExtensionSuperFactory
 
 
 SINGLETON_LOCK = threading.RLock()

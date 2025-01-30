@@ -18,7 +18,7 @@ import re
 
 from collections import ChainMap
 
-from automojo.collections.mergemap import MergeMap
+from automojo.foundation.collections.mergemap import MergeMap
 
 
 REGEX_PATH_VALIDATOR = re.compile("/{1}([-a-zA-Z0-9_]+)")

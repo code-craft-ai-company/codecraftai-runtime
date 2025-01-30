@@ -13,7 +13,6 @@ __credits__ = []
 
 # pylint: disable=global-statement
 
-from cgitb import lookup
 from typing import List, Optional
 
 import os
@@ -21,6 +20,8 @@ import tempfile
 
 from automojo.foundation.collections.contextpaths import ContextPaths
 from automojo.foundation.collections.wellknown import ContextSingleton
+from automojo.foundation.fspath import expand_path
+
 
 DIR_CACHE_DIRECTORY = None
 DIR_DIAGNOSTICS_DIRECTORY = None
@@ -31,19 +32,6 @@ DIR_TESTCASE_BYPRODUCTS_DIRECTORY = None
 
 TRANSLATE_TABLE_NORMALIZE_FOR_PATH = str.maketrans(",.:;", "    ")
 
-DEFAULT_PATH_EXPANSIONS = [
-    os.path.expanduser,
-    os.path.expandvars,
-    os.path.abspath
-]
-
-def expand_path(path_in, expansions=DEFAULT_PATH_EXPANSIONS):
-
-    path_out = path_in
-    for expansion_func in expansions:
-        path_out = expansion_func(path_out)
-
-    return path_out
 
 def collect_python_modules(search_dir: str, max_depth=None) -> List[str]:
     """
@@ -78,6 +66,7 @@ def collect_python_modules(search_dir: str, max_depth=None) -> List[str]:
 
     return pyfiles
 
+
 def ensure_directory_is_package(package_dir: str, package_title: Optional[str] = None):
     """
         Ensures that a directory is represented to python as a package by checking to see if the
@@ -95,6 +84,7 @@ def ensure_directory_is_package(package_dir: str, package_title: Optional[str] =
             initf.write('"""\n')
     return
 
+
 def get_directory_for_cached_files(create=True) -> str:
     """
         Returns the path to the {home}/cache directory.
@@ -105,12 +95,13 @@ def get_directory_for_cached_files(create=True) -> str:
     if DIR_CACHE_DIRECTORY is None:
         ctx = ContextSingleton()
 
-        runtime_home_dir = get_expanded_path(ctx.lookup(ContextPaths.RUNTIME_HOME_DIRECTORY))
+        runtime_home_dir = expand_path(ctx.lookup(ContextPaths.RUNTIME_HOME_DIRECTORY))
         DIR_CACHE_DIRECTORY = os.path.join(runtime_home_dir, "cache")
         if create and not os.path.exists(DIR_CACHE_DIRECTORY):
             os.makedirs(DIR_CACHE_DIRECTORY)
 
     return DIR_CACHE_DIRECTORY
+
 
 def get_directory_for_code_container(container: str) -> str:
     """
@@ -130,18 +121,6 @@ def get_directory_for_code_container(container: str) -> str:
 
     return container_dir
 
-def get_expanded_path(path: str) -> str:
-    """
-        Returns a path expanded using expanduser, expandvars and abspath for
-        the provided path.
-
-        :param path: A path which you want to expand to a full path, expanding the
-                     user, variables and relative path syntax.
-
-        :returns: The expanded path
-    """
-    exp_path = os.path.abspath(os.path.expandvars(os.path.expanduser(path)))
-    return exp_path
 
 def get_files_for_credentials() -> str:
     """
@@ -149,9 +128,10 @@ def get_files_for_credentials() -> str:
     """
 
     ctx = ContextSingleton()
-    files = get_expanded_path(ctx.lookup(ContextPaths.CONFIG_CREDENTIAL_URIS))
+    files = expand_path(ctx.lookup(ContextPaths.CONFIG_CREDENTIAL_URIS))
 
     return files
+
 
 def get_files_for_landscape() -> str:
     """
@@ -159,9 +139,10 @@ def get_files_for_landscape() -> str:
     """
 
     ctx = ContextSingleton()
-    files = get_expanded_path(ctx.lookup(ContextPaths.CONFIG_LANDSCAPE_URIS))
+    files = expand_path(ctx.lookup(ContextPaths.CONFIG_LANDSCAPE_URIS))
 
     return files
+
 
 def get_files_for_runtime() -> str:
     """
@@ -169,9 +150,10 @@ def get_files_for_runtime() -> str:
     """
 
     ctx = ContextSingleton()
-    files = get_expanded_path(ctx.lookup(ContextPaths.CONFIG_RUNTIME_URIS))
+    files = expand_path(ctx.lookup(ContextPaths.CONFIG_RUNTIME_URIS))
 
     return files
+
 
 def get_files_for_topology() -> str:
     """
@@ -179,9 +161,10 @@ def get_files_for_topology() -> str:
     """
 
     ctx = ContextSingleton()
-    files = get_expanded_path(ctx.lookup(ContextPaths.CONFIG_TOPOLOGY_URIS))
+    files = expand_path(ctx.lookup(ContextPaths.CONFIG_TOPOLOGY_URIS))
 
     return files
+
 
 def get_path_for_artifacts(label: str) -> str:
     """
@@ -200,6 +183,7 @@ def get_path_for_artifacts(label: str) -> str:
 
     return afdir
 
+
 def get_path_for_output(create=True) -> str:
     """
         Returns the timestamped path where test results and artifacts are deposited to
@@ -209,7 +193,7 @@ def get_path_for_output(create=True) -> str:
     if DIR_RESULTS_DIRECTORY is None:
         ctx = ContextSingleton()
 
-        DIR_RESULTS_DIRECTORY = get_expanded_path(ctx.lookup(ContextPaths.OUTPUT_DIRECTORY))
+        DIR_RESULTS_DIRECTORY = expand_path(ctx.lookup(ContextPaths.OUTPUT_DIRECTORY))
         if create and not os.path.exists(DIR_RESULTS_DIRECTORY):
             os.makedirs(DIR_RESULTS_DIRECTORY)
 
@@ -228,11 +212,12 @@ def get_path_for_shared_store(create=True) -> str:
 
         DIR_SHARED_STORE_DIRECTORY = ctx.lookup(ContextPaths.SHARED_STORE_DIRECTORY)
         if create:
-            fullpath = get_expanded_path(DIR_SHARED_STORE_DIRECTORY)
+            fullpath = expand_path(DIR_SHARED_STORE_DIRECTORY)
             if not os.path.exists(fullpath):
                 os.makedirs(fullpath)
     
     return DIR_SHARED_STORE_DIRECTORY
+
 
 def get_path_for_diagnostics(label: str) -> str:
     """
@@ -257,6 +242,7 @@ def get_path_for_diagnostics(label: str) -> str:
 
     return diagnostics_dir
 
+
 def get_path_for_testresults() -> str:
     """
         Returns the path to the testresults directory.
@@ -274,7 +260,7 @@ def get_path_for_testresults() -> str:
     if DIR_TESTRESULTS_DIRECTORY is None:
         ctx = ContextSingleton()
 
-        tr_dir = get_expanded_path(ctx.lookup(ContextPaths.RESULT_PATH_FOR_TESTS))
+        tr_dir = expand_path(ctx.lookup(ContextPaths.RESULT_PATH_FOR_TESTS))
 
         DIR_TESTRESULTS_DIRECTORY = tr_dir
 
@@ -282,6 +268,7 @@ def get_path_for_testresults() -> str:
             os.makedirs(DIR_TESTRESULTS_DIRECTORY)
 
     return DIR_TESTRESULTS_DIRECTORY
+
 
 def get_path_for_testcase_by_products(test_id: str) -> str:
     """
@@ -300,6 +287,7 @@ def get_path_for_testcase_by_products(test_id: str) -> str:
 
     return DIR_TESTCASE_BYPRODUCTS_DIRECTORY
 
+
 def get_summary_html_template_source() -> str:
     """
         Looks up a source path for the summary html template.
@@ -308,7 +296,7 @@ def get_summary_html_template_source() -> str:
     """
     ctx = ContextSingleton()
 
-    template = get_expanded_path(ctx.lookup(ContextPaths.FILE_RESULTS_TEMPLATE))
+    template = expand_path(ctx.lookup(ContextPaths.FILE_RESULTS_TEMPLATE))
 
     if template is None:
         errmsg = "Error attempting to lookup the summary html template source."
@@ -316,26 +304,29 @@ def get_summary_html_template_source() -> str:
 
     return template
 
+
 def get_summary_static_resource_dest_dir(create=True) -> str:
     """
         Returns the path where the static resources for test summaries should be published.
     """
     ctx = ContextSingleton()
-    res_dir = get_expanded_path(ctx.lookup(ContextPaths.DIR_RESULTS_RESOURCE_DEST))
+    res_dir = expand_path(ctx.lookup(ContextPaths.DIR_RESULTS_RESOURCE_DEST))
 
     if create and not os.path.exists(res_dir):
         os.makedirs(res_dir)
 
     return res_dir
 
+
 def get_summary_static_resource_src_dir() -> str:
     """
         Returns the path that is the source path for the test summary static resources.
     """
     ctx = ContextSingleton()
-    res_dir = get_expanded_path(ctx.lookup(ContextPaths.DIR_RESULTS_RESOURCE_SRC))
+    res_dir = expand_path(ctx.lookup(ContextPaths.DIR_RESULTS_RESOURCE_SRC))
 
     return res_dir
+
 
 def get_temporary_directory() -> str:
     """
@@ -348,6 +339,7 @@ def get_temporary_directory() -> str:
 
     return temp_dir
 
+
 def get_temporary_file(suffix: str = '', prefix: str = '') -> str:
     """
         Returns the path of a temporary file in the output directory.
@@ -357,6 +349,7 @@ def get_temporary_file(suffix: str = '', prefix: str = '') -> str:
     tmpfile = tempfile.mktemp(suffix=suffix, prefix=prefix, dir=tempdir)
 
     return tmpfile
+
 
 def normalize_name_for_path(name: str) -> str:
     """
@@ -369,6 +362,7 @@ def normalize_name_for_path(name: str) -> str:
     """
     norm_name = name.translate(TRANSLATE_TABLE_NORMALIZE_FOR_PATH).replace(" ", "")
     return norm_name
+
 
 def utilizing_shared_output_path() -> bool:
     """

@@ -15,9 +15,9 @@ __credits__ = []
 from operator import attrgetter
 from typing import Callable, Generator, List, Type, Union
 
-from automojo.extension.extensionfactory import ExtensionFactory
+from automojo.foundation.extension.extensionfactory import ExtensionFactory
 
-from automojo.extension.utilities import (
+from automojo.foundation.extension.utilities import (
     load_and_set_extension_factory_type,
     scan_amr_factories_namespace
 )

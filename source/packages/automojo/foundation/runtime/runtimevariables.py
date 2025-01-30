@@ -36,7 +36,7 @@ from automojo.foundation.runtime.runtimesettings import AM_RUNTIME_DEFAULTS
 from automojo.foundation.runtime.variablenames import AM_RUNTIME_VARNAMES
 
 
-def normalize_variable_whitespace(lval):
+def normalize_variable_whitespace(lval: str):
     lval = lval.strip().replace("\t", " ")
 
     while lval.find("  ") > -1:
@@ -105,10 +105,10 @@ class AM_RUNTIME_VARIABLES(AM_STARTUP_VARIABLES):
     AM_TESTROOT = None
 
 
-
 def get_runtime_seed() -> str:
     rtnval = AM_RUNTIME_VARIABLES.AM_JOB_SEED
     return rtnval
+
 
 def resolve_runtime_variables():
 

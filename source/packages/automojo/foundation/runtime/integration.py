@@ -9,6 +9,7 @@ from typing import Dict
 from automojo.foundation.collections.contextpaths import ContextPaths
 from automojo.foundation.collections.wellknown import ContextSingleton
 
+
 def get_job_info() -> Dict[str, str]:
 
     ctx = ContextSingleton()

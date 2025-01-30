@@ -24,17 +24,14 @@ from logging.handlers import RotatingFileHandler
 from automojo.foundation.collections.contextpaths import ContextPaths
 from automojo.foundation.collections.wellknown import ContextSingleton # pylint: disable=wrong-import-position
 
-
 from automojo.errors.exceptions import ConfigurationError, SemanticError
 from automojo.errors.xtraceback import (
     TRACEBACK_CONFIG,
     VALID_MEMBER_TRACE_POLICY,
 )
 
-
 from automojo.foundation.runtime.enumerations import ActivationProfile, JobType
 from automojo.foundation.runtime.variablenames import AM_RUNTIME_VARNAMES
-
 from automojo.foundation.runtime.runtimevariables import AM_RUNTIME_VARIABLES
 
 from automojo.foundation.xlogging.levels import LogLevel
@@ -58,7 +55,7 @@ def activate_profile_command():
 
     activate_profile_common()
 
-    from automojo.founation.xlogging.foundations import logging_initialize, LoggingDefaults # pylint: disable=wrong-import-position
+    from automojo.foundation.xlogging.foundations import logging_initialize, LoggingDefaults # pylint: disable=wrong-import-position
 
     LoggingDefaults.DefaultFileLoggingHandler = FileHandler
     logging_initialize()
@@ -107,7 +104,7 @@ def activate_profile_console():
 
         activate_profile_common()
 
-        from automojo.founation.xlogging.foundations import logging_initialize, LoggingDefaults # pylint: disable=wrong-import-position
+        from automojo.foundation.xlogging.foundations import logging_initialize, LoggingDefaults # pylint: disable=wrong-import-position
 
         LoggingDefaults.DefaultFileLoggingHandler = RotatingFileHandler
         logging_initialize()
@@ -118,7 +115,7 @@ def activate_profile_console():
 
         activate_profile_common()
 
-        from automojo.founation.xlogging.foundations import logging_initialize, LoggingDefaults # pylint: disable=wrong-import-position
+        from automojo.foundation.xlogging.foundations import logging_initialize, LoggingDefaults # pylint: disable=wrong-import-position
 
         LoggingDefaults.DefaultFileLoggingHandler = RotatingFileHandler
         logging_initialize()
@@ -160,12 +157,11 @@ def activate_profile_service():
 
     activate_profile_common()
 
-    from automojo.founation.xlogging.foundations import logging_initialize, LoggingDefaults # pylint: disable=wrong-import-position
+    from automojo.foundation.xlogging.foundations import logging_initialize, LoggingDefaults # pylint: disable=wrong-import-position
 
     LoggingDefaults.DefaultFileLoggingHandler = RotatingFileHandler
 
     logging_initialize()
-
 
     return
 
@@ -189,7 +185,7 @@ def activate_profile_testrun():
 
     activate_profile_common()
 
-    from automojo.founation.xlogging.foundations import logging_initialize
+    from automojo.foundation.xlogging.foundations import logging_initialize
     
     logging_initialize()
 
@@ -208,13 +204,13 @@ def activate_profile_common():
     
     ctx = ContextSingleton()
 
-    from automojo.founation.xlogging.levels import LOG_LEVEL_NAMES
-    from automojo.founation.xdatetime import DATETIME_FORMAT_FILESYSTEM
+    from automojo.foundation.xlogging.levels import LOG_LEVEL_NAMES
+    from automojo.foundation.xdatetime import DATETIME_FORMAT_FILESYSTEM
 
     # Activation Step - 3: Process the environment variable overrides for any of the AKIT configuration
     # variables. This needs to happen before we load or create an initial user configuration
     # because the variables may effect the values we write into the user configuration file.
-    from mojo.runtime.runtimevariables import (
+    from automojo.foundation.runtime.runtimevariables import (
         AM_RUNTIME_VARIABLES,
         DefaultValue,
         JobType

@@ -19,6 +19,7 @@ packages = [{include="automojo", from="source/packages"}]
 python = ">=3.10,<4.0"
 automojo-errors = { git = "git@github.com:automationmojo/automojo-errors.git", branch = "main" }
 automojo-waiting = { git = "git@github.com:automationmojo/automojo-waiting.git", branch = "main" }
+debugpy = "^1.8.12"
 
 [tool.poetry.group.dev.dependencies]
 myst-parser = "^0.18.1"

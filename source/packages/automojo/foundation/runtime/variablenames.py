@@ -15,6 +15,7 @@ __credits__ = []
 from automojo.foundation.startup.startupvariablenames import AM_STARTUP_VARIABLE_NAMES
 
 class AM_RUNTIME_VARNAMES(AM_STARTUP_VARIABLE_NAMES):
+
     AM_ACTIVATION_PROFILE = "AM_ACTIVATION_PROFILE"
 
     AM_AUTOMATION_POD = "AM_AUTOMATION_POD"

@@ -22,7 +22,7 @@ import sys
 
 from types import ModuleType
 
-from automojo.extension.extensionfactory import ExtensionFactory
+from automojo.foundation.extension.extensionfactory import ExtensionFactory
 
 
 logger = logging.getLogger()
