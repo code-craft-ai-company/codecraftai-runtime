@@ -15,7 +15,7 @@ from typing import Any, Optional, Protocol, Union
 
 import os
 
-from automojo.startup.wellknown import StartupConfigSingleton
+from automojo.foundation.startup.wellknown import StartupConfigSingleton
 
 
 class SettingConverter(Protocol):

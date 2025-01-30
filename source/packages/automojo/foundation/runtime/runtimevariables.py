@@ -1,0 +1,280 @@
+"""
+.. module:: variables
+    :platform: Darwin, Linux, Unix, Windows
+    :synopsis: Module which contains the :class:`AM_RUNTIME_VARIABLES`
+              object which is used store the environment variables.
+
+.. moduleauthor:: Myron Walker <myron.walker@gmail.com>
+"""
+
+__author__ = "Myron Walker"
+__copyright__ = "Copyright 2023, Myron W Walker"
+__credits__ = []
+
+
+from typing import List, Optional
+
+import os
+
+from datetime import datetime
+from uuid import uuid4
+
+from automojo.foundation.collections.contextpaths import ContextPaths
+from automojo.foundation.collections.wellknown import ContextSingleton
+
+from automojo.foundation.startup.startupvariables import AM_STARTUP_VARIABLES, resolve_startup_variables
+
+from automojo.foundation.xconvert import parse_bool
+from automojo.foundation.xdatetime import (
+    parse_datetime, DATETIME_FORMAT_FILESYSTEM, DATETIME_FORMAT_TIMESTAMP
+)
+from automojo.foundation.xlogging.levels import LogLevel
+
+from automojo.foundation.runtime.enumerations import JobType
+
+from automojo.foundation.runtime.runtimesettings import AM_RUNTIME_DEFAULTS
+from automojo.foundation.runtime.variablenames import AM_RUNTIME_VARNAMES
+
+
+def normalize_variable_whitespace(lval):
+    lval = lval.strip().replace("\t", " ")
+
+    while lval.find("  ") > -1:
+        lval = lval.replace("  ", " ")
+    
+    return lval
+
+
+class DefaultValue:
+    NotSet = "(not-set)"
+
+
+class AM_RUNTIME_VARIABLES(AM_STARTUP_VARIABLES):
+    """
+        Container for all the configuration variables that can be passed via environmental variables.
+    """
+
+    AM_SERVICE_NAME = AM_RUNTIME_DEFAULTS.AM_SERVICE_NAME
+    AM_LOGGER_NAME = AM_RUNTIME_DEFAULTS.AM_LOGGER_NAME
+
+    AM_OUTPUT_DIRECTORY = None
+
+    AM_HAS_SHARED_OUTPUT_DIRECTORY = False
+    AM_SHARED_STORE_DIRECTORY = None
+
+    AM_ACTIVATION_PROFILE = None
+
+    AM_AUTOMATION_POD = DefaultValue.NotSet
+
+    AM_BUILD_RELEASE = DefaultValue.NotSet
+    AM_BUILD_BRANCH = DefaultValue.NotSet
+    AM_BUILD_FLAVOR = DefaultValue.NotSet
+    AM_BUILD_NAME = DefaultValue.NotSet
+    AM_BUILD_URL = DefaultValue.NotSet
+
+    AM_DEBUG_BREAKPOINTS = None
+    AM_DEBUG_DEBUGGER = None
+
+    AM_INTERACTIVE_CONSOLE = False
+
+    AM_RUN_ID = DefaultValue.NotSet
+
+    AM_PIPELINE_ID = DefaultValue.NotSet
+    AM_PIPELINE_NAME = DefaultValue.NotSet
+    AM_PIPELINE_INSTANCE = DefaultValue.NotSet
+
+    AM_JOB_ID = DefaultValue.NotSet
+    AM_JOB_TYPE = JobType.Unknown.value
+    AM_JOB_INITIATOR = DefaultValue.NotSet
+    AM_JOB_LABEL = DefaultValue.NotSet
+    AM_JOB_NAME = DefaultValue.NotSet
+    AM_JOB_OWNER = DefaultValue.NotSet
+    AM_JOB_SEED = DefaultValue.NotSet
+    AM_JOB_TAG = DefaultValue.NotSet
+    AM_JOB_VENUE = DefaultValue.NotSet
+
+    AM_LOG_LEVEL_CONSOLE = LogLevel.WARNING
+    AM_LOG_LEVEL_FILE = LogLevel.DEBUG
+
+    AM_RESULTS_STATIC_SUMMARY_TEMPLATE = None
+    AM_RESULTS_STATIC_RESOURCE_DEST_DIR = None
+    AM_RESULTS_STATIC_RESOURCE_SRC_DIR = None
+
+    AM_STARTTIME = datetime.now()
+
+    AM_TESTROOT = None
+
+
+
+def get_runtime_seed() -> str:
+    rtnval = AM_RUNTIME_VARIABLES.AM_JOB_SEED
+    return rtnval
+
+def resolve_runtime_variables():
+
+    environ = os.environ
+
+    resolve_startup_variables()
+
+    ctx = ContextSingleton()
+
+    if AM_RUNTIME_VARNAMES.AM_STARTTIME in environ:
+        passedVal = environ[AM_RUNTIME_VARNAMES.AM_STARTTIME]
+        starttime = None
+        if passedVal.find(":") > -1:
+            starttime = parse_datetime(passedVal, DATETIME_FORMAT_TIMESTAMP)
+        else:
+            starttime = parse_datetime(passedVal, DATETIME_FORMAT_FILESYSTEM)
+        AM_RUNTIME_VARIABLES.AM_STARTTIME = starttime
+    ctx.insert(ContextPaths.STARTTIME, AM_RUNTIME_VARIABLES.AM_STARTTIME)
+
+    AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY = None
+    if AM_RUNTIME_VARNAMES.AM_OUTPUT_DIRECTORY in environ:
+        AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY = environ[AM_RUNTIME_VARNAMES.AM_OUTPUT_DIRECTORY]
+    ctx.insert(ContextPaths.OUTPUT_DIRECTORY, AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY)
+
+    AM_RUNTIME_VARIABLES.AM_SHARED_STORE_DIRECTORY = None
+    if AM_RUNTIME_VARNAMES.AM_SHARED_STORE_DIRECTORY in environ:
+        AM_RUNTIME_VARIABLES.AM_SHARED_STORE_DIRECTORY = environ[AM_RUNTIME_VARNAMES.AM_SHARED_STORE_DIRECTORY]
+    ctx.insert(ContextPaths.SHARED_STORE_DIRECTORY, AM_RUNTIME_VARIABLES.AM_SHARED_STORE_DIRECTORY)
+    
+    AM_RUNTIME_VARIABLES.AM_HAS_SHARED_OUTPUT_DIRECTORY = False
+    if AM_RUNTIME_VARNAMES.AM_HAS_SHARED_OUTPUT_DIRECTORY in environ:
+        AM_RUNTIME_VARIABLES.AM_HAS_SHARED_OUTPUT_DIRECTORY = parse_bool(environ[AM_RUNTIME_VARNAMES.AM_HAS_SHARED_OUTPUT_DIRECTORY])
+    ctx.insert(ContextPaths.OUTPUT_DIRECTORY_IS_SHARED, AM_RUNTIME_VARIABLES.AM_HAS_SHARED_OUTPUT_DIRECTORY)
+
+    AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE = None
+    if AM_RUNTIME_VARNAMES.AM_ACTIVATION_PROFILE in environ:
+        AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE = environ[AM_RUNTIME_VARNAMES.AM_ACTIVATION_PROFILE]
+
+    AM_RUNTIME_VARIABLES.AM_AUTOMATION_POD = DefaultValue.NotSet
+    if AM_RUNTIME_VARNAMES.AM_AUTOMATION_POD in environ:
+        AM_RUNTIME_VARIABLES.AM_AUTOMATION_POD = environ[AM_RUNTIME_VARNAMES.AM_AUTOMATION_POD]
+
+
+    AM_RUNTIME_VARIABLES.AM_BUILD_RELEASE = DefaultValue.NotSet
+    if AM_RUNTIME_VARNAMES.AM_BUILD_RELEASE in environ:
+        AM_RUNTIME_VARIABLES.AM_BUILD_RELEASE = environ[AM_RUNTIME_VARNAMES.AM_BUILD_RELEASE]
+    ctx.insert(ContextPaths.BUILD_RELEASE, AM_RUNTIME_VARIABLES.AM_BUILD_RELEASE)
+
+    AM_RUNTIME_VARIABLES.AM_BUILD_BRANCH = DefaultValue.NotSet
+    if AM_RUNTIME_VARNAMES.AM_BUILD_BRANCH in environ:
+        AM_RUNTIME_VARIABLES.AM_BUILD_BRANCH = environ[AM_RUNTIME_VARNAMES.AM_BUILD_BRANCH]
+    ctx.insert(ContextPaths.BUILD_BRANCH, AM_RUNTIME_VARIABLES.AM_BUILD_BRANCH)
+
+    AM_RUNTIME_VARIABLES.AM_BUILD_NAME = DefaultValue.NotSet
+    if AM_RUNTIME_VARNAMES.AM_BUILD_NAME in environ:
+        AM_RUNTIME_VARIABLES.AM_BUILD_NAME = environ[AM_RUNTIME_VARNAMES.AM_BUILD_NAME]
+    ctx.insert(ContextPaths.BUILD_NAME, AM_RUNTIME_VARIABLES.AM_BUILD_NAME)
+
+    AM_RUNTIME_VARIABLES.AM_BUILD_FLAVOR = DefaultValue.NotSet
+    if AM_RUNTIME_VARNAMES.AM_BUILD_FLAVOR in environ:
+        AM_RUNTIME_VARIABLES.AM_BUILD_FLAVOR = environ[AM_RUNTIME_VARNAMES.AM_BUILD_FLAVOR]
+    ctx.insert(ContextPaths.BUILD_FLAVOR, AM_RUNTIME_VARIABLES.AM_BUILD_FLAVOR)
+
+    AM_RUNTIME_VARIABLES.AM_BUILD_URL = DefaultValue.NotSet
+    if AM_RUNTIME_VARNAMES.AM_BUILD_URL in environ:
+        AM_RUNTIME_VARIABLES.AM_BUILD_URL = environ[AM_RUNTIME_VARNAMES.AM_BUILD_URL]
+    ctx.insert(ContextPaths.BUILD_URL, AM_RUNTIME_VARIABLES.AM_BUILD_URL)
+
+
+    AM_RUNTIME_VARIABLES.AM_DEBUG_BREAKPOINTS = None
+    if AM_RUNTIME_VARNAMES.AM_DEBUG_BREAKPOINTS in environ:
+        AM_RUNTIME_VARIABLES.AM_DEBUG_BREAKPOINTS = environ[AM_RUNTIME_VARNAMES.AM_DEBUG_BREAKPOINTS]
+    ctx.insert(ContextPaths.DEBUG_BREAKPOINTS, AM_RUNTIME_VARIABLES.AM_DEBUG_BREAKPOINTS)
+
+    AM_RUNTIME_VARIABLES.AM_DEBUG_DEBUGGER = None
+    if AM_RUNTIME_VARNAMES.AM_DEBUG_DEBUGGER in environ:
+        AM_RUNTIME_VARIABLES.AM_DEBUG_DEBUGGER = environ[AM_RUNTIME_VARNAMES.AM_DEBUG_DEBUGGER]
+    ctx.insert(ContextPaths.DEBUG_DEBUGGER, AM_RUNTIME_VARIABLES.AM_DEBUG_DEBUGGER)
+
+
+    AM_RUNTIME_VARIABLES.AM_RUN_ID = str(uuid4())
+    if AM_RUNTIME_VARNAMES.AM_RUN_ID in environ:
+        AM_RUNTIME_VARIABLES.AM_RUN_ID = environ[AM_RUNTIME_VARNAMES.AM_RUN_ID]
+    ctx.insert(ContextPaths.RUNID, AM_RUNTIME_VARIABLES.AM_RUN_ID)
+
+
+    AM_RUNTIME_VARIABLES.AM_PIPELINE_ID = DefaultValue.NotSet
+    if AM_RUNTIME_VARNAMES.AM_PIPELINE_ID in environ:
+        AM_RUNTIME_VARIABLES.AM_PIPELINE_ID = environ[AM_RUNTIME_VARNAMES.AM_PIPELINE_ID]
+    ctx.insert(ContextPaths.PIPELINE_ID, AM_RUNTIME_VARIABLES.AM_PIPELINE_ID)
+    
+    AM_RUNTIME_VARIABLES.AM_PIPELINE_NAME = DefaultValue.NotSet
+    if AM_RUNTIME_VARNAMES.AM_PIPELINE_NAME in environ:
+        AM_RUNTIME_VARIABLES.AM_PIPELINE_NAME = environ[AM_RUNTIME_VARNAMES.AM_PIPELINE_NAME]
+    ctx.insert(ContextPaths.PIPELINE_NAME, AM_RUNTIME_VARIABLES.AM_PIPELINE_NAME)
+
+    AM_RUNTIME_VARIABLES.AM_PIPELINE_INSTANCE = DefaultValue.NotSet
+    if AM_RUNTIME_VARNAMES.AM_PIPELINE_INSTANCE in environ:
+        AM_RUNTIME_VARIABLES.AM_PIPELINE_INSTANCE = environ[AM_RUNTIME_VARNAMES.AM_PIPELINE_INSTANCE]
+    ctx.insert(ContextPaths.PIPELINE_INSTANCE, AM_RUNTIME_VARIABLES.AM_PIPELINE_INSTANCE)
+
+
+    AM_RUNTIME_VARIABLES.AM_JOB_ID = DefaultValue.NotSet
+    if AM_RUNTIME_VARNAMES.AM_JOB_ID in environ:
+        AM_RUNTIME_VARIABLES.AM_JOB_ID = environ[AM_RUNTIME_VARNAMES.AM_JOB_ID]
+    ctx.insert(ContextPaths.JOB_ID, AM_RUNTIME_VARIABLES.AM_JOB_ID)
+
+    AM_RUNTIME_VARIABLES.AM_JOB_INITIATOR = DefaultValue.NotSet
+    if AM_RUNTIME_VARNAMES.AM_JOB_INITIATOR in environ:
+        AM_RUNTIME_VARIABLES.AM_JOB_INITIATOR = environ[AM_RUNTIME_VARNAMES.AM_JOB_INITIATOR]
+    ctx.insert(ContextPaths.JOB_INITIATOR, AM_RUNTIME_VARIABLES.AM_JOB_INITIATOR)
+
+    AM_RUNTIME_VARIABLES.AM_JOB_LABEL = DefaultValue.NotSet
+    if AM_RUNTIME_VARNAMES.AM_JOB_LABEL in environ:
+        AM_RUNTIME_VARIABLES.AM_JOB_LABEL = environ[AM_RUNTIME_VARNAMES.AM_JOB_LABEL]
+    ctx.insert(ContextPaths.JOB_LABEL, AM_RUNTIME_VARIABLES.AM_JOB_LABEL)
+
+    AM_RUNTIME_VARIABLES.AM_JOB_NAME = DefaultValue.NotSet
+    if AM_RUNTIME_VARNAMES.AM_JOB_NAME in environ:
+        AM_RUNTIME_VARIABLES.AM_JOB_NAME = environ[AM_RUNTIME_VARNAMES.AM_JOB_NAME]
+    ctx.insert(ContextPaths.JOB_NAME, AM_RUNTIME_VARIABLES.AM_JOB_NAME)
+
+    AM_RUNTIME_VARIABLES.AM_JOB_OWNER = DefaultValue.NotSet
+    if AM_RUNTIME_VARNAMES.AM_JOB_OWNER in environ:
+        AM_RUNTIME_VARIABLES.AM_JOB_OWNER = environ[AM_RUNTIME_VARNAMES.AM_JOB_OWNER]
+    ctx.insert(ContextPaths.JOB_OWNER, AM_RUNTIME_VARIABLES.AM_JOB_OWNER)
+
+    AM_RUNTIME_VARIABLES.AM_JOB_SEED = str(uuid4())
+    if AM_RUNTIME_VARNAMES.AM_JOB_SEED in environ:
+        AM_RUNTIME_VARIABLES.AM_JOB_SEED = environ[AM_RUNTIME_VARNAMES.AM_JOB_SEED]
+    ctx.insert(ContextPaths.JOB_SEED, AM_RUNTIME_VARIABLES.AM_JOB_SEED)
+
+    AM_RUNTIME_VARIABLES.AM_JOB_TAG = DefaultValue.NotSet
+    if AM_RUNTIME_VARNAMES.AM_JOB_TAG in environ:
+        AM_RUNTIME_VARIABLES.AM_JOB_TAG = environ[AM_RUNTIME_VARNAMES.AM_JOB_TAG]
+    ctx.insert(ContextPaths.JOB_TAG, AM_RUNTIME_VARIABLES.AM_JOB_TAG)
+
+    AM_RUNTIME_VARIABLES.AM_JOB_TYPE = JobType.Unknown.value
+    if AM_RUNTIME_VARNAMES.AM_JOB_TYPE in environ:
+        AM_RUNTIME_VARIABLES.AM_JOB_TYPE = environ[AM_RUNTIME_VARNAMES.AM_JOB_TYPE]
+    ctx.insert(ContextPaths.JOB_TYPE, AM_RUNTIME_VARIABLES.AM_JOB_TYPE)
+
+    AM_RUNTIME_VARIABLES.AM_JOB_VENUE = DefaultValue.NotSet
+    if AM_RUNTIME_VARNAMES.AM_JOB_VENUE in environ:
+        AM_RUNTIME_VARIABLES.AM_JOB_VENUE = environ[AM_RUNTIME_VARNAMES.AM_JOB_VENUE]
+    ctx.insert(ContextPaths.JOB_VENUE, AM_RUNTIME_VARIABLES.AM_JOB_VENUE)
+
+    AM_RUNTIME_VARIABLES.AM_INTERACTIVE_CONSOLE = False
+    if AM_RUNTIME_VARNAMES.AM_INTERACTIVE_CONSOLE in environ:
+        AM_RUNTIME_VARIABLES.AM_INTERACTIVE_CONSOLE = environ[AM_RUNTIME_VARNAMES.AM_INTERACTIVE_CONSOLE]
+
+    AM_RUNTIME_VARIABLES.AM_RESULTS_STATIC_SUMMARY_TEMPLATE = None
+    if AM_RUNTIME_VARNAMES.AM_RESULTS_STATIC_SUMMARY_TEMPLATE in environ:
+        AM_RUNTIME_VARIABLES.AM_RESULTS_STATIC_SUMMARY_TEMPLATE = environ[AM_RUNTIME_VARNAMES.AM_RESULTS_STATIC_SUMMARY_TEMPLATE]
+
+    AM_RUNTIME_VARIABLES.AM_RESULTS_STATIC_RESOURCE_DEST_DIR = None
+    if AM_RUNTIME_VARNAMES.AM_RESULTS_STATIC_RESOURCE_DEST_DIR in environ:
+        AM_RUNTIME_VARIABLES.AM_RESULTS_STATIC_RESOURCE_DEST_DIR = environ[AM_RUNTIME_VARNAMES.AM_RESULTS_STATIC_RESOURCE_DEST_DIR]
+
+    AM_RUNTIME_VARIABLES.AM_RESULTS_STATIC_RESOURCE_SRC_DIR = None
+    if AM_RUNTIME_VARNAMES.AM_RESULTS_STATIC_RESOURCE_SRC_DIR in environ:
+        AM_RUNTIME_VARIABLES.AM_RESULTS_STATIC_RESOURCE_SRC_DIR = environ[AM_RUNTIME_VARNAMES.AM_RESULTS_STATIC_RESOURCE_SRC_DIR]
+
+
+    AM_RUNTIME_VARIABLES.AM_TESTROOT = None
+    if AM_RUNTIME_VARNAMES.AM_TESTROOT in environ:
+        AM_RUNTIME_VARIABLES.AM_TESTROOT = environ[AM_RUNTIME_VARNAMES.AM_TESTROOT]
+
+    return

@@ -16,12 +16,12 @@ from typing import Optional
 import os
 
 
-class AMR_STARTUP_DEFAULTS:
+class AM_STARTUP_DEFAULTS:
 
-    AMR_NAME = "AMR"
-    AMR_PRESENCE_DIRECTORY = os.path.expanduser(os.path.join("~", AMR_NAME.lower()))
-    AMR_SETTINGS_FILE = os.path.join(AMR_PRESENCE_DIRECTORY, "amr-settings.config")
-    AMR_EXTENSION_MODULES = ""
+    AM_NAME = "AMR"
+    AM_PRESENCE_DIRECTORY = os.path.expanduser(os.path.join("~", AM_NAME.lower()))
+    AM_SETTINGS_FILE = os.path.join(AM_PRESENCE_DIRECTORY, "amr-settings.config")
+    AM_EXTENSION_MODULES = ""
 
 
 STARTUP_SETTINGS_ESTABLISHED = False
@@ -46,13 +46,13 @@ def establish_presence_settings(*, name: Optional[str]=None, presence_dir: Optio
         STARTUP_SETTINGS_ESTABLISHED = True
 
         if name is not None:
-            AMR_STARTUP_DEFAULTS.AMR_NAME = name
+            AM_STARTUP_DEFAULTS.AM_NAME = name
         if presence_dir is not None:
-            AMR_STARTUP_DEFAULTS.AMR_PRESENCE_DIRECTORY = presence_dir
+            AM_STARTUP_DEFAULTS.AM_PRESENCE_DIRECTORY = presence_dir
         if settings_file is not None:
-            AMR_STARTUP_DEFAULTS.AMR_SETTINGS_FILE = settings_file
+            AM_STARTUP_DEFAULTS.AM_SETTINGS_FILE = settings_file
         if extension_modules is not None:
-            AMR_STARTUP_DEFAULTS.AMR_EXTENSION_MODULES = extension_modules
+            AM_STARTUP_DEFAULTS.AM_EXTENSION_MODULES = extension_modules
 
     return
 

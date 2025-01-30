@@ -12,7 +12,7 @@ __credits__ = []
 
 from threading import RLock
 
-from automojo.collections.context import Context
+from automojo.foundation.collections.context import Context
 
 CONTEXT_SINGLETON = None
 
