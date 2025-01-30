@@ -16,7 +16,7 @@ import threading
 
 from automojo.errors.exceptions import SemanticError
 
-from automojo.foundation.startup.startupvariables import AM_STARTUP_VARIABLES, resolve_startup_variables
+from automojo.foundation.startup.startupvariables import AM_STARTUP_VARIABLES
 
 from automojo.foundation.extension.extensionsuperfactory import ExtensionSuperFactory
 
