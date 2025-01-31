@@ -20,7 +20,7 @@ class AM_STARTUP_DEFAULTS:
 
     AM_NAME = "AUTOMOJO"
     AM_PRESENCE_DIRECTORY = os.path.expanduser(os.path.join("~", AM_NAME.lower()))
-    AM_SETTINGS_FILE = os.path.join(AM_PRESENCE_DIRECTORY, "amr-settings.config")
+    AM_SETTINGS_FILE = os.path.join(AM_PRESENCE_DIRECTORY, "am-settings.config")
     AM_EXTENSION_MODULES = ""
 
 
