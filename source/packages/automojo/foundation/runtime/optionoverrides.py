@@ -23,7 +23,7 @@ from automojo.foundation.runtime.runtimevariables import AM_RUNTIME_VARIABLES
 
 ctx = ContextSingleton()
 
-class FOUNDATION_RUNTIME_OPTION_OVERRIDES:
+class AM_RUNTIME_OPTION_OVERRIDES:
 
     @staticmethod
     def override_build_release(release: str):
