@@ -92,14 +92,14 @@ def scan_amr_factories_namespace() -> List[str]:
     modules_found = []
 
     for dir_path in search_paths:
-        check_dir = os.path.join(dir_path, "amr", "factories")
+        check_dir = os.path.join(dir_path, "automojo", "factories")
         if os.path.exists(check_dir) and os.path.isdir(check_dir):
             check_dir_modules = scan_for_descendant_modules(check_dir)
             modules_found.extend(check_dir_modules)
 
     return modules_found
 
-def scan_for_descendant_modules(scan_dir: str, module_prefix: str="amr.factories") -> List[str]:
+def scan_for_descendant_modules(scan_dir: str, module_prefix: str="automojo.factories") -> List[str]:
 
     modules_found = []
 
