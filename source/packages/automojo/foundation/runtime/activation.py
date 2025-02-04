@@ -147,7 +147,7 @@ def activate_profile_service():
     AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE = LogLevel.INFO
     AM_RUNTIME_VARIABLES.AM_SERVICE_NAME = service_name
     AM_RUNTIME_VARIABLES.AM_JOB_TYPE = JobType.Service.value
-    AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY = os.path.join(AM_RUNTIME_VARIABLES.AM_HOME_DIRECTORY, "services", service_name)
+    AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "services", service_name)
 
     # For console activation we don't want to log to the console and we want
     # to point the logs to a different output folder
@@ -267,26 +267,26 @@ def activate_profile_common():
     # determines where loggin will go and is different depending on the activation mode of the test framework
     filled_dir_results = None
     if jobtype == JobType.Console:
-        default_dir_template = os.path.join(AM_RUNTIME_VARIABLES.AM_HOME_DIRECTORY, "results", "console", "%(starttime)s")
+        default_dir_template = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "results", "console", "%(starttime)s")
         outdir_template = ctx.lookup(ContextPaths.TEMPLATE_PATH_FOR_CONSOLE, default=default_dir_template)
         filled_dir_results = outdir_template % fill_dict
         ctx.insert(ContextPaths.RESULT_PATH_FOR_CONSOLE, filled_dir_results)
 
     elif jobtype == JobType.Orchestration:
-        default_dir_template = os.path.join(AM_RUNTIME_VARIABLES.AM_HOME_DIRECTORY, "results", "orchestration", "%(starttime)s")
+        default_dir_template = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "results", "orchestration", "%(starttime)s")
         outdir_template = ctx.lookup(ContextPaths.TEMPLATE_PATH_FOR_ORCHESTRATION, default=default_dir_template)
         filled_dir_results = outdir_template % fill_dict
         ctx.insert(ContextPaths.RESULT_PATH_FOR_ORCHESTRATION, filled_dir_results)
 
     elif jobtype == JobType.Service:
-        default_dir_template = os.path.join(AM_RUNTIME_VARIABLES.AM_HOME_DIRECTORY, "results", "service", "%(starttime)s")
+        default_dir_template = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "results", "service", "%(starttime)s")
         outdir_template = ctx.lookup(ContextPaths.TEMPLATE_PATH_FOR_SERVICES, default=default_dir_template)
         filled_dir_results = outdir_template % fill_dict
         ctx.insert(ContextPaths.RESULT_PATH_FOR_SERVICES, filled_dir_results)
 
     else:
         if AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY is None:
-            default_dir_template = os.path.join(AM_RUNTIME_VARIABLES.AM_HOME_DIRECTORY, "results", "testresults", "%(starttime)s")
+            default_dir_template = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "results", "testresults", "%(starttime)s")
             outdir_template = ctx.lookup(ContextPaths.TEMPLATE_PATH_FOR_TESTS, default=default_dir_template)
             filled_dir_results = outdir_template % fill_dict
             ctx.insert(ContextPaths.RESULT_PATH_FOR_TESTS, filled_dir_results)
