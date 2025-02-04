@@ -29,7 +29,7 @@ def resolve_startup_variables():
 
     config_parser = StartupConfigLoader("DEFAULT")
 
-    AM_STARTUP_VARIABLES.AM_EXTENSION_MODULES = config_parser.read(
-        AM_STARTUP_VARIABLE_NAMES.AM_EXTENSION_MODULES, AM_STARTUP_DEFAULTS.AM_EXTENSION_MODULES)
+    AM_STARTUP_VARIABLES.AM_EXTENSION_MODULES = config_parser.get_variable_value(
+        AM_STARTUP_VARIABLE_NAMES.AM_EXTENSION_MODULES, default=AM_STARTUP_DEFAULTS.AM_EXTENSION_MODULES)
 
     return
