@@ -27,18 +27,18 @@ SINGLETON_LOCK = threading.RLock()
 
 def StartupConfigSingleton():
 
-    global STARTUP_CONFIG
+    global STARTUP_CONFIG_PARSER
 
     SINGLETON_LOCK.acquire()
     try:
-        if STARTUP_CONFIG is None:
-            STARTUP_CONFIG = ConfigParser()
+        if STARTUP_CONFIG_PARSER is None:
+            STARTUP_CONFIG_PARSER = ConfigParser()
 
             from automojo.foundation.startup.startupvariables import AM_STARTUP_VARIABLES
-            
+
             if os.path.exists(AM_STARTUP_VARIABLES.AM_SETTINGS_FILE):
-                STARTUP_CONFIG.read(AM_STARTUP_VARIABLES.AM_SETTINGS_FILE)
+                STARTUP_CONFIG_PARSER.read(AM_STARTUP_VARIABLES.AM_SETTINGS_FILE)
     finally:
         SINGLETON_LOCK.release()
 
-    return STARTUP_CONFIG
+    return STARTUP_CONFIG_PARSER
