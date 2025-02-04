@@ -30,6 +30,7 @@ def get_current_function_name():
 
     return caller_func_name
 
+
 def get_caller_function_name():
     """
         Gets the function name of the calling function which is the parent of the function calling
@@ -44,6 +45,7 @@ def get_caller_function_name():
         pass
 
     return caller_func_name
+
 
 def get_module_ancestry(module_name: str):
 
@@ -72,6 +74,7 @@ class ReferenceForType:
 
 ClassOfType = type(ReferenceForType)
 
+
 def is_typed_from_type(obj) -> bool:
     is_of_type = False
 
@@ -79,4 +82,4 @@ def is_typed_from_type(obj) -> bool:
         is_of_type = True
     
     return is_of_type
-    
+
