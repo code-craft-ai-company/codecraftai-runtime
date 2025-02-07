@@ -299,7 +299,8 @@ def get_presence_directory() -> str:
     if DIR_PRESENCE_DIRECTORY is None:
         ctx = ContextSingleton()
 
-        DIR_PRESENCE_DIRECTORY = expand_path(ctx.lookup(ContextPaths.PRESENCE_HOME_DIRECTORY))
+        presence_dir = ctx.lookup(ContextPaths.PRESENCE_HOME_DIRECTORY)
+        DIR_PRESENCE_DIRECTORY = expand_path(presence_dir)
     
     return DIR_PRESENCE_DIRECTORY
 

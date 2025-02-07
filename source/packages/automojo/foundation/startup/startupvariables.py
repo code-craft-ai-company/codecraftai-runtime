@@ -16,6 +16,8 @@ from automojo.foundation.startup.startupsettings import AM_STARTUP_DEFAULTS
 from automojo.foundation.startup.startupvariablenames import AM_STARTUP_VARIABLE_NAMES
 from automojo.foundation.startup.startupconfigloader import StartupConfigLoader
 
+from automojo.foundation.collections.contextpaths import ContextPaths
+from automojo.foundation.collections.wellknown import ContextSingleton
 
 class AM_STARTUP_VARIABLES:
 
@@ -27,9 +29,13 @@ class AM_STARTUP_VARIABLES:
 
 def resolve_startup_variables():
 
+    ctx = ContextSingleton()
+
     config_parser = StartupConfigLoader("DEFAULT")
 
     AM_STARTUP_VARIABLES.AM_EXTENSION_MODULES = config_parser.get_variable_value(
         AM_STARTUP_VARIABLE_NAMES.AM_EXTENSION_MODULES, default=AM_STARTUP_DEFAULTS.AM_EXTENSION_MODULES)
+    
+    ctx.insert(ContextPaths.PRESENCE_HOME_DIRECTORY, AM_STARTUP_VARIABLES.AM_PRESENCE_DIRECTORY)
 
     return
