@@ -290,7 +290,10 @@ def get_path_for_testcase_by_products(test_id: str) -> str:
 
 
 def get_presence_directory() -> str:
-
+    """
+        Returns the path to the presence directory.
+    """
+    
     global DIR_PRESENCE_DIRECTORY
 
     if DIR_PRESENCE_DIRECTORY is None:
