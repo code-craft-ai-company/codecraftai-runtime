@@ -23,6 +23,7 @@ from automojo.foundation.collections.wellknown import ContextSingleton
 from automojo.foundation.fspath import expand_path
 
 
+DIR_PRESENCE_DIRECTORY = None
 DIR_CACHE_DIRECTORY = None
 DIR_DIAGNOSTICS_DIRECTORY = None
 DIR_RESULTS_DIRECTORY = None
@@ -286,6 +287,18 @@ def get_path_for_testcase_by_products(test_id: str) -> str:
             os.makedirs(DIR_TESTCASE_BYPRODUCTS_DIRECTORY)
 
     return DIR_TESTCASE_BYPRODUCTS_DIRECTORY
+
+
+def get_presence_directory() -> str:
+
+    global DIR_PRESENCE_DIRECTORY
+
+    if DIR_PRESENCE_DIRECTORY is None:
+        ctx = ContextSingleton()
+
+        DIR_PRESENCE_DIRECTORY = expand_path(ctx.lookup(ContextPaths.PRESENCE_HOME_DIRECTORY))
+    
+    return DIR_PRESENCE_DIRECTORY
 
 
 def get_summary_html_template_source() -> str:
