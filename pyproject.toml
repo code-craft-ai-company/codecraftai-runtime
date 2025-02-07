@@ -20,6 +20,7 @@ python = ">=3.10,<4.0"
 automojo-errors = { git = "git@github.com:automationmojo/automojo-errors.git", branch = "main" }
 automojo-waiting = { git = "git@github.com:automationmojo/automojo-waiting.git", branch = "main" }
 debugpy = "^1.8.12"
+cryptography = "^44.0.0"
 
 [tool.poetry.group.dev.dependencies]
 

@@ -13,8 +13,10 @@ __credits__ = []
 
 from typing import Optional
 
-from automojo.foundation.startup.startupsettings import AM_STARTUP_DEFAULTS, establish_presence_settings
+from automojo.foundation.startup.startupsettings import AM_STARTUP_DEFAULTS
 from automojo.foundation.startup.wellknown import StartupConfigSingleton
+
+from automojo.foundation.configuration.configurationsettings import establish_configuration_settings
 
 
 default_config = {}
@@ -40,7 +42,7 @@ def establish_runtime_settings(*, name: Optional[str]=None, home_dir: Optional[s
     if not RUNTIME_SETTINGS_ESTABLISHED:
         RUNTIME_SETTINGS_ESTABLISHED = True
 
-        establish_presence_settings(name=name, home_dir=home_dir, settings_file=settings_file, extension_modules=extension_modules, **other)
+        establish_configuration_settings(name=name, home_dir=home_dir, settings_file=settings_file, extension_modules=extension_modules, **other)
 
         if logger_name is not None:
             AM_RUNTIME_DEFAULTS.AM_LOGGER_NAME = logger_name
