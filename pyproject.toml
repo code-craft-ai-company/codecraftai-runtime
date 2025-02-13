@@ -21,6 +21,7 @@ automojo-errors = { git = "git@github.com:automationmojo/automojo-errors.git", b
 automojo-waiting = { git = "git@github.com:automationmojo/automojo-waiting.git", branch = "main" }
 debugpy = "^1.8.12"
 cryptography = "^44.0.0"
+pyyaml = "^6.0.2"
 
 [tool.poetry.group.dev.dependencies]
 

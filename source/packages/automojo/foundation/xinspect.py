@@ -11,13 +11,14 @@
 """
 
 __author__ = "Myron Walker"
-__copyright__ = "Copyright 2025, Automation Mojo LLC"
+__copyright__ = "Copyright 2023, Myron W Walker"
 __credits__ = []
 
 
-import inspect
-import sys
 
+import inspect
+
+import sys
 
 def get_current_function_name():
     """
@@ -29,7 +30,6 @@ def get_current_function_name():
     caller_func_name = caller_stack.frame.f_code.co_name
 
     return caller_func_name
-
 
 def get_caller_function_name():
     """
@@ -45,7 +45,6 @@ def get_caller_function_name():
         pass
 
     return caller_func_name
-
 
 def get_module_ancestry(module_name: str):
 
@@ -74,7 +73,6 @@ class ReferenceForType:
 
 ClassOfType = type(ReferenceForType)
 
-
 def is_typed_from_type(obj) -> bool:
     is_of_type = False
 
@@ -82,4 +80,4 @@ def is_typed_from_type(obj) -> bool:
         is_of_type = True
     
     return is_of_type
-
+    
