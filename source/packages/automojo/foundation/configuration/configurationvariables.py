@@ -13,9 +13,10 @@ __credits__ = []
 
 import os
 
-from automojo.foundation.startup.startupvariables import (
-    AM_STARTUP_VARIABLES,
-    resolve_startup_variables
+from automojo.foundation.runtime.runtimevariables import (
+    AM_RUNTIME_VARNAMES,
+    AM_RUNTIME_VARIABLES,
+    resolve_runtime_variables
 )
 
 from automojo.foundation.collections.wellknown import ContextSingleton
@@ -39,7 +40,7 @@ class CONFIGURATION_MAPS:
     TOPOLOGY_CONFIGURATION_MAP = MergeMap()
 
 
-class AM_CONFIG_VARNAMES:
+class AM_CONFIG_VARNAMES(AM_RUNTIME_VARNAMES):
 
     AM_NAME = "AM_NAME"
 
@@ -72,7 +73,7 @@ class AM_CONFIG_VARNAMES:
     AM_CONFIG_RUNTIME_FILES = "AM_CONFIG_RUNTIME_FILES"
 
 
-class AM_CONFIG_VARIABLES(AM_STARTUP_VARIABLES):
+class AM_CONFIG_VARIABLES(AM_RUNTIME_VARIABLES):
 
     AM_CONFIG_REQUIRE_CREDENTIALS = AM_CONFIG_DEFAULTS.AM_CONFIG_REQUIRE_CREDENTIALS
     AM_CONFIG_REQUIRE_LANDSCAPE = AM_CONFIG_DEFAULTS.AM_CONFIG_REQUIRE_LANDSCAPE
@@ -115,7 +116,7 @@ def resolve_configuration_variables():
 
     # We need to resolve extension variables because we are
     # dependent on some of them.
-    resolve_startup_variables()
+    resolve_runtime_variables()
 
     environ = os.environ
 
