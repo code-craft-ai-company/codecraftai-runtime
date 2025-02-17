@@ -1,5 +1,5 @@
 """
-.. module:: variables
+.. module:: runtimevariables
     :platform: Darwin, Linux, Unix, Windows
     :synopsis: Module which contains the :class:`AM_RUNTIME_VARIABLES`
               object which is used store the environment variables.
@@ -83,6 +83,7 @@ class AM_RUNTIME_VARIABLES(AM_STARTUP_VARIABLES):
     AM_PIPELINE_NAME = DefaultValue.NotSet
     AM_PIPELINE_INSTANCE = DefaultValue.NotSet
 
+    AM_JOB_CLASS = DefaultValue.NotSet
     AM_JOB_ID = DefaultValue.NotSet
     AM_JOB_TYPE = JobType.Unknown.value
     AM_JOB_INITIATOR = DefaultValue.NotSet
@@ -210,6 +211,10 @@ def resolve_runtime_variables():
         AM_RUNTIME_VARIABLES.AM_PIPELINE_INSTANCE = environ[AM_RUNTIME_VARNAMES.AM_PIPELINE_INSTANCE]
     ctx.insert(ContextPaths.PIPELINE_INSTANCE, AM_RUNTIME_VARIABLES.AM_PIPELINE_INSTANCE)
 
+    AM_RUNTIME_VARIABLES.AM_JOB_CLASS = DefaultValue.NotSet
+    if AM_RUNTIME_VARNAMES.AM_JOB_CLASS in environ:
+        AM_RUNTIME_VARIABLES.AM_JOB_CLASS = environ[AM_RUNTIME_VARNAMES.AM_JOB_CLASS]
+    ctx.insert(ContextPaths.JOB_CLASS, AM_RUNTIME_VARIABLES.AM_JOB_CLASS)
 
     AM_RUNTIME_VARIABLES.AM_JOB_ID = DefaultValue.NotSet
     if AM_RUNTIME_VARNAMES.AM_JOB_ID in environ:

@@ -45,6 +45,7 @@ class ContextPaths(str, Enum):
     CONFIG_TOPOLOGY_FILES = "/environment/topology/files"
 
     JOB_INFO = "/environment/job"
+    JOB_CLASS = "/environment/job/class"
     JOB_ID = "/environment/job/id"
     JOB_INITIATOR = "/environment/job/initiator"
     JOB_LABEL = "/environment/job/label"
