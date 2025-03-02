@@ -17,6 +17,8 @@ import os
 
 from collections import OrderedDict
 
+from automojo.errors.exceptions import SemanticError
+
 from automojo.foundation.collections.context import Context
 from automojo.foundation.collections.contextpaths import ContextPaths
 from automojo.foundation.collections.wellknown import ContextSingleton
@@ -107,13 +109,10 @@ def resolve_credentials_configuration(ctx: Context, keyphrase: Optional[str] = N
         config_names = AM_CONFIG_VARIABLES.AM_CONFIG_CREDENTIAL_NAMES
 
     if config_names is not None:
-        if AM_CONFIG_VARIABLES.AM_CONFIG_CREDENTIAL_SOURCES is None:
-            AM_CONFIG_VARIABLES.AM_CONFIG_CREDENTIAL_SOURCES = [
-                os.path.join(AM_CONFIG_VARIABLES.AM_CONFIG_DIRECTORY, "credentials")
-            ]
-        ctx.insert(ContextPaths.CONFIG_CREDENTIAL_SOURCES, AM_CONFIG_VARIABLES.AM_CONFIG_CREDENTIAL_SOURCES)
-        
         source_bases = AM_CONFIG_VARIABLES.AM_CONFIG_CREDENTIAL_SOURCES
+        if source_bases is None:
+            errmsg = "The 'AM_CONFIG_CREDENTIAL_SOURCES' variable should not be None.  Did you call 'resolve_configuration_variables'."
+            raise SemanticError(errmsg)
 
         config_loader = ConfigurationLoader(source_bases, credentials=credentials)
 
@@ -151,13 +150,10 @@ def resolve_landscape_configuration(ctx: Context, keyphrase: Optional[str] = Non
         config_names = AM_CONFIG_VARIABLES.AM_CONFIG_LANDSCAPE_NAMES
 
     if config_names is not None:
-        if AM_CONFIG_VARIABLES.AM_CONFIG_LANDSCAPE_SOURCES is None:
-            AM_CONFIG_VARIABLES.AM_CONFIG_LANDSCAPE_SOURCES = [
-                os.path.join(AM_CONFIG_VARIABLES.AM_CONFIG_DIRECTORY, "landscapes")
-            ]
-        ctx.insert(ContextPaths.CONFIG_LANDSCAPE_SOURCES, AM_CONFIG_VARIABLES.AM_CONFIG_LANDSCAPE_SOURCES)
-
         source_bases = AM_CONFIG_VARIABLES.AM_CONFIG_LANDSCAPE_SOURCES
+        if source_bases is None:
+            errmsg = "The 'AM_CONFIG_LANDSCAPE_SOURCES' variable should not be None.  Did you call 'resolve_configuration_variables'."
+            raise SemanticError(errmsg)
 
         config_loader = ConfigurationLoader(source_bases, credentials=credentials)
 
@@ -196,13 +192,10 @@ def resolve_runtime_configuration(ctx: Context, keyphrase: Optional[str] = None,
         config_names = AM_CONFIG_VARIABLES.AM_CONFIG_RUNTIME_NAMES
 
     if config_names is not None:
-        if AM_CONFIG_VARIABLES.AM_CONFIG_RUNTIME_SOURCES is None:
-            AM_CONFIG_VARIABLES.AM_CONFIG_RUNTIME_SOURCES = [
-                os.path.join(AM_CONFIG_VARIABLES.AM_CONFIG_DIRECTORY, "runtimes")
-            ]
-        ctx.insert(ContextPaths.CONFIG_RUNTIME_SOURCES, AM_CONFIG_VARIABLES.AM_CONFIG_RUNTIME_SOURCES)
-
         source_bases = AM_CONFIG_VARIABLES.AM_CONFIG_RUNTIME_SOURCES
+        if source_bases is None:
+            errmsg = "The 'AM_CONFIG_RUNTIME_SOURCES' variable should not be None.  Did you call 'resolve_configuration_variables'."
+            raise SemanticError(errmsg)
 
         config_loader = ConfigurationLoader(source_bases, credentials=credentials)
 
@@ -241,13 +234,10 @@ def resolve_topology_configuration(ctx: Context, keyphrase: Optional[str] = None
         config_names = AM_CONFIG_VARIABLES.AM_CONFIG_TOPOLOGY_NAMES
 
     if config_names is not None:
-        if AM_CONFIG_VARIABLES.AM_CONFIG_TOPOLOGY_SOURCES is None:
-            AM_CONFIG_VARIABLES.AM_CONFIG_TOPOLOGY_SOURCES = [
-                os.path.join(AM_CONFIG_VARIABLES.AM_CONFIG_DIRECTORY, "topologies")
-            ]
-        ctx.insert(ContextPaths.CONFIG_TOPOLOGY_SOURCES, AM_CONFIG_VARIABLES.AM_CONFIG_TOPOLOGY_SOURCES)
-
         source_bases = AM_CONFIG_VARIABLES.AM_CONFIG_TOPOLOGY_SOURCES
+        if source_bases is None:
+            errmsg = "The 'AM_CONFIG_TOPOLOGY_SOURCES' variable should not be None.  Did you call 'resolve_configuration_variables'."
+            raise SemanticError(errmsg)
 
         config_loader = ConfigurationLoader(source_bases, credentials=credentials)
 
