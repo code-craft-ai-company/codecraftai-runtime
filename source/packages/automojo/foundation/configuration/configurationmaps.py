@@ -107,9 +107,15 @@ def resolve_credentials_configuration(ctx: Context, keyphrase: Optional[str] = N
         config_names = AM_CONFIG_VARIABLES.AM_CONFIG_CREDENTIAL_NAMES
 
     if config_names is not None:
-        source_uris = AM_CONFIG_VARIABLES.AM_CONFIG_CREDENTIAL_SOURCES
+        if AM_CONFIG_VARIABLES.AM_CONFIG_CREDENTIAL_SOURCES is None:
+            AM_CONFIG_VARIABLES.AM_CONFIG_CREDENTIAL_SOURCES = [
+                os.path.join(AM_CONFIG_VARIABLES.AM_CONFIG_DIRECTORY, "credentials")
+            ]
+        ctx.insert(ContextPaths.CONFIG_CREDENTIAL_SOURCES, AM_CONFIG_VARIABLES.AM_CONFIG_CREDENTIAL_SOURCES)
+        
+        source_bases = AM_CONFIG_VARIABLES.AM_CONFIG_CREDENTIAL_SOURCES
 
-        config_loader = ConfigurationLoader(source_uris, credentials=credentials)
+        config_loader = ConfigurationLoader(source_bases, credentials=credentials)
 
         for cname in config_names:
             config_uri, config_info = config_loader.load_configuration_by_name(cname, keyphrase=keyphrase)
@@ -145,9 +151,15 @@ def resolve_landscape_configuration(ctx: Context, keyphrase: Optional[str] = Non
         config_names = AM_CONFIG_VARIABLES.AM_CONFIG_LANDSCAPE_NAMES
 
     if config_names is not None:
-        source_uris = AM_CONFIG_VARIABLES.AM_CONFIG_LANDSCAPE_SOURCES
+        if AM_CONFIG_VARIABLES.AM_CONFIG_LANDSCAPE_SOURCES is None:
+            AM_CONFIG_VARIABLES.AM_CONFIG_LANDSCAPE_SOURCES = [
+                os.path.join(AM_CONFIG_VARIABLES.AM_CONFIG_DIRECTORY, "landscapes")
+            ]
+        ctx.insert(ContextPaths.CONFIG_LANDSCAPE_SOURCES, AM_CONFIG_VARIABLES.AM_CONFIG_LANDSCAPE_SOURCES)
 
-        config_loader = ConfigurationLoader(source_uris, credentials=credentials)
+        source_bases = AM_CONFIG_VARIABLES.AM_CONFIG_LANDSCAPE_SOURCES
+
+        config_loader = ConfigurationLoader(source_bases, credentials=credentials)
 
         for cname in config_names:
             config_uri, config_info = config_loader.load_configuration_by_name(cname, keyphrase=keyphrase)
@@ -184,9 +196,15 @@ def resolve_runtime_configuration(ctx: Context, keyphrase: Optional[str] = None,
         config_names = AM_CONFIG_VARIABLES.AM_CONFIG_RUNTIME_NAMES
 
     if config_names is not None:
-        source_uris = AM_CONFIG_VARIABLES.AM_CONFIG_RUNTIME_SOURCES
+        if AM_CONFIG_VARIABLES.AM_CONFIG_RUNTIME_SOURCES is None:
+            AM_CONFIG_VARIABLES.AM_CONFIG_RUNTIME_SOURCES = [
+                os.path.join(AM_CONFIG_VARIABLES.AM_CONFIG_DIRECTORY, "runtimes")
+            ]
+        ctx.insert(ContextPaths.CONFIG_RUNTIME_SOURCES, AM_CONFIG_VARIABLES.AM_CONFIG_RUNTIME_SOURCES)
 
-        config_loader = ConfigurationLoader(source_uris, credentials=credentials)
+        source_bases = AM_CONFIG_VARIABLES.AM_CONFIG_RUNTIME_SOURCES
+
+        config_loader = ConfigurationLoader(source_bases, credentials=credentials)
 
         for cname in config_names:
             config_uri, config_info = config_loader.load_configuration_by_name(cname, keyphrase=keyphrase)
@@ -223,9 +241,15 @@ def resolve_topology_configuration(ctx: Context, keyphrase: Optional[str] = None
         config_names = AM_CONFIG_VARIABLES.AM_CONFIG_TOPOLOGY_NAMES
 
     if config_names is not None:
-        source_uris = AM_CONFIG_VARIABLES.AM_CONFIG_TOPOLOGY_SOURCES
+        if AM_CONFIG_VARIABLES.AM_CONFIG_TOPOLOGY_SOURCES is None:
+            AM_CONFIG_VARIABLES.AM_CONFIG_TOPOLOGY_SOURCES = [
+                os.path.join(AM_CONFIG_VARIABLES.AM_CONFIG_DIRECTORY, "topologies")
+            ]
+        ctx.insert(ContextPaths.CONFIG_TOPOLOGY_SOURCES, AM_CONFIG_VARIABLES.AM_CONFIG_TOPOLOGY_SOURCES)
 
-        config_loader = ConfigurationLoader(source_uris, credentials=credentials)
+        source_bases = AM_CONFIG_VARIABLES.AM_CONFIG_TOPOLOGY_SOURCES
+
+        config_loader = ConfigurationLoader(source_bases, credentials=credentials)
 
         for cname in config_names:
             config_uri, config_info = config_loader.load_configuration_by_name(cname, keyphrase=keyphrase)
