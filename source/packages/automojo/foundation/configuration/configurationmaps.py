@@ -103,7 +103,7 @@ def resolve_credentials_configuration(ctx: Context, keyphrase: Optional[str] = N
     config_files = AM_CONFIG_VARIABLES.AM_CONFIG_CREDENTIAL_FILES
 
     if (config_names is None or len(config_names) == 0) and (config_files is None or len(config_files) == 0):
-        AM_CONFIG_VARIABLES.AM_CONFIG_CREDENTIAL_NAMES = ["credentials"]
+        AM_CONFIG_VARIABLES.AM_CONFIG_CREDENTIAL_NAMES = ["default-credentials"]
         config_names = AM_CONFIG_VARIABLES.AM_CONFIG_CREDENTIAL_NAMES
 
     if config_names is not None:
