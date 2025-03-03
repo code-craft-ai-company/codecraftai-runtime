@@ -29,6 +29,11 @@ class ContextPaths(str, Enum):
     CONFIG_CREDENTIAL_SOURCES = "/environment/credential/sources"
     CONFIG_CREDENTIAL_FILES = "/environment/credential/files"
 
+    CONFIG_DATAPROFILE_NAMES = "/environment/dataprofile/names"
+    CONFIG_DATAPROFILE_URIS = "/environment/dataprofile/uris"
+    CONFIG_DATAPROFILE_SOURCES = "/environment/dataprofile/sources"
+    CONFIG_DATAPROFILE_FILES = "/environment/dataprofile/files"
+
     CONFIG_LANDSCAPE_NAMES = "/environment/landscape/names"
     CONFIG_LANDSCAPE_URIS = "/environment/landscape/uris"
     CONFIG_LANDSCAPE_SOURCES = "/environment/landscape/sources"
@@ -79,6 +84,7 @@ class ContextPaths(str, Enum):
 
     # ========================== configuration paths ==============================
     CONFIG_CREDENTIALS = "/configuration/credentials"
+    CONFIG_DATAPROFILES = "/configuration/dataprofiles"
     CONFIG_LANDSCAPE = "/configuration/landscape"
     CONFIG_RUNTIME = "/configuration/runtime"
     CONFIG_TOPOLOGY = "/configuration/topology"

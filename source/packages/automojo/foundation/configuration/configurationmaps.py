@@ -35,6 +35,7 @@ from automojo.foundation.configuration.configurationloader import ConfigurationL
 
 
 CREDENTIALS_TABLE = None
+DATAPROFILES_TABLE = None
 LANDSCAPE_TABLE = None
 RUNTIME_TABLE = None
 TOPOLOGY_TABLE = None
@@ -42,6 +43,7 @@ TOPOLOGY_TABLE = None
 
 def resolve_configuration_maps(
         use_credentials: Optional[bool]=None,
+        use_dataprofiles: Optional[bool]=None,
         use_landscape: Optional[bool]=None,
         use_runtime: Optional[bool]=None,
         use_topology: Optional[bool]=None,
@@ -52,6 +54,11 @@ def resolve_configuration_maps(
         use_credentials = AM_CONFIG_VARIABLES.AM_CONFIG_USE_CREDENTIALS
     else:
         AM_CONFIG_VARIABLES.AM_CONFIG_USE_CREDENTIALS = use_credentials
+
+    if use_dataprofiles is None:
+        use_dataprofiles = AM_CONFIG_VARIABLES.AM_CONFIG_USE_DATAPROFILES
+    else:
+        AM_CONFIG_VARIABLES.AM_CONFIG_USE_DATAPROFILES = use_dataprofiles
 
     if use_landscape is None:
         use_landscape = AM_CONFIG_VARIABLES.AM_CONFIG_USE_LANDSCAPE
@@ -80,6 +87,9 @@ def resolve_configuration_maps(
 
     if use_credentials:
         resolve_credentials_configuration(ctx, keyphrase=keyphrase, credentials=credentials)
+
+    if use_dataprofiles:
+        resolve_dataprofiles_configuration(ctx, keyphrase=keyphrase, credentials=credentials)
 
     if use_landscape:
         resolve_landscape_configuration(ctx, keyphrase=keyphrase, credentials=credentials)
@@ -130,6 +140,47 @@ def resolve_credentials_configuration(ctx: Context, keyphrase: Optional[str] = N
             CONFIGURATION_MAPS.CREDENTIAL_CONFIGURATION_MAP.maps.insert(0, config_info)
 
     ctx.insert(ContextPaths.CONFIG_CREDENTIAL_URIS, AM_CONFIG_VARIABLES.AM_CONFIG_CREDENTIAL_URIS)
+
+    return
+
+
+def resolve_dataprofiles_configuration(ctx: Context, keyphrase: Optional[str] = None, credentials: Optional[Dict[str, Tuple[str, str]]] = None):
+
+    global DATAPROFILES_TABLE
+
+    DATAPROFILES_TABLE = OrderedDict()
+
+    AM_CONFIG_VARIABLES.AM_CONFIG_DATAPROFILE_URIS = []
+    
+    config_names = AM_CONFIG_VARIABLES.AM_CONFIG_DATAPROFILE_NAMES
+    config_files = AM_CONFIG_VARIABLES.AM_CONFIG_DATAPROFILE_FILES
+
+    if (config_names is None or len(config_names) == 0) and (config_files is None or len(config_files) == 0):
+        AM_CONFIG_VARIABLES.AM_CONFIG_DATAPROFILE_NAMES = ["default-dataprofiles"]
+        config_names = AM_CONFIG_VARIABLES.AM_CONFIG_DATAPROFILE_NAMES
+
+    if config_names is not None:
+        source_bases = AM_CONFIG_VARIABLES.AM_CONFIG_DATAPROFILE_SOURCES
+        if source_bases is None:
+            errmsg = "The 'AM_CONFIG_DATAPROFILE_SOURCES' variable should not be None.  Did you call 'resolve_configuration_variables'."
+            raise SemanticError(errmsg)
+
+        config_loader = ConfigurationLoader(source_bases, credentials=credentials)
+
+        for cname in config_names:
+            config_uri, config_info = config_loader.load_configuration_by_name(cname, keyphrase=keyphrase)
+            DATAPROFILES_TABLE[config_uri] = config_info
+            CONFIGURATION_MAPS.DATAPROFILE_CONFIGURATION_MAP.maps.insert(0, config_info)
+
+        AM_CONFIG_VARIABLES.AM_CONFIG_DATAPROFILE_URIS = [ cfguri for cfguri in  CREDENTIALS_TABLE.keys() ]
+
+    if config_files is not None:
+        config_loader = ConfigurationLoader([], credentials=credentials)
+        for cfile in config_files:
+            config_info = config_loader.load_configuration_from_file(cfile, keyphrase=keyphrase)
+            CONFIGURATION_MAPS.DATAPROFILE_CONFIGURATION_MAP.maps.insert(0, config_info)
+
+    ctx.insert(ContextPaths.CONFIG_DATAPROFILE_URIS, AM_CONFIG_VARIABLES.AM_CONFIG_DATAPROFILE_URIS)
 
     return
 
