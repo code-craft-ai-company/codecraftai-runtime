@@ -21,7 +21,7 @@ import weakref
 
 from datetime import datetime
 
-from automojo.errors.exceptions import NotOverloadedError
+from automojo.errors.exceptions import AbstractMethodError
 
 from automojo.foundation.eventing.eventedvariable import EventedVariable
 
@@ -146,7 +146,7 @@ class EventedVariableSink:
                           subscriptions should be renewed.
         """
         errmsg = "The `invalidate_subscription` method was not overloaded for type={}".format(type(self).__name__)
-        raise NotOverloadedError(errmsg)
+        raise AbstractMethodError(errmsg)
 
     def renew_subscription(self, scope: Optional[Any]=None):
         """
@@ -156,7 +156,7 @@ class EventedVariableSink:
                           subscriptions should be renewed.
         """
         errmsg = "The `renew_subscription` method was not overloaded for type={}".format(type(self).__name__)
-        raise NotOverloadedError(errmsg)
+        raise AbstractMethodError(errmsg)
     
     def trigger_auto_subscribe_from_variable(self, varkey: str):
         """
@@ -165,7 +165,7 @@ class EventedVariableSink:
             :param varkey: The key for the variable that is triggering the auto-subscription process.
         """
         errmsg = "The `trigger_auto_subscribe_from_variable` method was not overloaded for type={}".format(type(self).__name__)
-        raise NotOverloadedError(errmsg)
+        raise AbstractMethodError(errmsg)
 
     def yield_state_lock(self) -> threading.RLock:
         """

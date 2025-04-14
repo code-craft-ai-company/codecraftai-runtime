@@ -16,7 +16,7 @@ from typing import Optional
 
 from threading import Event, Thread
 
-from automojo.errors.exceptions import NotOverloadedError, LooperError
+from automojo.errors.exceptions import AbstractMethodError, LooperError
 
 from automojo.foundation.xthreading.looperqueue import LooperQueue, LooperQueueShutdown
 
@@ -80,7 +80,7 @@ class Looper:
         """
             Method that is overloaded by derived classes in order to implement a work loop.
         """
-        raise NotOverloadedError("Looper: _loop must be overloaded by derived classes.") from None
+        raise AbstractMethodError("Looper: _loop must be overloaded by derived classes.") from None
 
     def _loop_entry(self, start_gate: Event, queue: LooperQueue):
         """
