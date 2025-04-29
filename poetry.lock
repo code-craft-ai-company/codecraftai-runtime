@@ -5,21 +5,30 @@ name = "automojo-errors"
 version = "0.0.1"
 description = "Automation Mojo - Errors"
 optional = false
-python-versions = "<4.0,>=3.10"
-files = [
-    {file = "automojo_errors-0.0.1-py3-none-any.whl", hash = "sha256:7dc169cb2fa80bb3bb2acf770f35751a338fed20db5523580c2ea5c452067ec3"},
-    {file = "automojo_errors-0.0.1.tar.gz", hash = "sha256:c66f2da5947a4a9f12657bc26d76969fad900d92028064e29d8fb994df2462bf"},
-]
+python-versions = ">=3.10,<4.0"
+files = []
+develop = false
+
+[package.source]
+type = "git"
+url = "git@github.com:automationmojo/automojo-errors.git"
+reference = "main"
+resolved_reference = "5b883ec8ea74509a9d8a0f2bef1ccee92653836d"
 
 [[package]]
 name = "automojo-waiting"
 version = "0.0.1"
 description = "Automation Mojo - Waiting Package"
 optional = false
-python-versions = "<4.0,>=3.10"
-files = [
-    {file = "automojo_waiting-0.0.1-py3-none-any.whl", hash = "sha256:7c2fdf39ce47131380eaae06e9ba6ce60cf039030adec48438419706e995f7fd"},
-]
+python-versions = ">=3.10,<4.0"
+files = []
+develop = false
+
+[package.source]
+type = "git"
+url = "git@github.com:automationmojo/automojo-waiting.git"
+reference = "main"
+resolved_reference = "fef72bf8eb16712dac6a7892eb88d8580c2a537c"
 
 [[package]]
 name = "cffi"
@@ -268,4 +277,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<4.0"
-content-hash = "5acd9535b7a36146abd188509ee384f227c09614d7d2cfcc1e3117b02b98bf34"
+content-hash = "3a8e6560cc3ceb08067d73d88ca40eab16c0eacdfbb11a6b73498a9edad943f6"
