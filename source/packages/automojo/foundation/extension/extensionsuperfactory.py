@@ -132,7 +132,7 @@ class ExtensionSuperFactory:
         
         return found_type
     
-    def iterate_override_types_for_each(self, get_type_method: Callable) -> Generator[Union[Type, List[Type], None], None, None]:
+    def iterate_override_types_for_each(self, get_type_method: Callable, interate_lists: bool = True) -> Generator[Union[Type, List[Type], None], None, None]:
 
         found_type = None
 
@@ -151,7 +151,7 @@ class ExtensionSuperFactory:
             
                     found_type = get_type_with()
 
-                    if type(found_type) is list:
+                    if interate_lists and type(found_type) is list:
                         for ftitem in found_type:
                             yield ftitem
                     else:
