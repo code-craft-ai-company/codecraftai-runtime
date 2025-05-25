@@ -56,6 +56,19 @@ class ExtensionSuperFactory:
         item_list = [item for item in self._factory_modules]
         return item_list
 
+    def add_factory_module(self, factory_module: str):
+        """
+            Can be used by super factory consumers to app the path of a wellknown factory module.
+        """
+        if factory_module not in self._factory_modules:
+            self._factory_modules.append(factory_module)
+
+            factory_type = load_and_set_extension_factory_type(factory_module)
+            if factory_type is not None:
+                self._extension_factories.append(factory_type)
+                self._extension_factories.sort(key=attrgetter('PRECEDENCE'))
+        return
+
     def create_instance_by_order(self, factory_method: Callable, *args, **kwargs) -> Union[object, None]:
 
         instance = None
@@ -137,5 +150,10 @@ class ExtensionSuperFactory:
                     get_type_with = getattr(factory_type, get_type_method)
             
                     found_type = get_type_with()
-                    yield found_type
+
+                    if type(found_type) is list:
+                        for ftitem in found_type:
+                            yield ftitem
+                    else:
+                        yield found_type
 
