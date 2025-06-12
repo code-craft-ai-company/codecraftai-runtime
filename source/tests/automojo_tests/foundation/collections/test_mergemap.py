@@ -52,7 +52,7 @@ class TestMergeMap(unittest.TestCase):
     def test_flatten_nested_mergemap(self):
         mm = MergeMap({'a': {'x': 1}}, {'a': {'y': 2}})
         flat = mm.flatten()
-        self.assertEqual(flat, {'a': {'x': 1, 'y': 2}})
+        self.assertDictEqual(flat, {'a': {'x': 1, 'y': 2}})
 
     def test_delete_raises_key_error(self):
         mm = MergeMap({'a': 1})
