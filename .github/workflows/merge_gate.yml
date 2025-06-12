@@ -54,7 +54,5 @@ jobs:
         # Start-up tests have to be run individually
         run: |
           source ./.venv/bin/activate
-          pushd ./source/tests
-          python3 -m unittest discover -s . -p "test_*.py"
-          popd
+          python3 -m unittest discover -s ./source/tests -p "test_*.py"
           deactivate
