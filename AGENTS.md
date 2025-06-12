@@ -33,6 +33,20 @@ When checking out the code for this repository in order to test changes, agents 
 # Project Specific Rules
 
 
+# Running Tests
+In order to run the tests, you must first enter the virtual environment by running the command:
+
+```
+    source .venv/bin/activate
+```
+
+When you setup the environment, the '.venv/bin/activate' script is modified so that it will pull in the appropriate environment
+variables from the '.env' file.
+
+For running the 'unittest' tests located under the folder 'source/tests', use the command:
+
+python -m unittest -s source/tests -p "test_*.py"
+
 # Pull Request Guidelines
 
 
