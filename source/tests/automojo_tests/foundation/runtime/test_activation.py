@@ -14,6 +14,7 @@ class TestActivation(unittest.TestCase):
 
     def setUp(self):
         import automojo.foundation.collections.wellknown as wellknown
+        self._prior_context = wellknown.CONTEXT_SINGLETON
         wellknown.CONTEXT_SINGLETON = None
 
         import automojo.foundation.runtime.runtimevariables as runtimevariables
@@ -23,6 +24,19 @@ class TestActivation(unittest.TestCase):
         self.activation = importlib.reload(activation)
         self.foundations = importlib.reload(foundations)
 
+        for var in (
+            AM_RUNTIME_VARNAMES.AM_JOB_TYPE,
+            AM_RUNTIME_VARNAMES.AM_OUTPUT_DIRECTORY,
+            AM_RUNTIME_VARNAMES.AM_LOG_LEVEL_CONSOLE,
+            AM_RUNTIME_VARNAMES.AM_SERVICE_NAME,
+        ):
+            os.environ.pop(var, None)
+
+    def tearDown(self):
+        import automojo.foundation.collections.wellknown as wellknown
+        wellknown.CONTEXT_SINGLETON = self._prior_context
+
+        importlib.reload(self.runtimevariables)
         for var in (
             AM_RUNTIME_VARNAMES.AM_JOB_TYPE,
             AM_RUNTIME_VARNAMES.AM_OUTPUT_DIRECTORY,
@@ -99,7 +113,10 @@ class TestActivation(unittest.TestCase):
             import logging
             self.assertIs(LoggingDefaults.DefaultFileLoggingHandler, logging.handlers.RotatingFileHandler)
             outdir = os.environ[AM_RUNTIME_VARNAMES.AM_OUTPUT_DIRECTORY]
-            self.assertIn('services/svc', outdir)
+            self.assertIn(
+                os.path.join('services', 'svc'),
+                os.path.normpath(outdir)
+            )
 
     def test_activate_profile_testrun_sets_warning_level(self):
         with patch('automojo.foundation.xlogging.foundations.logging_initialize') as mock_init:
