@@ -22,7 +22,6 @@ def insert_into_ordered_list_ascending(ordered_list: list, item: Any):
         :param ordered_list: The sorted list to insert into.
         :param item: The item to insert into the list.
     """
-    ordered_list = []
     index = None
     for idx, nxt in enumerate(ordered_list):
         if nxt > item:
