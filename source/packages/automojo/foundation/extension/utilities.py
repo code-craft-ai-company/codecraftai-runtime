@@ -107,7 +107,7 @@ def scan_for_descendant_modules(scan_dir: str, module_prefix: str="automojo.fact
         leafpath = dirpath[len(scan_dir):].strip(os.sep)
         leafpath_parts = []
         if len(leafpath) > 0:
-            leafpath_parts = dirpath.split(os.sep)
+            leafpath_parts = leafpath.split(os.sep)
 
         for fname in filenames:
             if fname.endswith(".py"):
