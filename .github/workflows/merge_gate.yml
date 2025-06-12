@@ -55,6 +55,6 @@ jobs:
         run: |
           source ./.venv/bin/activate
           pushd ./source
-          python3 -m unittest discover -s . -p "test_*.py"
+          python3 -m unittest discover -s ./tests -p "test_*.py"
           popd
           deactivate
