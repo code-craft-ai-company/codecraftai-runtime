@@ -37,7 +37,7 @@ jobs:
       - name: Configure Git
         run: |
           git config --global credential.helper store
-          echo "git:${{ secrets.AUTOMOJO_ACCESS_TOKEN }}@github.com" > .git-credentials
+          echo "https://git:${{ secrets.AUTOMOJO_ACCESS_TOKEN }}@github.com" > .git-credentials
 
       - name: Re-Home the Repository
         run: |
