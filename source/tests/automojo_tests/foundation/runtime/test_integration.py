@@ -28,7 +28,7 @@ class TestIntegration(unittest.TestCase):
     def test_job_info_fetches_stored_data(self):
         info = {"id": "1"}
         self.ctx.insert(ContextPaths.JOB_INFO, info)
-        self.assertEqual(get_job_info(), info)
+        self.assertDictEqual(get_job_info(), info)
 
     def test_job_field_getters_return_values(self):
         self.ctx.insert(ContextPaths.JOB_ID, "jid")
@@ -54,7 +54,7 @@ class TestIntegration(unittest.TestCase):
         self.ctx.insert(ContextPaths.PIPELINE_INSTANCE, "inst")
         self.ctx.insert(ContextPaths.PIPELINE_NAME, "pname")
 
-        self.assertEqual(get_pipeline_info(), pipeline_info)
+        self.assertDictEqual(get_pipeline_info(), pipeline_info)
         self.assertEqual(get_pipeline_id(), "pid")
         self.assertEqual(get_pipeline_instance(), "inst")
         self.assertEqual(get_pipeline_name(), "pname")
