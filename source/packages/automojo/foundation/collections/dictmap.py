@@ -216,7 +216,7 @@ class DictMap:
                     found = self._lookup(path=path, sloc=floc, sref=found, path_parts=path_parts[1:], default=default)
                 else:
                     sref[leaf_name] = default
-                    if isinstance(default, dict, ChainMap, MergeMap):
+                    if isinstance(default, (dict, ChainMap, MergeMap)):
                         cpath = "/" + "/".join(path_parts)
                         root_ref = ReferenceType(self) if self._root_ref is None else self._root_ref
                         found = DictMap(default, path=cpath, root_ref=root_ref)
@@ -254,17 +254,17 @@ class DictMap:
 
 
     def __contains__(self, key: str) -> bool:
-        found = self.exists(key)
+        found = key in self._store
         return found
 
 
     def __getitem__(self, key: str) -> Any:
-        found_node = self._lookup(self._store, key, [key])
+        found_node = self._lookup(path=key, sloc=[], sref=self._store, path_parts=[key])
         return found_node
 
 
     def __setitem__(self, key: str, val: Any):
-        self._insert(self._store, key, [key], val)
+        self._insert(path=key, sref=self._store, path_parts=[key], obj=val)
         return
 
 
