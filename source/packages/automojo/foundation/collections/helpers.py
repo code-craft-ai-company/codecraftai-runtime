@@ -26,6 +26,7 @@ def insert_into_ordered_list_ascending(ordered_list: list, item: Any):
     for idx, nxt in enumerate(ordered_list):
         if nxt > item:
             index = idx
+            break
 
     if index is not None:
         ordered_list.insert(index, item)
