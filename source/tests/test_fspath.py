@@ -1,6 +1,5 @@
-import os, sys; sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "source", "packages")))
-import unittest
 import os
+import unittest
 import tempfile
 
 from automojo.foundation.fspath import (

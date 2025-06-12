@@ -1,5 +1,6 @@
-import os, sys; sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "source", "packages")))
+
 import unittest
+
 from automojo.foundation.xconvert import parse_bool, safe_as_bytes, safe_as_str
 
 class TestXConvert(unittest.TestCase):

@@ -1,5 +1,6 @@
-import os, sys; sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "source", "packages")))
+
 import unittest
+
 from automojo.foundation.xformatting import (
     indent_line, indent_lines, indent_lines_list, split_and_indent_lines,
     format_command_result

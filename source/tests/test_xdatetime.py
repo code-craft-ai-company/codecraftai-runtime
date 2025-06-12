@@ -1,6 +1,7 @@
-import os, sys; sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "source", "packages")))
+
 import unittest
 import time
+
 from datetime import datetime
 
 from automojo.foundation.xdatetime import (

@@ -1,8 +1,7 @@
-import os, sys; sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "source", "packages")))
+import os
+import sys
 import unittest
 import tempfile
-import sys
-import os
 
 from automojo.foundation.xpython import in_python_path, prepend_python_path, append_python_path
 

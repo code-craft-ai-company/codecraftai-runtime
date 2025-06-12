@@ -1,7 +1,6 @@
-import os, sys; sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "source", "packages")))
+import os
 import unittest
 import tempfile
-import os
 import json
 
 from automojo.foundation.jsos import load_jsos_stream_from_file, CHAR_RECORD_SEPERATOR

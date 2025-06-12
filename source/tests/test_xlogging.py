@@ -1,4 +1,4 @@
-import os, sys; sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "source", "packages")))
+
 import unittest
 
 from automojo.foundation.xlogging.foundations import format_log_section_header, LOGGING_SECTION_MARKER_LENGTH
