@@ -18,6 +18,13 @@ import json
 CHAR_RECORD_SEPERATOR = "\x1E\n"
 
 def load_jsos_stream_from_file(filename: str) -> List[Dict[str, Any]]:
+    """
+        Loads a JSOS file into a list of dictionaries.
+
+        :param filename: Path to the JSOS file.
+
+        :returns: Parsed list of JSON objects.
+    """
 
     json_items = []
 

@@ -42,7 +42,13 @@ class WELLKNOWN_BREAKPOINTS:
     TESTRUN_START = "testrun-start"
 
 
-def in_vscode_debugger():
+def in_vscode_debugger() -> bool:
+    """
+        Determines whether the current process is running under VSCode's
+        debugger.
+
+        :returns: ``True`` if VSCode debugging is active.
+    """
     invscode = False
     for frame in inspect.stack():
         if frame[1].endswith("pydevd.py"):
@@ -51,7 +57,13 @@ def in_vscode_debugger():
     return invscode
 
 
-def debugger_wellknown_breakpoint_entry(breakpoint_name: str):
+def debugger_wellknown_breakpoint_entry(breakpoint_name: str) -> None:
+    """
+        Triggers a breakpoint if the named well known breakpoint is enabled
+        in the current context.
+
+        :param breakpoint_name: Key identifying the breakpoint.
+    """
 
     ctx = ContextSingleton()
 
@@ -79,7 +91,17 @@ def debugger_wellknown_breakpoint_entry(breakpoint_name: str):
     return
 
 
-def debugger_wellknown_breakpoint_code_append(breakpoint_name: str, code_lines: list, current_indent: str):
+def debugger_wellknown_breakpoint_code_append(breakpoint_name: str,
+                                              code_lines: list,
+                                              current_indent: str) -> None:
+    """
+        Appends source lines that trigger a well known breakpoint when
+        enabled in the debug context.
+
+        :param breakpoint_name: Identifier for the breakpoint.
+        :param code_lines: List of lines being emitted.
+        :param current_indent: Current indentation prefix for the new lines.
+    """
 
     ctx = ContextSingleton()
 
@@ -116,27 +138,43 @@ class DebugPyAssistant():
         in the automation environment.
     """
 
-    def __init__(self, name="DebugPyAssistant", *, endpoint=("0.0.0.0", PORT_DEBUGPY_ASSISTANT)):
+    def __init__(self, name: str = "DebugPyAssistant",
+                 *, endpoint=("0.0.0.0", PORT_DEBUGPY_ASSISTANT)) -> None:
+        """
+            Starts a daemon thread exposing a ``debugpy`` endpoint.
+
+            :param name: Name for the background thread.
+            :param endpoint: ``(host, port)`` tuple to listen on.
+        """
+
         self._endpoint = endpoint
         self._running = True
 
-        self._debug_thread = threading.Thread(name=name, target=self._entry_debug_server, daemon=True)
+        self._debug_thread = threading.Thread(
+            name=name, target=self._entry_debug_server, daemon=True
+        )
         self._debug_thread.start()
         return
 
     @property
     def endpoint(self):
+        """Network endpoint for debug connections."""
         return self._endpoint
 
     @property
     def thread(self):
+        """Background thread serving the debug endpoint."""
         return self._debug_thread
 
     def _entry_debug_server(self):
+        """
+            Thread routine that waits for debugger clients and breaks on
+            each connection.
+        """
 
         import debugpy
         debugpy.listen(self._endpoint)
-        
+
         while self._running:
 
             debugpy.wait_for_client()

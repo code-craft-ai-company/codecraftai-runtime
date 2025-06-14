@@ -23,7 +23,11 @@ from automojo.foundation.fspath import expand_path
 
 def in_python_path(dir_to_check: str) -> bool:
     """
-        Checks if a directory is in the PYTHONPATH in the current python process.
+        Checks whether ``dir_to_check`` already appears in ``sys.path``.
+
+        :param dir_to_check: Directory to search for.
+
+        :returns: ``True`` if present in ``sys.path``.
     """
     dir_to_check = expand_path(dir_to_check).rstrip(os.sep)
 
@@ -40,9 +44,10 @@ def in_python_path(dir_to_check: str) -> bool:
 
 def prepend_python_path(dir_to_add: str) -> None:
     """
-        Prepends a directory to the PYTHONPATH in the current python process and also modifies
-        'PYTHONPATH' so the child processes will also see inherit the extension
-        of 'PYTHONPATH'.
+        Inserts ``dir_to_add`` at the beginning of ``sys.path`` and updates
+        ``PYTHONPATH`` so child processes inherit the change.
+
+        :param dir_to_add: Directory path to prepend.
     """
     found = in_python_path(dir_to_add)
 
@@ -57,9 +62,10 @@ def prepend_python_path(dir_to_add: str) -> None:
 
 def append_python_path(dir_to_add: str) -> None:
     """
-        Appends a directory to the PYTHONPATH in the current python process and also modifies
-        'PYTHONPATH' so the child processes will also see inherit the extension
-        of 'PYTHONPATH'.
+        Appends ``dir_to_add`` to ``sys.path`` and updates ``PYTHONPATH``
+        for child processes.
+
+        :param dir_to_add: Directory path to append.
     """
     found = in_python_path(dir_to_add)
 
