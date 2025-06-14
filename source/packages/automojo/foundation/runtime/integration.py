@@ -1,3 +1,10 @@
+"""
+.. module:: integration
+    :platform: Darwin, Linux, Unix, Windows
+    :synopsis: Runtime integration helpers used by testing frameworks.
+
+.. moduleauthor:: Myron Walker <myron.walker@gmail.com>
+"""
 
 __author__ = "Myron Walker"
 __copyright__ = "Copyright 2025, Automation Mojo LLC"
