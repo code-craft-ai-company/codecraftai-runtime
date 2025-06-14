@@ -1,3 +1,10 @@
+"""
+.. module:: optionoverrides
+    :platform: Darwin, Linux, Unix, Windows
+    :synopsis: Defines configuration option override helpers and constants.
+
+.. moduleauthor:: Myron Walker <myron.walker@gmail.com>
+"""
 
 __author__ = "Myron Walker"
 __copyright__ = "Copyright 2025, Automation Mojo LLC"

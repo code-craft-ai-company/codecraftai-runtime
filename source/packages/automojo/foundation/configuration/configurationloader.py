@@ -1,3 +1,10 @@
+"""
+.. module:: configurationloader
+    :platform: Darwin, Linux, Unix, Windows
+    :synopsis: Module that implements configuration loading from various sources.
+
+.. moduleauthor:: Myron Walker <myron.walker@gmail.com>
+"""
 
 __author__ = "Myron Walker"
 __copyright__ = "Copyright 2025, Automation Mojo LLC"
