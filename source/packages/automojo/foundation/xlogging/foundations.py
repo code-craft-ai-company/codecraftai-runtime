@@ -252,11 +252,11 @@ def logging_create_branch_logger(logger_name: str, logfilename: str, log_level: 
         # Setup the relevant log file which will get all the
         # log entries from loggers that satisified a relevant
         # logger name prefix match
-        handler = logging.FileHandler(logfilename)
-        handler.setLevel(log_level)
-        for handler in target_logger.handlers:
-            target_logger.removeHandler(handler)
-        target_logger.addHandler(handler)
+        file_handler = logging.FileHandler(logfilename)
+        file_handler.setLevel(log_level)
+        for hndl in list(target_logger.handlers):
+            target_logger.removeHandler(hndl)
+        target_logger.addHandler(file_handler)
 
     print("blah")
 
