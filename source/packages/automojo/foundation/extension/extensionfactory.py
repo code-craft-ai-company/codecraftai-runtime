@@ -13,7 +13,10 @@ __credits__ = []
 
 class ExtensionFactory:
     """
-        The base class used to extend
+        Base class for extension factories.
+
+        Extension factory classes inherit from this type in order to
+        participate in the extension discovery and creation process.
     """
 
     PRECEDENCE = 0

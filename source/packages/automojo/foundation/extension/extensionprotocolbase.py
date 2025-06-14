@@ -14,11 +14,22 @@ __credits__ = []
 from typing import Protocol
 
 class ExtensionProtocolBase(Protocol):
+    """
+        Base protocol for extension factories.
+
+        Subclasses must set ``ext_protocol_name`` to identify the protocol they
+        implement.
+    """
 
     ext_protocol_name = None
 
     def __init_subclass__(cls, *args, **kwargs):
+        """
+            Validates that derived classes specify ``ext_protocol_name``.
+        """
         if cls.ext_protocol_name is None:
-            errmsg = "The 'protocol_name' class level field must be set on derived protocol types."
+            errmsg = (
+                "The 'protocol_name' class level field must be set on derived protocol types."
+            )
             raise RuntimeError(errmsg)
         return super().__init_subclass__(*args, **kwargs)
