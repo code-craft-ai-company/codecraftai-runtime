@@ -27,7 +27,11 @@ is_python_pre_3_5 = (is_python3 and sys.version_info[1] < 5)
 
 def import_by_name(modulename: str) -> ModuleType:
     """
-        Imports a module by name.
+        Imports and returns a module by its fully qualified name.
+
+        :param modulename: Module identifier to import.
+
+        :returns: The loaded module object.
     """
 
     mod = None
@@ -40,12 +44,13 @@ def import_by_name(modulename: str) -> ModuleType:
 
 def import_file(name: str, loc: str, by_file_only=False) -> ModuleType:
     """
-        Import module from a file. Used to load models from a directory.
+        Import a module from a specific file path.
 
-        :param unicode name: Name of module to load.
-        :param (unicode / Path) loc: Path to the file.
+        :param name: Name assigned to the loaded module.
+        :param loc: Filesystem path to the module file.
+        :param by_file_only: Only attempt loading from ``loc`` if ``True``.
 
-        returns: The loaded module.
+        :returns: The imported module.
     """
     mod = None
     if name in sys.modules:

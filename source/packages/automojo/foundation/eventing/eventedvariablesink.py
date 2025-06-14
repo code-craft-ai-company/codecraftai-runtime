@@ -33,7 +33,19 @@ class EventedVariableSink:
     SINK_VARIABLE_TYPE = EventedVariable
 
 
-    def __init__(self, variable_description_table: dict, state_lock: Optional[threading.RLock]=None, sink_prefix: str=None, auto_subscribe: bool=False):
+    def __init__(self, variable_description_table: dict,
+                 state_lock: Optional[threading.RLock] = None,
+                 sink_prefix: str = None,
+                 auto_subscribe: bool = False) -> None:
+        """
+            Creates the sink and pre-allocates the evented variables.
+
+            :param variable_description_table: Mapping describing event variables.
+            :param state_lock: Optional lock guarding sink state.
+            :param sink_prefix: Prefix applied to event variable keys.
+            :param auto_subscribe: Enables automatic subscription handling.
+        """
+
         super().__init__()
 
         self._event_state_lock = state_lock
@@ -91,8 +103,8 @@ class EventedVariableSink:
             Registers the initiator time and context for a given initiator topic.
 
             :param event_name: The event identifier for the initiation moment being recorded.
-            :param datetime: The datetime of the moment of initiation for a topic.
-            :param context: Contextual information that provides more details around then initiation moment.
+            :param moment: Datetime when the initiation occurred.
+            :param context: Additional contextual details.
         """
         
         self._event_state_lock.acquire()
@@ -108,6 +120,8 @@ class EventedVariableSink:
             Looks up the specified event variable.
 
             :param event_name: The event name to find the :class:`EventedVariable` for.
+
+            :returns: The event variable instance or ``None``.
         """
         varobj = None
 
@@ -122,6 +136,13 @@ class EventedVariableSink:
         return varobj
 
     def update_event_variable(self, event_name: str, event_value: Any, sink_locked: bool=False):
+        """
+            Updates the value of an event variable.
+
+            :param event_name: Name of the variable to update.
+            :param event_value: New value for the event.
+            :param sink_locked: ``True`` if the caller already holds the lock.
+        """
 
         varkey = event_name
         if self._sink_prefix is not None:
@@ -144,25 +165,31 @@ class EventedVariableSink:
 
             :param scope: The scope of the subscriptions to renew.  If not specified then all
                           subscriptions should be renewed.
+
+            :raises AbstractMethodError: Must be implemented by subclasses.
         """
         errmsg = "The `invalidate_subscription` method was not overloaded for type={}".format(type(self).__name__)
         raise AbstractMethodError(errmsg)
 
     def renew_subscription(self, scope: Optional[Any]=None):
         """
-            Called in order to renew the subscription(s) specified by scope. 
+            Called in order to renew the subscription(s) specified by scope.
 
             :param scope: The scope of the subscriptions to renew.  If not specified then all
                           subscriptions should be renewed.
+
+            :raises AbstractMethodError: Must be implemented by subclasses.
         """
         errmsg = "The `renew_subscription` method was not overloaded for type={}".format(type(self).__name__)
         raise AbstractMethodError(errmsg)
     
     def trigger_auto_subscribe_from_variable(self, varkey: str):
         """
-            Called in order to renew the subscription to the 
+            Called in order to renew the subscription to the
 
             :param varkey: The key for the variable that is triggering the auto-subscription process.
+
+            :raises AbstractMethodError: Must be implemented by subclasses.
         """
         errmsg = "The `trigger_auto_subscribe_from_variable` method was not overloaded for type={}".format(type(self).__name__)
         raise AbstractMethodError(errmsg)
@@ -171,6 +198,8 @@ class EventedVariableSink:
         """
             Yields the state lock in a way that it can be automatically released at the end of an
             iteration scope.
+
+            :returns: The reentrant lock guarding sink state.
         """
         self._event_state_lock.acquire()
         try:

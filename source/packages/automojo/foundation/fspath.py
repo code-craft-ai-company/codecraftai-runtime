@@ -25,8 +25,15 @@ DEFAULT_PATH_EXPANSIONS = [
     os.path.abspath
 ]
 
-def expand_path(path_in, expansions=DEFAULT_PATH_EXPANSIONS):
+def expand_path(path_in: str, expansions=DEFAULT_PATH_EXPANSIONS) -> str:
+    """
+        Applies a sequence of expansion functions to ``path_in``.
 
+        :param path_in: Path string to expand.
+        :param expansions: Iterable of callables used to transform the path.
+
+        :returns: The fully expanded path string.
+    """
     path_out = path_in
     for expansion_func in expansions:
         path_out = expansion_func(path_out)
@@ -40,7 +47,10 @@ def collect_python_modules(search_dir: str, max_depth=None) -> List[str]:
         for python namespaces by not forcing the root folder to contain a
         __init__.py file.
 
-        :params searchdir: The root directory to search when collecting python modules.
+        :param search_dir: The root directory to search when collecting modules.
+        :param max_depth: Maximum depth to recurse. ``None`` searches fully.
+
+        :returns: List of paths to discovered Python modules.
     """
     pyfiles = []
 
@@ -71,7 +81,7 @@ def ensure_directory_is_package(package_dir: str, package_title: Optional[str] =
         Ensures that a directory is represented to python as a package by checking to see if the
         directory has an __init__.py file and if not it adds one.
 
-        :param package_dir: The direcotry to represent as a package.
+        :param package_dir: The directory to represent as a package.
         :param package_title: Optional title to be written into the documentation string in the package file.
     """
     package_dir_init = os.path.join(package_dir, "__init__.py")
