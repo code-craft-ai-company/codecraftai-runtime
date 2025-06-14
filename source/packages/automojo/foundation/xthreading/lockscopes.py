@@ -20,7 +20,9 @@ from types import TracebackType
 from threading import Lock, RLock
 
 class LockedScope:
-    """Context manager that acquires a lock for the scope of a ``with`` block."""
+    """
+        Context manager that acquires a lock for the scope of a ``with`` block.
+    """
 
     def __init__(self, lock: Union[Lock, RLock]) -> None:
         """
@@ -32,7 +34,9 @@ class LockedScope:
         return
     
     def __enter__(self) -> "LockedScope":
-        """Acquire the managed lock."""
+        """
+            Acquire the managed lock.
+        """
         self._lock.acquire()
         return self
 
@@ -50,7 +54,9 @@ class LockedScope:
         return False
 
 class UnLockedScope:
-    """Context manager that temporarily releases a lock."""
+    """
+        Context manager that temporarily releases a lock.
+    """
 
     def __init__(self, lock: Union[Lock, RLock]) -> None:
         """
@@ -62,7 +68,9 @@ class UnLockedScope:
         return
     
     def __enter__(self) -> "UnLockedScope":
-        """Release the managed lock."""
+        """
+            Release the managed lock.
+        """
         self._lock.release()
         return self
 

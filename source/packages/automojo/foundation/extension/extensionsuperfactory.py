@@ -30,6 +30,11 @@ class ExtensionSuperFactory:
     """
 
     def __init__(self, factory_modules: List[str]):
+        """
+            Constructs the super factory and loads factory modules.
+
+            :param factory_modules: Additional factory module paths to load.
+        """
 
         self._factory_modules = scan_amr_factories_namespace()
         if len(factory_modules) > 0:
@@ -48,11 +53,17 @@ class ExtensionSuperFactory:
 
     @property
     def extension_factories(self):
+        """
+            List of loaded extension factory types.
+        """
         item_list = [item for item in self._extension_factories]
         return item_list
 
     @property
     def factory_modules(self):
+        """
+            List of module names searched for factories.
+        """
         item_list = [item for item in self._factory_modules]
         return item_list
 
@@ -70,6 +81,9 @@ class ExtensionSuperFactory:
         return
 
     def create_instance_by_order(self, factory_method: Callable, *args, **kwargs) -> Union[object, None]:
+        """
+            Create an instance using the first factory that supports the protocol.
+        """
 
         instance = None
 
@@ -92,6 +106,9 @@ class ExtensionSuperFactory:
         return instance
 
     def create_instance_for_each(self, factory_method: Callable, *args, **kwargs) -> List[object]:
+        """
+            Create an instance using each factory that supports the protocol.
+        """
 
         list_of_instances = []
 
@@ -111,6 +128,9 @@ class ExtensionSuperFactory:
         return list_of_instances
 
     def get_override_types_by_order(self, get_type_method: Callable) -> Union[Type, List[Type], None]:
+        """
+            Return the override type from the first factory that supplies it.
+        """
 
         found_type = None
 
@@ -133,6 +153,9 @@ class ExtensionSuperFactory:
         return found_type
     
     def iterate_override_types_for_each(self, get_type_method: Callable, interate_type_lists: bool = True) -> Generator[Union[Type, List[Type], None], None, None]:
+        """
+            Yield override types from each factory in order.
+        """
 
         found_type = None
 

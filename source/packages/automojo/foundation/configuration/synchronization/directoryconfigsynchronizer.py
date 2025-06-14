@@ -22,11 +22,27 @@ class DirectoryConfigSynchronizer(ConfigSynchronizerBase):
     parse_exp = re.compile(r"dir://(?P<directory>[/s/S]+)")
 
     def __init__(self, storage_uri: str, local_store: str):
+        """
+            Initializes a directory based configuration synchronizer.
+
+            :param storage_uri: Base directory URI for configurations.
+            :param local_store: Local directory used for sync operations.
+        """
         super().__init__(storage_uri)
         return
 
 
     def _retrieve_configuration(self, venue: str, user: str, config_class: str, config_name: str) -> Union[Tuple[str, dict], Tuple[None, None]]:
+        """
+            Retrieve a configuration file from the directory store.
+
+            :param venue: Venue identifier for the configuration.
+            :param user: User name used to namespace the configuration.
+            :param config_class: Configuration class folder name.
+            :param config_name: Name of the configuration document.
+
+            :returns: Tuple of configuration format and configuration data or ``(None, None)``.
+        """
 
         config_format = None
         config_info = None
@@ -50,6 +66,16 @@ class DirectoryConfigSynchronizer(ConfigSynchronizerBase):
 
 
     def _publish_configuration(self, venue: str, user: str, config_class: str, config_name: str, config_format: str, config_info: str):
+        """
+            Publish a configuration file to the directory store.
+
+            :param venue: Venue identifier for the configuration.
+            :param user: User name used to namespace the configuration.
+            :param config_class: Configuration class folder name.
+            :param config_name: Name of the configuration document.
+            :param config_format: File format ``json`` or ``yaml``.
+            :param config_info: Configuration data to persist.
+        """
 
         storage_dir = os.path.join(self._storage_uri, venue, user, config_class)
         if not os.path.exists(storage_dir):

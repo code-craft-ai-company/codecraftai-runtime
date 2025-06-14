@@ -68,6 +68,9 @@ class EventedVariableSink:
 
     @property
     def auto_subscribe(self):
+        """
+            ``True`` if the sink should handle subscription renewal automatically.
+        """
         return self._auto_subscribe
 
     @property
@@ -79,6 +82,9 @@ class EventedVariableSink:
 
     @property
     def subscriptionExpiration(self) -> str:
+        """
+            Timestamp indicating when the current subscription expires.
+        """
         return self._subscription_expiration
 
     def initiator_moment_lookup(self, event_name: str) -> Union[Tuple[datetime, Any], Tuple[None, None]]:

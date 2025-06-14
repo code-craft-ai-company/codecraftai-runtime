@@ -31,6 +31,14 @@ class GithubConfigSynchronizer(ConfigSynchronizerBase):
     parse_exp = re.compile(r"github://(?P<owner>[a-zA-Z\.0-9\-]+)/(?P<repo>[a-zA-Z\.0-9\-]+)/(?P<leaf>[\S]+)")
 
     def __init__(self, storage_uri: str, owner: str, repo: str, leaf: str):
+        """
+            Initializes a GitHub based configuration synchronizer.
+
+            :param storage_uri: Source URI string.
+            :param owner: Repository owner name.
+            :param repo: Repository name.
+            :param leaf: Base path for configuration files.
+        """
         super().__init__(storage_uri)
 
         self._owner = owner
@@ -40,6 +48,13 @@ class GithubConfigSynchronizer(ConfigSynchronizerBase):
 
     @classmethod
     def parse(cls, uri: str) -> Union[None, "GithubConfigSynchronizer"]:
+        """
+            Parses a GitHub synchronizer URI.
+
+            :param uri: URI to parse.
+
+            :returns: A :class:`GithubConfigSynchronizer` instance or ``None``.
+        """
 
         rtnobj = None
 
@@ -62,6 +77,17 @@ class GithubConfigSynchronizer(ConfigSynchronizerBase):
         return rtnobj
 
     def _publish_configuration(self, venue: str, user: str, config_class: str, config_name: str, config_format: str, config_info: str, credentials: Dict[str, Tuple[str, str]]):
+        """
+            Publish a configuration file to GitHub.
+
+            :param venue: Venue identifier for the configuration.
+            :param user: User name used to namespace the configuration.
+            :param config_class: Configuration class folder name.
+            :param config_name: Name of the configuration document.
+            :param config_format: File format ``json`` or ``yaml``.
+            :param config_info: Configuration data to persist.
+            :param credentials: Mapping of host to ``(user, token)`` pairs.
+        """
         
         username, token = credentials[self._owner]
         
@@ -191,6 +217,17 @@ class GithubConfigSynchronizer(ConfigSynchronizerBase):
         return
     
     def _retrieve_configuration(self, venue: str, user: str, config_class: str, config_name: str, credentials: Dict[str, Tuple[str, str]]) -> Union[Tuple[str, dict], Tuple[None, None]]:
+        """
+            Retrieve a configuration file from GitHub.
+
+            :param venue: Venue identifier for the configuration.
+            :param user: User name used to namespace the configuration.
+            :param config_class: Configuration class folder name.
+            :param config_name: Name of the configuration document.
+            :param credentials: Mapping of host to ``(user, token)`` pairs.
+
+            :returns: Tuple of configuration format and configuration data or ``(None, None)``.
+        """
         
         config_format = None
         config_info = None

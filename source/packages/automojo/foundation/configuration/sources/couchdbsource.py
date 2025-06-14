@@ -21,6 +21,15 @@ class CouchDBSource(ConfigurationSourceBase):
     parse_exp = re.compile(r"couchdb://(?P<scheme>[htps]+)\+(?P<host>[a-zA-Z\.0-9\-]+)(?P<port>[:0-9]+)*/(?P<database>[a-zA-Z\.0-9\-]+)")
 
     def __init__(self, uri: str, cscheme: str, host: str, database: str, port: Optional[int]):
+        """
+            Creates a configuration source that loads documents from CouchDB.
+
+            :param uri: Original URI string.
+            :param cscheme: Connection scheme ``http`` or ``https``.
+            :param host: Host name of the CouchDB server.
+            :param database: Database name containing configurations.
+            :param port: Optional port for the server.
+        """
         super().__init__(uri)
         self._cscheme = cscheme
         self._host = host
@@ -30,18 +39,34 @@ class CouchDBSource(ConfigurationSourceBase):
 
     @property
     def database(self) -> str:
+        """
+            Database name containing configurations.
+        """
         return self._database
 
     @property
     def host(self) -> str:
+        """
+            Host name of the CouchDB server.
+        """
         return self._host
 
     @property
     def port(self) -> int:
+        """
+            Port number for the CouchDB server.
+        """
         return self._port
 
     @classmethod
     def parse(cls, uri: str) -> Union[None, "CouchDBSource"]:
+        """
+            Parses a CouchDB source URI.
+
+            :param uri: URI to parse.
+
+            :returns: A :class:`CouchDBSource` instance or ``None``.
+        """
 
         rtnobj = None
 
@@ -69,7 +94,14 @@ class CouchDBSource(ConfigurationSourceBase):
         return rtnobj
     
     def try_load_configuration(self, config_name: str, credentials: Dict[str, Tuple[str, str]]) -> Union[Tuple[ConfigurationFormat, dict], Tuple[None, None]]:
-        
+        """
+            Attempts to load a configuration document from CouchDB.
+
+            :param config_name: Name of the configuration document.
+            :param credentials: Mapping of host names to ``(user, password)`` pairs.
+
+            :returns: Tuple of configuration format and data or ``(None, None)``.
+        """
         config_info = None
         config_format = None
 

@@ -28,12 +28,25 @@ class DirectorySource(ConfigurationSourceBase):
     parse_exp = re.compile(r"dir://(?P<directory>[/s/S]+)")
 
     def __init__(self, uri: str, directory: str):
+        """
+            Initializes a directory configuration source.
+
+            :param uri: Source URI string.
+            :param directory: Directory path containing configuration files.
+        """
         super().__init__(uri)
         self._directory = os.path.expandvars(os.path.expanduser(directory))
         return
 
     @classmethod
     def parse(cls, uri: str) -> Union[None, "DirectorySource"]:
+        """
+            Parses a directory source URI.
+
+            :param uri: URI to parse.
+
+            :returns: A :class:`DirectorySource` instance or ``None``.
+        """
 
         rtnobj = None
 
@@ -48,7 +61,15 @@ class DirectorySource(ConfigurationSourceBase):
         return rtnobj
 
     def try_load_configuration(self, config_name: str, credentials: Optional[Dict[str, Tuple[str, str]]]) -> Union[Tuple[ConfigurationFormat, dict], Tuple[None, None]]:
-        
+        """
+            Attempts to load a configuration from the backing directory.
+
+            :param config_name: Name of the configuration to load.
+            :param credentials: Ignored for directory sources.
+
+            :returns: Tuple of configuration format and configuration data or
+                      ``(None, None)``.
+        """
         config_format = None
         config_info = None
 

@@ -29,9 +29,24 @@ class ConfigSynchronizerBase(ABC):
     
     @property
     def storage_uri(self):
+        """
+            The storage URI associated with this synchronizer instance.
+        """
         return self._storage_uri
     
     def try_publish(self, local_store: str, venue: str, user: str, config_name: str, credentials: Optional[Dict[str, Tuple[str, str]]] = None) -> List[str]:
+
+        """
+            Attempts to publish a configuration to the remote store.
+
+            :param local_store: Path to the local configuration root.
+            :param venue: Venue identifier for the configuration.
+            :param user: User name used to namespace the configuration.
+            :param config_name: Name of the configuration to publish.
+            :param credentials: Optional mapping of host to credentials.
+
+            :returns: List of string error messages encountered during publish.
+        """
 
         errors = []
 
@@ -68,6 +83,18 @@ class ConfigSynchronizerBase(ABC):
 
     def try_retrieve(self, local_store: str, venue: str, user: str, config_name: str, credentials: Optional[Dict[str, Tuple[str, str]]] = None) -> bool:
 
+        """
+            Attempts to retrieve a configuration from the remote store.
+
+            :param local_store: Path to the local configuration root.
+            :param venue: Venue identifier for the configuration.
+            :param user: User name used to namespace the configuration.
+            :param config_name: Name of the configuration to retrieve.
+            :param credentials: Optional mapping of host to credentials.
+
+            :returns: List of string error messages encountered during retrieval.
+        """
+
         errors = []
 
         try:
@@ -101,6 +128,15 @@ class ConfigSynchronizerBase(ABC):
         return errors
     
     def _load_local_config(self, local_store, config_class: str, config_name: str) -> Union[Tuple[str, dict], Tuple[None, None]]:
+        """
+            Loads a configuration from the local store.
+
+            :param local_store: Path to the local configuration root.
+            :param config_class: Configuration class folder name.
+            :param config_name: Name of the configuration to load.
+
+            :returns: Tuple of configuration format and configuration data or ``(None, None)``.
+        """
 
         config_format = None
         config_info = None
@@ -122,13 +158,46 @@ class ConfigSynchronizerBase(ABC):
     
     @abstractmethod
     def _publish_configuration(self, venue: str, user: str, config_class: str, config_name: str, config_format: str, config_info: str, credentials: Dict[str, Tuple[str, str]]):
+        """
+            Publish a configuration to a remote store.
+
+            :param venue: Venue identifier for the configuration.
+            :param user: User name used to namespace the configuration.
+            :param config_class: Configuration class folder name.
+            :param config_name: Name of the configuration.
+            :param config_format: File format ``json`` or ``yaml``.
+            :param config_info: Configuration data to persist.
+            :param credentials: Mapping of host to ``(user, password)`` pairs.
+        """
         return
 
     @abstractmethod
     def _retrieve_configuration(self, venue: str, user: str, config_class: str, config_name: str,  credentials: Dict[str, Tuple[str, str]]) -> Union[Tuple[str, dict], Tuple[None, None]]:
+        """
+            Retrieve a configuration from a remote store.
+
+            :param venue: Venue identifier for the configuration.
+            :param user: User name used to namespace the configuration.
+            :param config_class: Configuration class folder name.
+            :param config_name: Name of the configuration to retrieve.
+            :param credentials: Mapping of host to ``(user, password)`` pairs.
+
+            :returns: Tuple of configuration format and data or ``(None, None)``.
+        """
         return
 
     def _save_local_config(self, local_store: str, venue: str, user: str, config_class: str, config_name: str, config_format: str, config_info):
+        """
+            Saves a configuration file locally.
+
+            :param local_store: Path to the local configuration root.
+            :param venue: Venue identifier.
+            :param user: User name for the configuration.
+            :param config_class: Configuration class folder name.
+            :param config_name: Name of the configuration.
+            :param config_format: File format ``json`` or ``yaml``.
+            :param config_info: Configuration data to persist.
+        """
 
         if not os.path.exists(local_store):
             os.makedirs(local_store)

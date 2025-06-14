@@ -26,6 +26,14 @@ class Looper:
     """
 
     def __init__(self, queue:LooperQueue, name: Optional[str]=None, group: Optional[str]=None, daemon:Optional[bool]=None, **kwargs):
+        """
+            Initializes the :class:`Looper` with the queue it will service.
+
+            :param queue: The :class:`LooperQueue` providing work items.
+            :param name: Optional thread name.
+            :param group: Optional thread group identifier.
+            :param daemon: ``True`` if the thread is a daemon.
+        """
         self._name = name
         self._group = group
         self._kwargs = kwargs
@@ -60,9 +68,15 @@ class Looper:
         return
 
     def thread_get_name(self):
+        """
+            Returns the underlying thread name.
+        """
         return self._thread.name
 
     def thread_set_name(self, name):
+        """
+            Sets the underlying thread name.
+        """
         self._thread.name = name
         return
 

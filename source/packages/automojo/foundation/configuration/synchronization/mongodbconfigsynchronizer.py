@@ -23,6 +23,16 @@ class MongoDbConfigSynchronizer(ConfigSynchronizerBase):
     parse_exp = re.compile(r"mongodb://(?P<host>[a-zA-Z\.0-9\-]+)/(?P<database>[a-zA-Z\.0-9\-]+)")
 
     def __init__(self, storage_uri: str, scheme: str, host: str, port: Union[int, None], database: str, verify_certificate: bool = True):
+        """
+            Initializes a MongoDB configuration synchronizer.
+
+            :param storage_uri: Original storage URI.
+            :param scheme: Connection scheme for MongoDB.
+            :param host: Host name of the server.
+            :param port: Optional port value.
+            :param database: Name of the database.
+            :param verify_certificate: Controls TLS certificate verification.
+        """
         super().__init__(storage_uri)
 
         self._scheme = scheme
@@ -34,6 +44,14 @@ class MongoDbConfigSynchronizer(ConfigSynchronizerBase):
 
     @classmethod
     def parse(cls, uri: str, verify_certificate: bool = True) -> Union[None, "MongoDbConfigSynchronizer"]:
+        """
+            Parses a MongoDB synchronizer URI.
+
+            :param uri: URI to parse.
+            :param verify_certificate: Controls TLS certificate verification.
+
+            :returns: A :class:`MongoDbConfigSynchronizer` instance or ``None``.
+        """
 
         rtnobj = None
 
@@ -61,6 +79,17 @@ class MongoDbConfigSynchronizer(ConfigSynchronizerBase):
         return rtnobj
 
     def _publish_configuration(self, venue: str, user: str, config_class: str, config_name: str, config_format: str, config_info: str, credentials: Dict[str, Tuple[str, str]]):
+        """
+            Publish a configuration document to MongoDB.
+
+            :param venue: Venue identifier for the configuration.
+            :param user: User name used to namespace the configuration.
+            :param config_class: Configuration class folder name.
+            :param config_name: Name of the configuration document.
+            :param config_format: File format ``json`` or ``yaml``.
+            :param config_info: Configuration data to persist.
+            :param credentials: Mapping of host to ``(user, password)`` pairs.
+        """
         
         username, password = credentials[self._host]
         dburi = f"mongodb+srv://{username}:{quote_plus(password)}@{self._host}/?retryWrites=true&w=majority"
@@ -89,6 +118,17 @@ class MongoDbConfigSynchronizer(ConfigSynchronizerBase):
         return
     
     def _retrieve_configuration(self, venue: str, user: str, config_class: str, config_name: str, credentials: Dict[str, Tuple[str, str]]) -> Union[Tuple[str, dict], Tuple[None, None]]:
+        """
+            Retrieve a configuration document from MongoDB.
+
+            :param venue: Venue identifier for the configuration.
+            :param user: User name used to namespace the configuration.
+            :param config_class: Configuration class folder name.
+            :param config_name: Name of the configuration document.
+            :param credentials: Mapping of host to ``(user, password)`` pairs.
+
+            :returns: Tuple of configuration format and data or ``(None, None)``.
+        """
         
         config_format = None
         config_info = None
