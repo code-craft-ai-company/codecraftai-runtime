@@ -22,6 +22,13 @@ from multiprocessing import Process, Queue
 
 class RemoteStdTee(StringIO):
     def __init__(self, queue: Queue, orig_file):
+        """
+            Creates an instance of :class:`RemoteStdTee` used to capture output
+            for forwarding to the owning process.
+
+            :param queue: Queue used to forward output strings.
+            :param orig_file: Original file object being replaced.
+        """
         super().__init__()
         self._pid = os.getpid()
         self._queue = queue
@@ -29,6 +36,10 @@ class RemoteStdTee(StringIO):
         return
     
     def flush(self):
+        """
+            Flushes the internal buffer and forwards any buffered content to the
+            remote queue before flushing the underlying file handle.
+        """
         buffer = self.getvalue()
         if len(buffer) > 0:
             self._queue.put(f"[{self._pid}] {buffer}{os.linesep}")
@@ -36,6 +47,12 @@ class RemoteStdTee(StringIO):
         return self._orig_file.flush()
 
     def write(self, s):
+        """
+            Writes string content to the tee buffer and forwards complete lines
+            to the remote queue.
+
+            :param s: Text to write.
+        """
         nlidx = s.find(os.linesep)
         if nlidx < 0:
             StringIO.write(self, s)
@@ -62,6 +79,17 @@ class PipedProcess(Process):
 
     def __init__(self, group: None = None, target: Optional[Callable]=None, name: Optional[str]=None, args: Iterable[Any] = (),
                  kwargs: Optional[Mapping[str, Any]] = None, *, daemon: Optional[bool]=None) -> None:
+        """
+            Creates a :class:`multiprocessing.Process` derivative that captures
+            standard out and error streams.
+
+            :param group: Process group.
+            :param target: Entry point callable.
+            :param name: Name for the process.
+            :param args: Positional arguments for ``target``.
+            :param kwargs: Keyword arguments for ``target``.
+            :param daemon: ``True`` if the process is a daemon.
+        """
         
         if kwargs is None:
             kwargs = {}
@@ -81,7 +109,10 @@ class PipedProcess(Process):
         return
     
     def stdout_monitor(self):
-
+        """
+            Thread routine that forwards stdout content from the child process
+            back to the parent process.
+        """
         try:
             while True:
                 s = self._stdout_queue.get()
@@ -92,7 +123,10 @@ class PipedProcess(Process):
         return
     
     def stderr_monitor(self):
-        
+        """
+            Thread routine that forwards stderr content from the child process
+            back to the parent process.
+        """
         try:
             while True:
                 s = self._stderr_queue.get()

@@ -36,6 +36,13 @@ class ConfigurationLoader:
     """
 
     def __init__(self, source_uris: List[str], credentials: Optional[Dict[str, Tuple[str, str]]] = None, verify_certificate: bool = True):
+        """
+            Constructs a new :class:`ConfigurationLoader`.
+
+            :param source_uris: List of configuration source URIs.
+            :param credentials: Optional mapping of host names to credentials.
+            :param verify_certificate: ``True`` to verify HTTPS certificates.
+        """
         self._source_uris = [uri.strip() for uri in source_uris]
         self._credentials = credentials
         self._verify_certificate = verify_certificate
@@ -47,11 +54,17 @@ class ConfigurationLoader:
 
     @property
     def source_uris(self) -> List[str]:
+        """
+            List of source URIs to search for configurations.
+        """
         return self._source_uris
 
 
     @property
     def sources(self) -> List[ConfigurationSourceBase]:
+        """
+            List of parsed configuration source objects.
+        """
         return self._sources
 
 

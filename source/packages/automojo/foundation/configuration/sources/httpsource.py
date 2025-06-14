@@ -33,11 +33,23 @@ class HttpSource(ConfigurationSourceBase):
     parse_https_exp = re.compile(r"https://(?P<baseurl>[\S]+)")
 
     def __init__(self, uri: str):
+        """
+            Initializes an HTTP configuration source.
+
+            :param uri: HTTP or HTTPS URI of the configuration location.
+        """
         super().__init__(uri)
         return
 
     @classmethod
     def parse(cls, uri: str) -> Union[None, "HttpSource"]:
+        """
+            Parses an HTTP(S) source URI.
+
+            :param uri: URI to parse.
+
+            :returns: A :class:`HttpSource` instance or ``None``.
+        """
 
         rtnobj = None
 
@@ -52,7 +64,14 @@ class HttpSource(ConfigurationSourceBase):
         return rtnobj
     
     def try_load_configuration(self, config_name: str, credentials: Optional[Dict[str, Tuple[str, str]]] = None) -> Union[Tuple[ConfigurationFormat, dict], Tuple[None, None]]:
-        
+        """
+            Attempts to load a configuration from an HTTP(S) endpoint.
+
+            :param config_name: Name of the configuration to load.
+            :param credentials: Optional mapping of credentials; ignored here.
+
+            :returns: Tuple of configuration format and data or ``(None, None)``.
+        """
         config_info = None
         config_format = None
 

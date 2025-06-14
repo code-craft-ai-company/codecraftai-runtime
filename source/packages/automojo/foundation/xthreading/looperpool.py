@@ -27,6 +27,17 @@ class LooperPool:
     """
 
     def __init__(self, looper_type: Looper, group_name: str=None, min_loopers: int=5, max_loopers: int=10, highwater: int=5, daemon=True, **kwargs):
+        """
+            Initializes the :class:`LooperPool`.
+
+            :param looper_type: Type derived from :class:`Looper` used for workers.
+            :param group_name: Optional name grouping worker threads.
+            :param min_loopers: Minimum number of worker threads.
+            :param max_loopers: Maximum number of worker threads.
+            :param highwater: Queue depth that triggers starting a new worker.
+            :param daemon: ``True`` if workers run as daemons.
+            :param kwargs: Additional keyword arguments passed to worker type.
+        """
         self._looper_type = looper_type
         self._group_name = group_name
         self._min_loopers = min_loopers

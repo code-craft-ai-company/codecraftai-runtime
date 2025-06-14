@@ -158,12 +158,16 @@ class DebugPyAssistant():
 
     @property
     def endpoint(self):
-        """Network endpoint for debug connections."""
+        """
+            Network endpoint for debug connections.
+        """
         return self._endpoint
 
     @property
     def thread(self):
-        """Background thread serving the debug endpoint."""
+        """
+            Background thread serving the debug endpoint.
+        """
         return self._debug_thread
 
     def _entry_debug_server(self):

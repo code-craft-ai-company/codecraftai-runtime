@@ -51,6 +51,14 @@ class MonitoredScope:
     ERROR_COMPARISON_TYPE_MESSAGE = "Comparison is only support between two 'MonitoredScope' objects."
 
     def __init__(self, label, message, timeout_ctx: TimeoutContext, notify_delay: timedelta=DEFAULT_MONITORED_SCOPE_NOTIFY_DELAY):
+        """
+            Creates a :class:`MonitoredScope` instance.
+
+            :param label: Human readable label for the scope.
+            :param message: Message logged if the scope expires.
+            :param timeout_ctx: Timeout context controlling expiration.
+            :param notify_delay: Delay before notification is triggered.
+        """
         self._id = str(uuid.uuid4())
         self._label = label
         self._message = message
@@ -67,6 +75,7 @@ class MonitoredScope:
 
     def __enter__(self) -> "MonitoredScope":
         """
+            Enters the monitored scope and registers with the monitor.
         """
         global global_scope_monitor
 
@@ -81,6 +90,7 @@ class MonitoredScope:
 
     def __exit__(self, ex_type: Type[BaseException], ex_inst: BaseException, ex_tb: TracebackType) -> bool:
         """
+            Exits the monitored scope and marks it as completed.
         """
         self._exited = True
 
@@ -253,6 +263,9 @@ class ScopeMonitor:
         return cls.instance
 
     def __init__(self):
+        """
+            Initializes the singleton scope monitor.
+        """
         thisType = type(self)
         if not thisType.initialized:
             thisType.initialized = True
@@ -279,7 +292,9 @@ class ScopeMonitor:
         return
 
     def _monitor_tick(self):
-
+        """
+            Timer callback used to check for expired scopes.
+        """
         self._monitors_lock.acquire()
         try:
             if len(self._monitors) > 0:

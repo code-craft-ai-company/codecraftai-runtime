@@ -29,6 +29,15 @@ class CouchDbConfigSynchronizer(ConfigSynchronizerBase):
     parse_exp = re.compile(r"couchdb://(?P<scheme>[htps]+)\+(?P<host>[a-zA-Z\.0-9\-]+)(?P<port>[:0-9]+)*/(?P<database_prefix>[a-zA-Z\.0-9\-]+)")
 
     def __init__(self, storage_uri: str, scheme: str, host: str, port: Union[int, None], database_prefix: str):
+        """
+            Initializes a CouchDB configuration synchronizer.
+
+            :param storage_uri: Original storage URI.
+            :param scheme: HTTP scheme for CouchDB.
+            :param host: Host name of the CouchDB server.
+            :param port: Optional port number.
+            :param database_prefix: Prefix for database names.
+        """
         super().__init__(storage_uri)
 
         self._storage_uri = storage_uri
@@ -40,6 +49,13 @@ class CouchDbConfigSynchronizer(ConfigSynchronizerBase):
 
     @classmethod
     def parse(cls, uri: str) -> Union[None, "CouchDbConfigSynchronizer"]:
+        """
+            Parses a CouchDB configuration synchronizer URI.
+
+            :param uri: URI to parse.
+
+            :returns: A :class:`CouchDbConfigSynchronizer` instance or ``None``.
+        """
 
         rtnobj = None
 
@@ -67,6 +83,17 @@ class CouchDbConfigSynchronizer(ConfigSynchronizerBase):
         return rtnobj
 
     def _publish_configuration(self, venue: str, user: str, config_class: str, config_name: str, config_format: str, config_info: str, credentials: Dict[str, Tuple[str, str]]):
+        """
+            Publish a configuration document to CouchDB.
+
+            :param venue: Venue identifier for the configuration.
+            :param user: User name used to namespace the configuration.
+            :param config_class: Configuration class folder name.
+            :param config_name: Name of the configuration document.
+            :param config_format: File format ``json`` or ``yaml``.
+            :param config_info: Configuration data to persist.
+            :param credentials: Mapping of host to ``(user, password)`` pairs.
+        """
 
         database = f"{self._database_prefix}={venue}"
         dburi = None
@@ -97,6 +124,17 @@ class CouchDbConfigSynchronizer(ConfigSynchronizerBase):
         return
 
     def _retrieve_configuration(self, venue: str, user: str, config_class: str, config_name: str, credentials: Dict[str, Tuple[str, str]]) -> Union[Tuple[str, dict], Tuple[None, None]]:
+        """
+            Retrieve a configuration document from CouchDB.
+
+            :param venue: Venue identifier for the configuration.
+            :param user: User name used to namespace the configuration.
+            :param config_class: Configuration class folder name.
+            :param config_name: Name of the configuration document.
+            :param credentials: Mapping of host to ``(user, password)`` pairs.
+
+            :returns: Tuple of configuration format and data or ``(None, None)``.
+        """
 
         config_format = None
         config_info = None

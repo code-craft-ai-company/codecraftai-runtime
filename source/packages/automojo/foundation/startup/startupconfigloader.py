@@ -38,6 +38,11 @@ class StartupConfigLoader:
     """
 
     def __init__(self, config_section_name: str):
+        """
+            Initializes the loader for the specified configuration section.
+
+            :param config_section_name: Name of the section to read from the startup configuration file.
+        """
         self._config_section_name = config_section_name
 
         self._cparser = StartupConfigSingleton()

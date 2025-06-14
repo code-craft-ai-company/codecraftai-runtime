@@ -32,6 +32,9 @@ class LooperQueue:
     """
 
     def __init__(self):
+        """
+            Creates an empty :class:`LooperQueue` instance.
+        """
         self._queue = []
         self._queue_available = Semaphore(value=0)
         self._queue_lock = RLock()
