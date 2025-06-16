@@ -50,7 +50,7 @@ jobs:
           ./development/setup-environment
           poetry install --all-extras
       
-      - name: Run Stand-Alone Tests
+      - name: Run Tests
         # Start-up tests have to be run individually
         run: |
           source ./.venv/bin/activate
