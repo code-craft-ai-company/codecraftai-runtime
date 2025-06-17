@@ -34,7 +34,7 @@ When checking out the code for this repository in order to test changes, agents 
 
 
 # Running Tests
-In order to run the tests, you must first enter the virtual environment by running the command:
+In order to run the unittest tests, you must first enter the virtual environment by running the command:
 
 ```
     source <repository-root>/.venv/bin/activate

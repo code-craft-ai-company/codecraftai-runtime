@@ -17,6 +17,7 @@ import traceback
 
 import sys
 import importlib
+import importlib.util
 
 from types import ModuleType
 
@@ -57,26 +58,21 @@ def import_file(name: str, loc: str, by_file_only=False) -> ModuleType:
         mod = sys.modules[name]
 
     if mod is None:
-        if is_python_pre_3_5:
-            import imp # pylint: disable=import-outside-toplevel
 
-            mod = imp.load_source(name, loc)
-        else:
+        while True:
+            if not by_file_only:
+                # First try to import the module by name only
+                try:
+                    mod = importlib.import_module(name)
+                    break
+                except ImportError:
+                    errmsg = traceback.format_exc()
+                    pass
 
-            while True:
-                if not by_file_only:
-                    # First try to import the module by name only
-                    try:
-                        mod = importlib.import_module(name)
-                        break
-                    except ImportError:
-                        errmsg = traceback.format_exc()
-                        pass
-
-                spec = importlib.util.spec_from_file_location(name, str(loc))
-                mod = importlib.util.module_from_spec(spec)
-                spec.loader.exec_module(mod)
-                sys.modules[name] = mod
-                break
+            spec = importlib.util.spec_from_file_location(name, str(loc))
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+            sys.modules[name] = mod
+            break
 
     return mod

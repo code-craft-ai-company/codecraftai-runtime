@@ -47,10 +47,12 @@ def collect_python_modules(search_dir: str, max_depth=None) -> List[str]:
         for python namespaces by not forcing the root folder to contain a
         __init__.py file.
 
-        :param search_dir: The root directory to search when collecting modules.
-        :param max_depth: Maximum depth to recurse. ``None`` searches fully.
-
-        :returns: List of paths to discovered Python modules.
+        :params searchdir: The root directory to search when collecting python modules.
+        :params max_depth: The maximum depth to search for python modules.  If this is None
+                        then the entire directory tree will be searched.  If this is
+                        an integer then the search will be limited to that depth.
+        
+        :returns: A list of the full paths to the python module files.
     """
     pyfiles = []
 
