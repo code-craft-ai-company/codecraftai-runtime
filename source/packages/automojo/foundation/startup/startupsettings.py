@@ -47,6 +47,8 @@ def establish_presence_settings(*, name: Optional[str]=None, presence_dir: Optio
 
         if name is not None:
             AM_STARTUP_DEFAULTS.AM_NAME = name
+            AM_STARTUP_DEFAULTS.AM_PRESENCE_DIRECTORY = os.path.expanduser(os.path.join("~", name.lower()))
+            AM_STARTUP_DEFAULTS.AM_SETTINGS_FILE = os.path.join(AM_STARTUP_DEFAULTS.AM_PRESENCE_DIRECTORY, "am-settings.config")
         if presence_dir is not None:
             AM_STARTUP_DEFAULTS.AM_PRESENCE_DIRECTORY = presence_dir
         if settings_file is not None:
