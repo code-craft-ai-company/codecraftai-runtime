@@ -22,7 +22,7 @@ from uuid import uuid4
 from automojo.foundation.collections.contextpaths import ContextPaths
 from automojo.foundation.collections.wellknown import ContextSingleton
 
-from automojo.foundation.startup.startupvariables import AM_STARTUP_VARIABLES, resolve_startup_variables
+from automojo.presence.presencevariables import AM_PRESENCE_VARIABLES, resolve_presence_variables
 
 from automojo.foundation.xconvert import parse_bool
 from automojo.foundation.xdatetime import (
@@ -49,7 +49,7 @@ class DefaultValue:
     NotSet = "(not-set)"
 
 
-class AM_RUNTIME_VARIABLES(AM_STARTUP_VARIABLES):
+class AM_RUNTIME_VARIABLES(AM_PRESENCE_VARIABLES):
     """
         Container for all the configuration variables that can be passed via environmental variables.
     """
@@ -115,9 +115,14 @@ def resolve_runtime_variables():
 
     environ = os.environ
 
-    resolve_startup_variables()
+    resolve_presence_variables()
 
     ctx = ContextSingleton()
+
+    ctx.insert(ContextPaths.PRESENCE_NAME, AM_RUNTIME_VARIABLES.AM_NAME)
+    ctx.insert(ContextPaths.PRESENCE_HOME_DIRECTORY, AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY)
+    ctx.insert(ContextPaths.PRESENCE_CONFIG_DIRECTORY, os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "config"))
+    ctx.insert(ContextPaths.PRESENCE_EXTENSION_MODULES, AM_RUNTIME_VARIABLES.AM_EXTENSION_MODULES)
 
     if AM_RUNTIME_VARNAMES.AM_STARTTIME in environ:
         passedVal = environ[AM_RUNTIME_VARNAMES.AM_STARTTIME]

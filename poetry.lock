@@ -16,6 +16,21 @@ reference = "main"
 resolved_reference = "1424cda27ee733391dd0a026db4021103d953e91"
 
 [[package]]
+name = "automojo-presence"
+version = "0.0.1"
+description = "Automation Mojo - Presence Package"
+optional = false
+python-versions = ">=3.10,<4.0"
+files = []
+develop = false
+
+[package.source]
+type = "git"
+url = "https://github.com/automationmojo/automojo-presence.git"
+reference = "main"
+resolved_reference = "3e5ac64eeafc36b8adf0884eb71dc3e86b375936"
+
+[[package]]
 name = "automojo-waiting"
 version = "0.0.1"
 description = "Automation Mojo - Waiting Package"
@@ -279,4 +294,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<4.0"
-content-hash = "5df366b1c70dfeac4da378aa1ee6c41955bb187aebafcb0cb7a4e7fbc65989f7"
+content-hash = "8b446b2a66f16ddc4c947082279c5dbac8993247594cdb09f3ae18eda8a7eb5b"

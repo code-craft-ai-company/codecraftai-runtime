@@ -13,25 +13,28 @@ __credits__ = []
 
 from typing import Optional
 
-from automojo.foundation.startup.startupsettings import AM_STARTUP_DEFAULTS
-from automojo.foundation.startup.wellknown import StartupConfigSingleton
 
-from automojo.foundation.startup.startupsettings import establish_presence_settings
+from automojo.presence.wellknown import ConfigParserSingleton
+
+
+from automojo.presence.presencesettings import AM_PRESENCE_DEFAULTS, establish_presence_settings
 
 
 default_config = {}
 
-startup_config = StartupConfigSingleton()
-if "DEFAULT" in startup_config:
-    default_config = startup_config["DEFAULT"]
+config_parser = ConfigParserSingleton()
+if "DEFAULT" in config_parser:
+    default_config = config_parser["DEFAULT"]
 
-class AM_RUNTIME_DEFAULTS(AM_STARTUP_DEFAULTS):
+
+class AM_RUNTIME_DEFAULTS(AM_PRESENCE_DEFAULTS):
 
     AM_LOGGER_NAME = None
     AM_SERVICE_NAME = None
 
 
 RUNTIME_SETTINGS_ESTABLISHED = False
+
 
 def establish_runtime_settings(*, name: Optional[str]=None, home_dir: Optional[str]=None, settings_file: Optional[str]=None,
                                extension_modules: Optional[str]=None, logger_name: Optional[str]=None, default_configuration: dict=None,
@@ -47,7 +50,7 @@ def establish_runtime_settings(*, name: Optional[str]=None, home_dir: Optional[s
         if logger_name is not None:
             AM_RUNTIME_DEFAULTS.AM_LOGGER_NAME = logger_name
         else:
-            AM_RUNTIME_DEFAULTS.AM_LOGGER_NAME = AM_STARTUP_DEFAULTS.AM_NAME.upper()
+            AM_RUNTIME_DEFAULTS.AM_LOGGER_NAME = AM_PRESENCE_DEFAULTS.AM_NAME.upper()
 
         if service_name is not None:
             AM_RUNTIME_DEFAULTS.AM_SERVICE_NAME = service_name
