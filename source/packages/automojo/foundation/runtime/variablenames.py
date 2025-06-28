@@ -12,9 +12,9 @@ __copyright__ = "Copyright 2025, Automation Mojo LLC"
 __credits__ = []
 
 
-from automojo.foundation.startup.startupvariablenames import AM_STARTUP_VARIABLE_NAMES
+from automojo.presence.constants import AM_PRESENCE_VARIABLE_NAMES
 
-class AM_RUNTIME_VARNAMES(AM_STARTUP_VARIABLE_NAMES):
+class AM_RUNTIME_VARNAMES(AM_PRESENCE_VARIABLE_NAMES):
 
     AM_ACTIVATION_PROFILE = "AM_ACTIVATION_PROFILE"
 
