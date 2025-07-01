@@ -14,18 +14,7 @@ __credits__ = []
 from typing import Optional
 
 
-from automojo.presence.wellknown import ConfigParserSingleton
-
-
 from automojo.presence.presencesettings import AM_PRESENCE_DEFAULTS, establish_presence_settings
-
-
-default_config = {}
-
-config_parser = ConfigParserSingleton()
-if "DEFAULT" in config_parser:
-    default_config = config_parser["DEFAULT"]
-
 
 class AM_RUNTIME_DEFAULTS(AM_PRESENCE_DEFAULTS):
 

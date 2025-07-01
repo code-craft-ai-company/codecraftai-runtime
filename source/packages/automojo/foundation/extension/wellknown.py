@@ -16,7 +16,7 @@ import threading
 
 from automojo.errors.exceptions import SemanticError
 
-from automojo.foundation.startup.startupvariables import AM_STARTUP_VARIABLES
+from automojo.presence.presencevariables import AM_PRESENCE_VARIABLES
 
 from automojo.foundation.extension.extensionsuperfactory import ExtensionSuperFactory
 
@@ -35,11 +35,11 @@ def ConfiguredSuperFactorySingleton():
         if CONFIGURED_SUPER_FACTORY is None:
             extension_modules = []
 
-            if AM_STARTUP_VARIABLES.AM_EXTENSION_MODULES is None:
+            if AM_PRESENCE_VARIABLES.AM_EXTENSION_MODULES is None:
                 errmsg = "You must first call 'resolve_presence_variables' before attempting to create a ExtensionSuperFactory singleton."
                 raise SemanticError(errmsg)
 
-            extension_modules_value: str = AM_STARTUP_VARIABLES.AM_EXTENSION_MODULES
+            extension_modules_value: str = AM_PRESENCE_VARIABLES.AM_EXTENSION_MODULES
             extension_modules_value.strip()
 
             if len(extension_modules_value) > 0:
