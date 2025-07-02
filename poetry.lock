@@ -28,7 +28,7 @@ develop = false
 type = "git"
 url = "https://github.com/automationmojo/automojo-presence.git"
 reference = "main"
-resolved_reference = "b2a5144741ce57d0d8d504d0d09fc243ebb3cbb0"
+resolved_reference = "acb18071204876757fa6939e9d9d77a4d25d64f4"
 
 [[package]]
 name = "automojo-waiting"
