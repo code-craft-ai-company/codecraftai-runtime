@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "automojo-foundation"
-description = "Automation Mojo - Foundation Package"
+name = "automojo-pipeline"
+description = "Automation Mojo - Pipeline Package"
 version = "0.0.1"
 authors = []
 readme = "README.rst"
