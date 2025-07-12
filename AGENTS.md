@@ -5,7 +5,7 @@ AI Agents working in this repository should refer to themselves as an agent name
 
 
 # Testing Conventions
-The 'automojo-foundation' package repository utilizes the 'unittest' framework in order to test the functionality of the code.
+The 'automojo-ci-runtime' package repository utilizes the 'unittest' framework in order to test the functionality of the code.
 
 ## Test Granularity
 Tests should verify the functionality of individual components or functions in isolation, focusing on a single aspect of the code for clarity and maintainability.

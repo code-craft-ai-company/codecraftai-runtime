@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "automojo-pipeline"
-description = "Automation Mojo - Pipeline Package"
+name = "automojo-ci-runtime"
+description = "Automation Mojo - Continuous Integration Runtime"
 version = "0.0.1"
 authors = []
 readme = "README.rst"
