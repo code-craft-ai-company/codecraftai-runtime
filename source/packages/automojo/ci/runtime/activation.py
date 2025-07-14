@@ -252,7 +252,7 @@ def activate_profile_common():
     return
 
 
-def activate_runtime(*, profile: Optional[ActivationProfile]=ActivationProfile.Console):
+def activate_runtime(*, profile: Optional[ActivationProfile]=ActivationProfile.Console, job_type: Optional[JobType] = None):
 
     # Activate the runtime profile specified
     if profile == ActivationProfile.Command:
@@ -261,8 +261,12 @@ def activate_runtime(*, profile: Optional[ActivationProfile]=ActivationProfile.C
         activate_profile_console()
     elif profile == ActivationProfile.Service:
         activate_profile_service()
-    elif profile == ActivationProfile.TestRun:
-        activate_profile_testrun()
+    elif profile == ActivationProfile.Job:
+        if job_type is None:
+            errmsg = "If the specified activation profile is 'Job', then a job_type parameter must be passed."
+            raise SemanticError(errmsg)
+
+        activate_profile_job(job_type)
     else:
         errmsg = f"Unknown runtime activation profile. profile={profile}"
         raise SemanticError(errmsg)
