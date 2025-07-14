@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "automojo-ci-runtime"
-description = "Automation Mojo - Continuous Integration Runtime"
+name = "automojo-runtime"
+description = "Automation Mojo - Runtime"
 version = "0.0.1"
 authors = []
 readme = "README.rst"
