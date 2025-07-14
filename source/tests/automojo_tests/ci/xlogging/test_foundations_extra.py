@@ -5,8 +5,9 @@ from io import StringIO
 from tempfile import TemporaryDirectory, NamedTemporaryFile
 import contextlib
 
-from automojo.foundation.collections.contextpaths import ContextPaths
-from automojo.foundation.collections.wellknown import ContextSingleton
+from automojo.ci.runtime.contextpaths import ContextPaths
+from automojo.ci.runtime.wellknown import ContextSingleton
+
 from automojo.foundation.xlogging import foundations
 from automojo.foundation.xlogging.foundations import (
     EnhancedLogger,

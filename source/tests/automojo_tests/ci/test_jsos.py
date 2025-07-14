@@ -3,7 +3,7 @@ import unittest
 import tempfile
 import json
 
-from automojo.foundation.jsos import load_jsos_stream_from_file, CHAR_RECORD_SEPERATOR
+from automojo.xmodules.jsos import load_jsos_stream_from_file, CHAR_RECORD_SEPERATOR
 
 class TestJSOS(unittest.TestCase):
 

@@ -20,21 +20,27 @@ import uuid
 from logging import FileHandler
 from logging.handlers import RotatingFileHandler
 
-
-from automojo.foundation.collections.contextpaths import ContextPaths
-from automojo.foundation.collections.wellknown import ContextSingleton # pylint: disable=wrong-import-position
-
 from automojo.errors.exceptions import ConfigurationError, SemanticError
 from automojo.errors.xtraceback import (
     TRACEBACK_CONFIG,
     VALID_MEMBER_TRACE_POLICY,
 )
 
-from automojo.foundation.runtime.enumerations import ActivationProfile, JobType
-from automojo.foundation.runtime.variablenames import AM_RUNTIME_VARNAMES
-from automojo.foundation.runtime.runtimevariables import AM_RUNTIME_VARIABLES
+from automojo.xmodules.xlogging.levels import LogLevel
 
-from automojo.foundation.xlogging.levels import LogLevel
+from automojo.presence.contextpaths import ContextPaths
+from automojo.presence.wellknown import ContextSingleton # pylint: disable=wrong-import-position
+
+from automojo.xmodules.xlogging.parameters import LoggingLocation, LoggingReduction
+from automojo.xmodules.xlogging.activation import (
+    activate_standard_file_logging,
+    activate_interactive_console_logging,
+    activate_service_logging
+)
+
+from automojo.ci.runtime.enumerations import ActivationProfile, JobType
+from automojo.ci.runtime.variablenames import AM_RUNTIME_VARNAMES
+from automojo.ci.runtime.runtimevariables import AM_RUNTIME_VARIABLES
 
 
 def activate_profile_command():
@@ -50,16 +56,17 @@ def activate_profile_command():
     AM_RUNTIME_VARIABLES.AM_JOB_TYPE = JobType.Unknown.value
     os.environ[AM_RUNTIME_VARNAMES.AM_JOB_TYPE] = AM_RUNTIME_VARIABLES.AM_JOB_TYPE
 
-    temp_output_dir = tempfile.mkdtemp()
-    AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY = temp_output_dir
-
     activate_profile_common()
 
-    from automojo.foundation.xlogging.foundations import logging_initialize, LoggingDefaults # pylint: disable=wrong-import-position
+    log_directory = AM_RUNTIME_VARIABLES.AM_LOG_DIRECTORY
+    log_basename = AM_RUNTIME_VARIABLES.AM_LOG_BASENAME
 
-    LoggingDefaults.DefaultFileLoggingHandler = FileHandler
-    logging_initialize()
+    logging_location = LoggingLocation(log_directory, log_basename)
 
+    console_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
+    file_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
+
+    activate_commandline_logging(console_level, file_level, logging_location)
 
     return
 
@@ -123,7 +130,7 @@ def activate_profile_console():
     return
 
 
-def activate_profile_service():
+def activate_profile_service(max_bytes: int = 10 * 1024 * 1024, backup_count: int = 10):
 
     # Guard against attempts to activate more than one, activation profile.
     if AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE is not None:
@@ -157,11 +164,15 @@ def activate_profile_service():
 
     activate_profile_common()
 
-    from automojo.foundation.xlogging.foundations import logging_initialize, LoggingDefaults # pylint: disable=wrong-import-position
+    log_directory = AM_RUNTIME_VARIABLES.AM_LOG_DIRECTORY
+    log_basename = AM_RUNTIME_VARIABLES.AM_LOG_BASENAME
 
-    LoggingDefaults.DefaultFileLoggingHandler = RotatingFileHandler
+    logging_location = LoggingLocation(log_directory, log_basename)
 
-    logging_initialize()
+    console_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
+    file_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
+
+    activate_service_logging(console_level, file_level, logging_location, max_bytes, backup_count)
 
     return
 
@@ -185,9 +196,17 @@ def activate_profile_testrun():
 
     activate_profile_common()
 
-    from automojo.foundation.xlogging.foundations import logging_initialize
-    
-    logging_initialize()
+    AM_RUNTIME_VARIABLES.AM_LOG_DIRECTORY =  AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY
+
+    log_directory = AM_RUNTIME_VARIABLES.AM_LOG_DIRECTORY
+    log_basename = AM_RUNTIME_VARIABLES.AM_LOG_BASENAME
+
+    logging_location = LoggingLocation(log_directory, log_basename)
+
+    console_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
+    file_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
+
+    activate_standard_file_logging(console_level, file_level, logging_location)
 
     return
 
@@ -204,13 +223,13 @@ def activate_profile_common():
     
     ctx = ContextSingleton()
 
-    from automojo.foundation.xlogging.levels import LOG_LEVEL_NAMES
-    from automojo.foundation.xdatetime import DATETIME_FORMAT_FILESYSTEM
+    from automojo.xmodules.xlogging.levels import LOG_LEVEL_NAMES
+    from automojo.xmodules.xdatetime import DATETIME_FORMAT_FILESYSTEM
 
     # Activation Step - 3: Process the environment variable overrides for any of the AKIT configuration
     # variables. This needs to happen before we load or create an initial user configuration
     # because the variables may effect the values we write into the user configuration file.
-    from automojo.foundation.runtime.runtimevariables import (
+    from automojo.ci.runtime.runtimevariables import (
         AM_RUNTIME_VARIABLES,
         DefaultValue,
         JobType

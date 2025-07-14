@@ -1,14 +1,20 @@
 import os
 import tempfile
 import unittest
+
 from datetime import datetime
 from unittest.mock import patch
 from logging import FileHandler
 from logging.handlers import RotatingFileHandler
 
-from automojo.foundation.collections.wellknown import CONTEXT_SINGLETON, ContextSingleton
-from automojo.foundation.collections.contextpaths import ContextPaths
-from automojo.foundation.runtime.activation import (
+from automojo.errors.exceptions import ConfigurationError, SemanticError
+
+from automojo.xmodules.xlogging.levels import LogLevel
+
+from automojo.ci.runtime import wellknown
+from automojo.ci.runtime.contextpaths import ContextPaths
+
+from automojo.ci.runtime.activation import (
     activate_profile_command,
     activate_profile_console,
     activate_profile_service,
@@ -16,19 +22,16 @@ from automojo.foundation.runtime.activation import (
     activate_profile_common,
     activate_runtime,
 )
-from automojo.foundation.runtime.enumerations import ActivationProfile, JobType
-from automojo.foundation.runtime.runtimevariables import AM_RUNTIME_VARIABLES, DefaultValue
-from automojo.foundation.runtime.variablenames import AM_RUNTIME_VARNAMES
-from automojo.errors.exceptions import ConfigurationError, SemanticError
-from automojo.foundation.xlogging.foundations import LoggingDefaults
-from automojo.foundation.xlogging.levels import LogLevel
+from automojo.ci.runtime.enumerations import ActivationProfile, JobType
+from automojo.ci.runtime.runtimevariables import AM_RUNTIME_VARIABLES, DefaultValue
+from automojo.ci.runtime.variablenames import AM_RUNTIME_VARNAMES
+from automojo.ci.xlogging.foundations import LoggingDefaults
 
 
 class ActivationTestCase(unittest.TestCase):
     def setUp(self):
-        global CONTEXT_SINGLETON
-        CONTEXT_SINGLETON = None
-        self.ctx = ContextSingleton()
+        wellknown.CONTEXT_SINGLETON = None
+        self.ctx = wellknown.ContextSingleton()
         self._orig_env = os.environ.copy()
         self._orig_runtime = {
             k: getattr(AM_RUNTIME_VARIABLES, k)
@@ -167,7 +170,7 @@ class TestActivationProfiles(ActivationTestCase):
                 outdir = self.ctx.lookup(ctx_path)
                 self.assertTrue(outdir.startswith(os.path.join(self.temp_presence, 'results')))
                 self.assertEqual(self.ctx.lookup(ContextPaths.OUTPUT_DIRECTORY), outdir)
-                self.ctx = ContextSingleton()
+                self.ctx = wellknown.ContextSingleton()
 
     @patch('automojo.foundation.xlogging.foundations.logging_initialize')
     def test_activate_runtime_dispatcher_and_unknown(self, mock_log_init):

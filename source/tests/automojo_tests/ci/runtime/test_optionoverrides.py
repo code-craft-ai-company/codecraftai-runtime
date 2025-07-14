@@ -1,10 +1,11 @@
 import unittest
 from datetime import datetime
 
-from automojo.foundation.collections import wellknown
-from automojo.foundation.collections.contextpaths import ContextPaths
-from automojo.foundation.runtime.optionoverrides import AM_RUNTIME_OPTION_OVERRIDES
-from automojo.foundation.runtime.runtimevariables import AM_RUNTIME_VARIABLES
+from automojo.ci.runtime import wellknown
+from automojo.ci.runtime.contextpaths import ContextPaths
+
+from automojo.ci.runtime.optionoverrides import AM_RUNTIME_OPTION_OVERRIDES
+from automojo.ci.runtime.runtimevariables import AM_RUNTIME_VARIABLES
 
 
 class TestOptionOverrides(unittest.TestCase):

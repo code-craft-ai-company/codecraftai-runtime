@@ -16,17 +16,14 @@ keywords = [
 packages = [{include="automojo", from="source/packages"}]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<4.0"
+python = ">=3.11,<4.0"
 debugpy = "^1.8.12"
-cryptography = "^44.0.0"
-pyyaml = "^6.0.2"
 automojo-errors = { git = "https://github.com/automationmojo/automojo-errors.git", branch = "main" }
 automojo-presence = { git = "https://github.com/automationmojo/automojo-presence.git", branch = "main" }
+automojo-xmodules = { git = "https://github.com/automationmojo/automojo-xmodules.git", branch = "main" }
 automojo-waiting = { git = "https://github.com/automationmojo/automojo-waiting.git", branch = "main" }
+automojo-configuration = { git = "https://github.com/automationmojo/automojo-configuration.git", branch = "main" }
 
-[tool.poetry.group.dev.dependencies]
-
-[tool.poetry.group.dbio.dependencies]
 
 [build-system]
 requires = ["poetry-core"]

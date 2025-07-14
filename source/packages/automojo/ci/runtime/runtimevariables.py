@@ -11,43 +11,31 @@ __author__ = "Myron Walker"
 __copyright__ = "Copyright 2025, Automation Mojo LLC"
 __credits__ = []
 
-
-from typing import List, Optional
-
 import os
 
 from datetime import datetime
 from uuid import uuid4
 
-from automojo.foundation.collections.contextpaths import ContextPaths
-from automojo.foundation.collections.wellknown import ContextSingleton
 
-from automojo.presence.presencevariables import AM_PRESENCE_VARIABLES, resolve_presence_variables
-
-from automojo.foundation.xconvert import parse_bool
-from automojo.foundation.xdatetime import (
+from automojo.xmodules.xconvert import parse_bool
+from automojo.xmodules.xdatetime import (
     parse_datetime, DATETIME_FORMAT_FILESYSTEM, DATETIME_FORMAT_TIMESTAMP
 )
-from automojo.foundation.xlogging.levels import LogLevel
+from automojo.xmodules.xlogging.levels import LogLevel
 
-from automojo.foundation.runtime.enumerations import JobType
+from automojo.presence.presencevariables import AM_PRESENCE_VARIABLES
 
-from automojo.foundation.runtime.runtimesettings import AM_RUNTIME_DEFAULTS
-from automojo.foundation.runtime.variablenames import AM_RUNTIME_VARNAMES
+from automojo.presence.contextpaths import ContextPaths
+from automojo.presence.wellknown import ContextSingleton
 
+from automojo.configuration.configurationvariables import resolve_configuration_variables
 
-def normalize_variable_whitespace(lval: str):
-    lval = lval.strip().replace("\t", " ")
-
-    while lval.find("  ") > -1:
-        lval = lval.replace("  ", " ")
-    
-    return lval
-
+from automojo.ci.runtime.enumerations import JobType
+from automojo.ci.runtime.runtimesettings import AM_RUNTIME_DEFAULTS
+from automojo.ci.runtime.variablenames import AM_RUNTIME_VARNAMES
 
 class DefaultValue:
     NotSet = "(not-set)"
-
 
 class AM_RUNTIME_VARIABLES(AM_PRESENCE_VARIABLES):
     """
@@ -94,6 +82,7 @@ class AM_RUNTIME_VARIABLES(AM_PRESENCE_VARIABLES):
     AM_JOB_TAG = DefaultValue.NotSet
     AM_JOB_VENUE = DefaultValue.NotSet
 
+    AM_LOG_BASENAME = AM_RUNTIME_DEFAULTS.AM_LOG_BASENAME
     AM_LOG_LEVEL_CONSOLE = LogLevel.WARNING
     AM_LOG_LEVEL_FILE = LogLevel.DEBUG
 
@@ -115,7 +104,7 @@ def resolve_runtime_variables():
 
     environ = os.environ
 
-    resolve_presence_variables()
+    resolve_configuration_variables()
 
     ctx = ContextSingleton()
 

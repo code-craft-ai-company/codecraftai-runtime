@@ -3,7 +3,7 @@ import unittest
 import tempfile
 
 try:
-    from automojo.foundation.configuration.configurationloader import ConfigurationLoader
+    from automojo.ci.configuration.configurationloader import ConfigurationLoader
     HAS_REQUESTS = True
 except ModuleNotFoundError:
     ConfigurationLoader = None

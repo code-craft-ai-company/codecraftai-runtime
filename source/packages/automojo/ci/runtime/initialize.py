@@ -14,7 +14,7 @@ __credits__ = []
 
 from typing import Optional
 
-from automojo.foundation.runtime.runtimesettings import (
+from automojo.ci.runtime.runtimesettings import (
     establish_runtime_settings
 )
 
@@ -40,7 +40,7 @@ def initialize_runtime(*, name: Optional[str]=None, home_dir: Optional[str]=None
     establish_runtime_settings(name=name, home_dir=home_dir, settings_file=settings_file, extension_modules=extension_modules,
                                logger_name=logger_name, default_configuration=default_configuration, service_name=service_name, **other)
     
-    from automojo.foundation.runtime.runtimevariables import resolve_runtime_variables
+    from automojo.ci.runtime.runtimevariables import resolve_runtime_variables
 
     # The runtime variables can tell us where to find extensions, so we must resolve the runtime
     # varaibles before attempting to resolve any extension factories.

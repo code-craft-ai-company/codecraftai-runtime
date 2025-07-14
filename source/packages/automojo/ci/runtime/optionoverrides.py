@@ -16,12 +16,10 @@ from typing import List
 
 from datetime import datetime
 
-from automojo.foundation.collections.contextpaths import ContextPaths
-from automojo.foundation.collections.wellknown import ContextSingleton
+from automojo.presence.contextpaths import ContextPaths
+from automojo.presence.wellknown import ContextSingleton
 
-from automojo.foundation.runtime.runtimevariables import AM_RUNTIME_VARIABLES
-
-ctx = ContextSingleton()
+from automojo.ci.runtime.runtimevariables import AM_RUNTIME_VARIABLES
 
 class AM_RUNTIME_OPTION_OVERRIDES:
 
@@ -33,7 +31,9 @@ class AM_RUNTIME_OPTION_OVERRIDES:
 
             :param release: The name of the release associated with a build.
         """
+        ctx = ContextSingleton()
         ctx.insert(ContextPaths.BUILD_RELEASE, release)
+
         AM_RUNTIME_VARIABLES.AM_BUILD_RELEASE = release
         return
 
@@ -45,7 +45,9 @@ class AM_RUNTIME_OPTION_OVERRIDES:
 
             :param branch: The name of the branch the build came from.
         """
+        ctx = ContextSingleton()
         ctx.insert(ContextPaths.BUILD_BRANCH, branch_name)
+
         AM_RUNTIME_VARIABLES.AM_BUILD_BRANCH = branch_name
         return
 
@@ -57,7 +59,9 @@ class AM_RUNTIME_OPTION_OVERRIDES:
 
             :param build_flavor: The flavor of the build associated with a job.
         """
+        ctx = ContextSingleton()
         ctx.insert(ContextPaths.BUILD_FLAVOR, build_flavor)
+
         AM_RUNTIME_VARIABLES.AM_BUILD_FLAVOR = build_flavor
         return
 
@@ -69,7 +73,9 @@ class AM_RUNTIME_OPTION_OVERRIDES:
 
             :param build_name: The build version of the build.
         """
+        ctx = ContextSingleton()
         ctx.insert(ContextPaths.BUILD_NAME, build_name)
+
         AM_RUNTIME_VARIABLES.AM_BUILD_NAME = build_name
         return
 
@@ -81,7 +87,9 @@ class AM_RUNTIME_OPTION_OVERRIDES:
 
             :param build_url: The url associated with the build.
         """
+        ctx = ContextSingleton()
         ctx.insert(ContextPaths.BUILD_URL, build_url)
+
         AM_RUNTIME_VARIABLES.AM_BUILD_URL = build_url
         return
 
@@ -93,7 +101,9 @@ class AM_RUNTIME_OPTION_OVERRIDES:
 
             :param breakpoints: A list of wellknown breakpoints that have been activated.
         """
+        ctx = ContextSingleton()
         ctx.insert(ContextPaths.DEBUG_BREAKPOINTS, breakpoints)
+
         AM_RUNTIME_VARIABLES.AM_DEBUG_BREAKPOINTS = breakpoints
         return
 
@@ -105,7 +115,9 @@ class AM_RUNTIME_OPTION_OVERRIDES:
 
             :param debugger: The name of the debugger to setup.
         """
+        ctx = ContextSingleton()
         ctx.insert(ContextPaths.DEBUG_DEBUGGER, debugger)
+
         AM_RUNTIME_VARIABLES.AM_DEBUG_DEBUGGER = debugger
         return
 
@@ -117,7 +129,9 @@ class AM_RUNTIME_OPTION_OVERRIDES:
 
             :param runid: A uuid string that represents the instance of this automation run.
         """
+        ctx = ContextSingleton()
         ctx.insert(ContextPaths.JOB_ID, job_id)
+
         AM_RUNTIME_VARIABLES.AM_JOB_ID = job_id
         return
 
@@ -129,8 +143,9 @@ class AM_RUNTIME_OPTION_OVERRIDES:
 
             :param job_initiator: The name of the initiator of the job.
         """
-
+        ctx = ContextSingleton()
         ctx.insert(ContextPaths.JOB_INITIATOR, job_initiator)
+
         AM_RUNTIME_VARIABLES.AM_JOB_INITIATOR = job_initiator
 
         return
@@ -143,8 +158,9 @@ class AM_RUNTIME_OPTION_OVERRIDES:
 
             :param job_label: The name of the label if any the job was run under.
         """
-
+        ctx = ContextSingleton()
         ctx.insert(ContextPaths.JOB_LABEL, job_label)
+
         AM_RUNTIME_VARIABLES.AM_JOB_LABEL = job_label
 
         return
@@ -157,8 +173,9 @@ class AM_RUNTIME_OPTION_OVERRIDES:
 
             :param job_name: The name of the job.
         """
-
+        ctx = ContextSingleton()
         ctx.insert(ContextPaths.JOB_NAME, job_name)
+
         AM_RUNTIME_VARIABLES.AM_JOB_NAME = job_name
 
         return
@@ -171,8 +188,9 @@ class AM_RUNTIME_OPTION_OVERRIDES:
 
             :param job_owner: The name of the owner of the job.
         """
-
+        ctx = ContextSingleton()
         ctx.insert(ContextPaths.JOB_OWNER, job_owner)
+
         AM_RUNTIME_VARIABLES.AM_JOB_OWNER = job_owner
 
         return
@@ -185,8 +203,9 @@ class AM_RUNTIME_OPTION_OVERRIDES:
 
             :param job_seed: The type of the job.
         """
-
+        ctx = ContextSingleton()
         ctx.insert(ContextPaths.JOB_SEED, job_seed)
+
         AM_RUNTIME_VARIABLES.AM_JOB_SEED = job_seed
 
         return
@@ -199,8 +218,9 @@ class AM_RUNTIME_OPTION_OVERRIDES:
 
             :param job_tag: The tags for the job.
         """
-
+        ctx = ContextSingleton()
         ctx.insert(ContextPaths.JOB_TAG, job_tag)
+
         AM_RUNTIME_VARIABLES.AM_JOB_TAG = job_tag
 
         return
@@ -213,8 +233,9 @@ class AM_RUNTIME_OPTION_OVERRIDES:
 
             :param job_owner: The type of the job.
         """
-
+        ctx = ContextSingleton()
         ctx.insert(ContextPaths.JOB_TYPE, job_type)
+
         AM_RUNTIME_VARIABLES.AM_JOB_TYPE = job_type
 
         return
@@ -227,7 +248,9 @@ class AM_RUNTIME_OPTION_OVERRIDES:
 
             :param level: The console logging level.
         """
+        ctx = ContextSingleton()
         ctx.insert(ContextPaths.LOGGING_LEVEL_CONSOLE, level)
+
         AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE = level
         return
 
@@ -239,7 +262,9 @@ class AM_RUNTIME_OPTION_OVERRIDES:
 
             :param level: The file log level.
         """
+        ctx = ContextSingleton()
         ctx.insert(ContextPaths.LOGGING_LEVEL_LOGFILE, level)
+
         AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_FILE = level
         return
 
@@ -251,7 +276,9 @@ class AM_RUNTIME_OPTION_OVERRIDES:
 
             :param output_directory: The base directory that all output artifacts will be written under.
         """
+        ctx = ContextSingleton()
         ctx.insert(ContextPaths.OUTPUT_DIRECTORY, output_directory)
+
         AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY = output_directory
         return
 
@@ -263,7 +290,9 @@ class AM_RUNTIME_OPTION_OVERRIDES:
 
             :param pipeline_id: A uuid string that represents a unique pipeline.
         """
+        ctx = ContextSingleton()
         ctx.insert(ContextPaths.PIPELINE_ID, pipeline_id)
+
         AM_RUNTIME_VARIABLES.AM_PIPELINE_ID = pipeline_id
         return
 
@@ -275,7 +304,9 @@ class AM_RUNTIME_OPTION_OVERRIDES:
 
             :param pipeline_name: A string that contains the name for a given pipeline.
         """
+        ctx = ContextSingleton()
         ctx.insert(ContextPaths.PIPELINE_NAME, pipeline_name)
+
         AM_RUNTIME_VARIABLES.AM_PIPELINE_NAME = pipeline_name
         return
 
@@ -287,7 +318,9 @@ class AM_RUNTIME_OPTION_OVERRIDES:
 
             :param pipeline_instance: A uuid string that represents the instance of a given pipeline.
         """
+        ctx = ContextSingleton()
         ctx.insert(ContextPaths.PIPELINE_INSTANCE, pipeline_instance)
+
         AM_RUNTIME_VARIABLES.AM_PIPELINE_INSTANCE = pipeline_instance
         return
 
@@ -299,7 +332,9 @@ class AM_RUNTIME_OPTION_OVERRIDES:
 
             :param runid: A uuid string that represents the instance of this automation run.
         """
+        ctx = ContextSingleton()
         ctx.insert(ContextPaths.RUNID, run_id)
+
         AM_RUNTIME_VARIABLES.AM_RUN_ID = run_id
         return
 
@@ -311,7 +346,9 @@ class AM_RUNTIME_OPTION_OVERRIDES:
 
             :param store_dir: The shared store directory.
         """
+        ctx = ContextSingleton()
         ctx.insert(ContextPaths.SHARED_STORE_DIRECTORY, store_dir)
+
         AM_RUNTIME_VARIABLES.AM_SHARED_STORE_DIRECTORY = store_dir
         return
 
@@ -323,7 +360,9 @@ class AM_RUNTIME_OPTION_OVERRIDES:
 
             :param starttime: The date and time to set as the starttime of this run.
         """
+        ctx = ContextSingleton()
         ctx.insert(ContextPaths.STARTTIME, starttime)
+
         AM_RUNTIME_VARIABLES.AM_STARTTIME = starttime
         return
 
@@ -335,6 +374,8 @@ class AM_RUNTIME_OPTION_OVERRIDES:
 
             :param testroot: The full path of the root of the tests folder.
         """
-        AM_RUNTIME_VARIABLES.AM_TESTROOT = testroot
+        ctx = ContextSingleton()
         ctx.insert(ContextPaths.TESTROOT, testroot)
+
+        AM_RUNTIME_VARIABLES.AM_TESTROOT = testroot
         return

@@ -13,8 +13,8 @@ __credits__ = []
 
 from typing import Dict
 
-from automojo.foundation.collections.contextpaths import ContextPaths
-from automojo.foundation.collections.wellknown import ContextSingleton
+from automojo.presence.contextpaths import ContextPaths
+from automojo.presence.wellknown import ContextSingleton
 
 
 def get_job_info() -> Dict[str, str]:

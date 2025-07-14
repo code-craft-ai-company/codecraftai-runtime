@@ -1,8 +1,8 @@
 import unittest
 
-from automojo.foundation.collections.wellknown import CONTEXT_SINGLETON, ContextSingleton
-from automojo.foundation.collections.contextpaths import ContextPaths
-from automojo.foundation.runtime.integration import (
+from automojo.ci.runtime.wellknown import CONTEXT_SINGLETON, ContextSingleton
+from automojo.ci.runtime.contextpaths import ContextPaths
+from automojo.ci.runtime.integration import (
     get_job_info,
     get_job_id,
     get_job_initiator,

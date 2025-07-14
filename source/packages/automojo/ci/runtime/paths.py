@@ -18,10 +18,10 @@ from typing import List, Optional
 import os
 import tempfile
 
-from automojo.foundation.collections.contextpaths import ContextPaths
-from automojo.foundation.collections.wellknown import ContextSingleton
-from automojo.foundation.fspath import expand_path
+from automojo.xmodules.fspath import expand_path
 
+from automojo.presence.contextpaths import ContextPaths
+from automojo.presence.wellknown import ContextSingleton
 
 DIR_PRESENCE_DIRECTORY = None
 DIR_CACHE_DIRECTORY = None
@@ -96,7 +96,7 @@ def get_directory_for_cached_files(create=True) -> str:
     if DIR_CACHE_DIRECTORY is None:
         ctx = ContextSingleton()
 
-        runtime_home_dir = expand_path(ctx.lookup(ContextPaths.RUNTIME_HOME_DIRECTORY))
+        runtime_home_dir = expand_path(ctx.lookup(ContextPaths.PRESENCE_HOME_DIRECTORY))
         DIR_CACHE_DIRECTORY = os.path.join(runtime_home_dir, "cache")
         if create and not os.path.exists(DIR_CACHE_DIRECTORY):
             os.makedirs(DIR_CACHE_DIRECTORY)
