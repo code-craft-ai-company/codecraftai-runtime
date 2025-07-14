@@ -50,7 +50,6 @@ def activate_profile_command():
         raise SemanticError(errmsg)
 
     AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE = ActivationProfile.Command
-    AM_RUNTIME_VARIABLES.AM_JOB_TYPE = JobType.Unknown.value
     os.environ[AM_RUNTIME_VARNAMES.AM_JOB_TYPE] = AM_RUNTIME_VARIABLES.AM_JOB_TYPE
 
     activate_profile_common()
@@ -78,7 +77,6 @@ def activate_profile_console():
         raise SemanticError(errmsg)
 
     AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE = ActivationProfile.Console
-    AM_RUNTIME_VARIABLES.AM_JOB_TYPE = JobType.Console.value
     os.environ[AM_RUNTIME_VARNAMES.AM_JOB_TYPE] = AM_RUNTIME_VARIABLES.AM_JOB_TYPE
 
     temp_output_dir = tempfile.mkdtemp()
@@ -150,7 +148,7 @@ def activate_profile_service(max_bytes: int = 10 * 1024 * 1024, backup_count: in
     return
 
 
-def activate_profile_testrun():
+def activate_profile_job(job_type: JobType):
 
     # Guard against attemps to activate more than one, activation profile.
     if AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE is not None:
@@ -159,13 +157,9 @@ def activate_profile_testrun():
         )
         raise RuntimeError(errmsg)
 
-    AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE = ActivationProfile.TestRun
-    AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE = LogLevel.WARNING
+    AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE = ActivationProfile.Job
 
-    AM_RUNTIME_VARIABLES.AM_JOB_TYPE = JobType.TestRun.value
-
-    os.environ[AM_RUNTIME_VARNAMES.AM_LOG_LEVEL_CONSOLE] = str(AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE)
-    os.environ[AM_RUNTIME_VARNAMES.AM_JOB_TYPE] = str(AM_RUNTIME_VARIABLES.AM_JOB_TYPE)
+    AM_RUNTIME_VARIABLES.AM_JOB_TYPE = job_type
 
     activate_profile_common()
 
