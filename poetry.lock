@@ -108,7 +108,7 @@ automojo-waiting = {git = "https://github.com/automationmojo/automojo-waiting.gi
 type = "git"
 url = "https://github.com/automationmojo/automojo-xmodules.git"
 reference = "main"
-resolved_reference = "5e39cfcc103e72ee978abf05fe5c4194daa55648"
+resolved_reference = "32190e288c782f1cad9c3901d6c57b5d3f831b09"
 
 [[package]]
 name = "certifi"

@@ -17,9 +17,6 @@ import os
 import tempfile
 import uuid
 
-from logging import FileHandler
-from logging.handlers import RotatingFileHandler
-
 from automojo.errors.exceptions import ConfigurationError, SemanticError
 from automojo.errors.xtraceback import (
     TRACEBACK_CONFIG,

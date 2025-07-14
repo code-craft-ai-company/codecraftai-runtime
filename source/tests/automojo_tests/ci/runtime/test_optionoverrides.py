@@ -1,8 +1,8 @@
 import unittest
 from datetime import datetime
 
-from automojo.ci.runtime import wellknown
-from automojo.ci.runtime.contextpaths import ContextPaths
+from automojo.presence import wellknown
+from automojo.presence.contextpaths import ContextPaths
 
 from automojo.ci.runtime.optionoverrides import AM_RUNTIME_OPTION_OVERRIDES
 from automojo.ci.runtime.runtimevariables import AM_RUNTIME_VARIABLES
