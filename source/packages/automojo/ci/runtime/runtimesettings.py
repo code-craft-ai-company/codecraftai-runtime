@@ -31,7 +31,7 @@ RUNTIME_SETTINGS_ESTABLISHED = False
 def establish_runtime_settings(*, name: Optional[str]=None, home_dir: Optional[str]=None, settings_file: Optional[str]=None,
                                extension_modules: Optional[str]=None, logger_name: Optional[str]=None,
                                log_basename: Optional[str]=None, log_directory: Optional[str]=None,
-                               service_name: Optional[str]=None, default_configuration: Optional[dict]=None, **other):
+                               default_configuration: Optional[dict]=None, **other):
     
     global RUNTIME_SETTINGS_ESTABLISHED
 
@@ -39,14 +39,12 @@ def establish_runtime_settings(*, name: Optional[str]=None, home_dir: Optional[s
         RUNTIME_SETTINGS_ESTABLISHED = True
 
         establish_configuration_settings(name=name, home_dir=home_dir, settings_file=settings_file, extension_modules=extension_modules,
-                                         log_basename=log_basename, log_directory=log_directory, service_name=service_name,
+                                         log_basename=log_basename, log_directory=log_directory,
                                          default_configuration=default_configuration, **other)
 
         if logger_name is not None:
             AM_RUNTIME_DEFAULTS.AM_LOGGER_NAME = logger_name
         else:
             AM_RUNTIME_DEFAULTS.AM_LOGGER_NAME = AM_RUNTIME_DEFAULTS.AM_NAME.upper()
-
-        
 
     return
