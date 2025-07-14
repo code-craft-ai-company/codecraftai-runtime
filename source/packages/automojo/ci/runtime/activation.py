@@ -40,7 +40,7 @@ from automojo.xmodules.xlogging.activation import (
 
 from automojo.ci.runtime.enumerations import ActivationProfile, JobType
 from automojo.ci.runtime.variablenames import AM_RUNTIME_VARNAMES
-from automojo.ci.runtime.runtimevariables import AM_RUNTIME_VARIABLES
+from automojo.ci.runtime.runtimevariables import AM_RUNTIME_VARIABLES, DefaultValue
 
 
 def activate_profile_command():
@@ -66,7 +66,7 @@ def activate_profile_command():
     console_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
     file_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
 
-    activate_commandline_logging(console_level, file_level, logging_location)
+    activate_standard_file_logging(console_level, file_level, logging_location)
 
     return
 
@@ -94,38 +94,14 @@ def activate_profile_console():
 
         return
 
-    if AM_RUNTIME_VARIABLES.AM_INTERACTIVE_CONSOLE:
-        # If we are running in an interactive console, then we need to reduce the
-        # console log level and we need to output log data to a console log file.
+    log_directory = AM_RUNTIME_VARIABLES.AM_LOG_DIRECTORY
+    log_basename = AM_RUNTIME_VARIABLES.AM_LOG_BASENAME
 
-        # Only set the log levels if they were not previously set.  An option to a base
-        # command may have set this in order to turn on a different level of verbosity
-        if AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE is None:
-            AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE = LogLevel.QUIET
+    logging_location = LoggingLocation(log_directory, log_basename)
 
-        # For console activation we don't want to log to the console and we want
-        # to point the logs to a different output folder
-        os.environ[AM_RUNTIME_VARNAMES.AM_LOG_LEVEL_CONSOLE] = str(AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE)
-        os.environ[AM_RUNTIME_VARNAMES.AM_JOB_TYPE] = AM_RUNTIME_VARIABLES.AM_JOB_TYPE
-        os.environ[AM_RUNTIME_VARNAMES.AM_OUTPUT_DIRECTORY] = str(AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY)
+    file_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
 
-        activate_profile_common()
-
-        from automojo.foundation.xlogging.foundations import logging_initialize, LoggingDefaults # pylint: disable=wrong-import-position
-
-        LoggingDefaults.DefaultFileLoggingHandler = RotatingFileHandler
-        logging_initialize()
-
-        showlog()
-
-    else:
-
-        activate_profile_common()
-
-        from automojo.foundation.xlogging.foundations import logging_initialize, LoggingDefaults # pylint: disable=wrong-import-position
-
-        LoggingDefaults.DefaultFileLoggingHandler = RotatingFileHandler
-        logging_initialize()
+    activate_interactive_console_logging(file_level, logging_location)
 
     return
 
@@ -212,28 +188,12 @@ def activate_profile_testrun():
 
 
 def activate_profile_common():
-
-    # =======================================================================================
-    # The way we start up the test framework and the order which things come up in is a very
-    # important part of the automation process.  It effects whether or not logging is brought
-    # up consistently before all modules start using it.  It ensures that no matter how we
-    # enter into an automation process, whether via a test runner, terminal, or debugging a single
-    # file that we properly parse arguments and settings and launch the automation process
-    # consistently.
+    """
+    """
     
     ctx = ContextSingleton()
 
-    from automojo.xmodules.xlogging.levels import LOG_LEVEL_NAMES
     from automojo.xmodules.xdatetime import DATETIME_FORMAT_FILESYSTEM
-
-    # Activation Step - 3: Process the environment variable overrides for any of the AKIT configuration
-    # variables. This needs to happen before we load or create an initial user configuration
-    # because the variables may effect the values we write into the user configuration file.
-    from automojo.ci.runtime.runtimevariables import (
-        AM_RUNTIME_VARIABLES,
-        DefaultValue,
-        JobType
-    )
 
     # We set all the variables for config file options from the environment
     # we just loaded, these might get overridden late but that is ok
@@ -247,22 +207,6 @@ def activate_profile_common():
             )
             raise ConfigurationError(errmsg)
 
-    # Activation Step - 5: After
-    if AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE is not None and AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE in LOG_LEVEL_NAMES:
-        console_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
-    else:
-        console_level = "INFO"
-        AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE = console_level
-
-    if AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_FILE is not None and AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_FILE in LOG_LEVEL_NAMES:
-        logfile_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_FILE
-    else:
-        logfile_level = "DEBUG"
-        AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_FILE = logfile_level
-
-    ctx.insert(ContextPaths.LOGGING_LEVEL_CONSOLE, console_level)
-    ctx.insert(ContextPaths.LOGGING_LEVEL_LOGFILE, logfile_level)
-
     jobtype = ctx.lookup(ContextPaths.JOB_TYPE, default=AM_RUNTIME_VARIABLES.AM_JOB_TYPE)
 
     starttime_name = AM_RUNTIME_VARIABLES.AM_STARTTIME.strftime(DATETIME_FORMAT_FILESYSTEM)
@@ -271,49 +215,48 @@ def activate_profile_common():
         "starttime": starttime_name
     }
 
+    output_directory = None
     if AM_RUNTIME_VARIABLES.AM_JOB_ID is None or AM_RUNTIME_VARIABLES.AM_JOB_ID == DefaultValue.NotSet:
         AM_RUNTIME_VARIABLES.AM_JOB_ID = str(uuid.uuid4())
 
     # We want to pull the console and testresults value from the configuration, because if its not there it
     # will be set from the default_dir_template variable
-    env = ctx.lookup("/environment")
     ctx.insert(ContextPaths.STARTTIME, AM_RUNTIME_VARIABLES.AM_STARTTIME)
     ctx.insert(ContextPaths.JOB_ID, AM_RUNTIME_VARIABLES.AM_JOB_ID)
 
-    outdir_full = None
-
     # Figure out which output directory to set as the current process output directory.  The output directory
     # determines where loggin will go and is different depending on the activation mode of the test framework
-    filled_dir_results = None
-    if jobtype == JobType.Console:
-        default_dir_template = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "results", "console", "%(starttime)s")
-        outdir_template = ctx.lookup(ContextPaths.TEMPLATE_PATH_FOR_CONSOLE, default=default_dir_template)
-        filled_dir_results = outdir_template % fill_dict
-        ctx.insert(ContextPaths.RESULT_PATH_FOR_CONSOLE, filled_dir_results)
-
+    
+    if jobtype == JobType.Infrastructure:
+        default_dir_template = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "results", "infrastructure", "%(starttime)s")
+        outdir_template = ctx.lookup(ContextPaths.TEMPLATE_PATH_FOR_ORCHESTRATION, default=default_dir_template)
+        output_directory = outdir_template % fill_dict
+        ctx.insert(ContextPaths.RESULT_PATH_FOR_ORCHESTRATION, output_directory)
     elif jobtype == JobType.Orchestration:
         default_dir_template = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "results", "orchestration", "%(starttime)s")
         outdir_template = ctx.lookup(ContextPaths.TEMPLATE_PATH_FOR_ORCHESTRATION, default=default_dir_template)
-        filled_dir_results = outdir_template % fill_dict
-        ctx.insert(ContextPaths.RESULT_PATH_FOR_ORCHESTRATION, filled_dir_results)
+        output_directory = outdir_template % fill_dict
+        ctx.insert(ContextPaths.RESULT_PATH_FOR_ORCHESTRATION, output_directory)
 
-    elif jobtype == JobType.Service:
-        default_dir_template = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "results", "service", "%(starttime)s")
+    elif jobtype == JobType.Build:
+        default_dir_template = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "results", "build", "%(starttime)s")
         outdir_template = ctx.lookup(ContextPaths.TEMPLATE_PATH_FOR_SERVICES, default=default_dir_template)
-        filled_dir_results = outdir_template % fill_dict
-        ctx.insert(ContextPaths.RESULT_PATH_FOR_SERVICES, filled_dir_results)
+        output_directory = outdir_template % fill_dict
+        ctx.insert(ContextPaths.RESULT_PATH_FOR_SERVICES, output_directory)
 
-    else:
+    elif jobtype == JobType.TestRun:
         if AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY is None:
             default_dir_template = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "results", "testresults", "%(starttime)s")
             outdir_template = ctx.lookup(ContextPaths.TEMPLATE_PATH_FOR_TESTS, default=default_dir_template)
-            filled_dir_results = outdir_template % fill_dict
-            ctx.insert(ContextPaths.RESULT_PATH_FOR_TESTS, filled_dir_results)
+            output_directory = outdir_template % fill_dict
+            ctx.insert(ContextPaths.RESULT_PATH_FOR_TESTS, output_directory)
         else:
-            filled_dir_results = AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY % fill_dict
-            ctx.insert(ContextPaths.RESULT_PATH_FOR_TESTS, filled_dir_results)
+            output_directory = AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY % fill_dict
+            ctx.insert(ContextPaths.RESULT_PATH_FOR_TESTS, output_directory)
+    else:
+        output_directory = os.getcwd()
 
-    ctx.insert(ContextPaths.OUTPUT_DIRECTORY, filled_dir_results)
+    ctx.insert(ContextPaths.OUTPUT_DIRECTORY, output_directory)
 
     return
 
