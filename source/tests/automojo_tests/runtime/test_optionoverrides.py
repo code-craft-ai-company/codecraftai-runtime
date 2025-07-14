@@ -4,8 +4,8 @@ from datetime import datetime
 from automojo.presence import wellknown
 from automojo.presence.contextpaths import ContextPaths
 
-from automojo.ci.runtime.optionoverrides import AM_RUNTIME_OPTION_OVERRIDES
-from automojo.ci.runtime.runtimevariables import AM_RUNTIME_VARIABLES
+from automojo.runtime.optionoverrides import AM_RUNTIME_OPTION_OVERRIDES
+from automojo.runtime.runtimevariables import AM_RUNTIME_VARIABLES
 
 
 class TestOptionOverrides(unittest.TestCase):

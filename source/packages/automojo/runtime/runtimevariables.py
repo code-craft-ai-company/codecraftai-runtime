@@ -30,9 +30,9 @@ from automojo.presence.wellknown import ContextSingleton
 
 from automojo.configuration.configurationvariables import resolve_configuration_variables
 
-from automojo.ci.runtime.enumerations import JobType
-from automojo.ci.runtime.runtimesettings import AM_RUNTIME_DEFAULTS
-from automojo.ci.runtime.variablenames import AM_RUNTIME_VARNAMES
+from automojo.runtime.enumerations import JobType
+from automojo.runtime.runtimesettings import AM_RUNTIME_DEFAULTS
+from automojo.runtime.variablenames import AM_RUNTIME_VARNAMES
 
 class DefaultValue:
     NotSet = "(not-set)"

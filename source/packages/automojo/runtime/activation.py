@@ -35,9 +35,9 @@ from automojo.xmodules.xlogging.activation import (
     activate_service_logging
 )
 
-from automojo.ci.runtime.enumerations import ActivationProfile, JobType
-from automojo.ci.runtime.variablenames import AM_RUNTIME_VARNAMES
-from automojo.ci.runtime.runtimevariables import AM_RUNTIME_VARIABLES, DefaultValue
+from automojo.runtime.enumerations import ActivationProfile, JobType
+from automojo.runtime.variablenames import AM_RUNTIME_VARNAMES
+from automojo.runtime.runtimevariables import AM_RUNTIME_VARIABLES, DefaultValue
 
 
 def activate_profile_command():

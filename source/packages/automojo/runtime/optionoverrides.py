@@ -19,7 +19,7 @@ from datetime import datetime
 from automojo.presence.contextpaths import ContextPaths
 from automojo.presence.wellknown import ContextSingleton
 
-from automojo.ci.runtime.runtimevariables import AM_RUNTIME_VARIABLES
+from automojo.runtime.runtimevariables import AM_RUNTIME_VARIABLES
 
 class AM_RUNTIME_OPTION_OVERRIDES:
 

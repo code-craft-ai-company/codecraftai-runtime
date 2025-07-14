@@ -25,8 +25,8 @@ from automojo.xmodules.fspath import expand_path
 from automojo.presence.contextpaths import ContextPaths
 from automojo.presence.wellknown import ContextSingleton
 
-from automojo.ci.runtime.enumerations import JobType
-from automojo.ci.runtime.runtimevariables import AM_RUNTIME_VARIABLES
+from automojo.runtime.enumerations import JobType
+from automojo.runtime.runtimevariables import AM_RUNTIME_VARIABLES
 
 
 DIR_PRESENCE_DIRECTORY = None
