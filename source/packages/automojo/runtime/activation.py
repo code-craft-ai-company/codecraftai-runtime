@@ -257,6 +257,7 @@ def _activate_profile_common(ctx: Context):
     else:
         output_directory = os.getcwd()
 
+    AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY = output_directory
     ctx.insert(ContextPaths.OUTPUT_DIRECTORY, output_directory)
 
     return
