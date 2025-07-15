@@ -96,7 +96,7 @@ def activate_profile_console():
 
     file_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
 
-    activate_interactive_console_logging(file_level, logging_location)
+    activate_interactive_console_logging(logging_location, file_level)
 
     return
 
@@ -143,7 +143,7 @@ def activate_profile_service(max_bytes: int = 10 * 1024 * 1024, backup_count: in
     console_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
     file_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
 
-    activate_service_logging(console_level, file_level, logging_location, max_bytes, backup_count)
+    activate_service_logging(logging_location, console_level, file_level, max_bytes, backup_count)
 
     return
 
@@ -173,7 +173,7 @@ def activate_profile_job(job_type: JobType):
     console_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
     file_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
 
-    activate_standard_file_logging(console_level, file_level, logging_location)
+    activate_standard_file_logging(logging_location, console_level, file_level)
 
     return
 
