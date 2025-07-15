@@ -23,6 +23,7 @@ from automojo.errors.xtraceback import (
     VALID_MEMBER_TRACE_POLICY,
 )
 
+from automojo.xmodules.xcollections.context import Context
 from automojo.xmodules.xlogging.levels import LogLevel
 
 from automojo.presence.contextpaths import ContextPaths
@@ -42,6 +43,8 @@ from automojo.runtime.runtimevariables import AM_RUNTIME_VARIABLES, DefaultValue
 
 def activate_profile_command():
 
+    ctx = ContextSingleton()
+
     # Guard against attemps to activate more than one, activation profile.
     if AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE is not None:
         errmsg = "An attempt was made to activate multiple environment activation profiles. profile={}".format(
@@ -52,7 +55,7 @@ def activate_profile_command():
     AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE = ActivationProfile.Command
     os.environ[AM_RUNTIME_VARNAMES.AM_JOB_TYPE] = AM_RUNTIME_VARIABLES.AM_JOB_TYPE
 
-    activate_profile_common()
+    _activate_profile_common(ctx)
 
     log_directory = AM_RUNTIME_VARIABLES.AM_LOG_DIRECTORY
     log_basename = AM_RUNTIME_VARIABLES.AM_LOG_BASENAME
@@ -68,6 +71,8 @@ def activate_profile_command():
 
 
 def activate_profile_console():
+
+    ctx = ContextSingleton()
 
     # Guard against attemps to activate more than one, activation profile.
     if AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE is not None:
@@ -95,6 +100,8 @@ def activate_profile_console():
     logging_location = LoggingLocation(log_directory, log_basename)
 
     file_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
+
+    _activate_profile_common(ctx)
 
     activate_interactive_console_logging(logging_location, file_level)
 
@@ -133,7 +140,7 @@ def activate_profile_service(max_bytes: int = 10 * 1024 * 1024, backup_count: in
     os.environ[AM_RUNTIME_VARNAMES.AM_JOB_TYPE] = AM_RUNTIME_VARIABLES.AM_JOB_TYPE
     os.environ[AM_RUNTIME_VARNAMES.AM_OUTPUT_DIRECTORY] = str(AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY)
 
-    activate_profile_common()
+    _activate_profile_common(ctx)
 
     log_directory = AM_RUNTIME_VARIABLES.AM_LOG_DIRECTORY
     log_basename = AM_RUNTIME_VARIABLES.AM_LOG_BASENAME
@@ -150,6 +157,9 @@ def activate_profile_service(max_bytes: int = 10 * 1024 * 1024, backup_count: in
 
 def activate_profile_job(job_type: JobType):
 
+    ctx = ContextSingleton()
+    ctx.insert(ContextPaths.JOB_TYPE, job_type)
+
     # Guard against attemps to activate more than one, activation profile.
     if AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE is not None:
         errmsg = "An attempt was made to activate multiple environment activation profiles. profile={}".format(
@@ -161,7 +171,7 @@ def activate_profile_job(job_type: JobType):
 
     AM_RUNTIME_VARIABLES.AM_JOB_TYPE = job_type
 
-    activate_profile_common()
+    _activate_profile_common(ctx)
 
     AM_RUNTIME_VARIABLES.AM_LOG_DIRECTORY =  AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY
 
@@ -178,12 +188,10 @@ def activate_profile_job(job_type: JobType):
     return
 
 
-def activate_profile_common():
+def _activate_profile_common(ctx: Context):
     """
     """
     
-    ctx = ContextSingleton()
-
     from automojo.xmodules.xdatetime import DATETIME_FORMAT_FILESYSTEM
 
     # We set all the variables for config file options from the environment
@@ -251,24 +259,3 @@ def activate_profile_common():
 
     return
 
-
-def activate_runtime(*, profile: Optional[ActivationProfile]=ActivationProfile.Console, job_type: Optional[JobType] = None):
-
-    # Activate the runtime profile specified
-    if profile == ActivationProfile.Command:
-        activate_profile_command()
-    elif profile == ActivationProfile.Console:
-        activate_profile_console()
-    elif profile == ActivationProfile.Service:
-        activate_profile_service()
-    elif profile == ActivationProfile.Job:
-        if job_type is None:
-            errmsg = "If the specified activation profile is 'Job', then a job_type parameter must be passed."
-            raise SemanticError(errmsg)
-
-        activate_profile_job(job_type)
-    else:
-        errmsg = f"Unknown runtime activation profile. profile={profile}"
-        raise SemanticError(errmsg)
-
-    return
