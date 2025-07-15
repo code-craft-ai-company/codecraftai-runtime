@@ -43,14 +43,14 @@ from automojo.runtime.runtimevariables import AM_RUNTIME_VARIABLES, DefaultValue
 
 def activate_profile_command():
 
-    ctx = ContextSingleton()
-
     # Guard against attemps to activate more than one, activation profile.
     if AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE is not None:
         errmsg = "An attempt was made to activate multiple environment activation profiles. profile={}".format(
             AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE
         )
         raise SemanticError(errmsg)
+
+    ctx = ContextSingleton()
 
     AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE = ActivationProfile.Command
     os.environ[AM_RUNTIME_VARNAMES.AM_JOB_TYPE] = AM_RUNTIME_VARIABLES.AM_JOB_TYPE
@@ -72,14 +72,14 @@ def activate_profile_command():
 
 def activate_profile_console():
 
-    ctx = ContextSingleton()
-
     # Guard against attemps to activate more than one, activation profile.
     if AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE is not None:
         errmsg = "An attempt was made to activate multiple environment activation profiles. profile={}".format(
             AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE
         )
         raise SemanticError(errmsg)
+
+    ctx = ContextSingleton()
 
     AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE = ActivationProfile.Console
     os.environ[AM_RUNTIME_VARNAMES.AM_JOB_TYPE] = AM_RUNTIME_VARIABLES.AM_JOB_TYPE
@@ -129,6 +129,8 @@ def activate_profile_service(max_bytes: int = 10 * 1024 * 1024, backup_count: in
 
         service_name = os.environ[AM_RUNTIME_VARNAMES.AM_SERVICE_NAME]
 
+    ctx = ContextSingleton()
+
     AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE = LogLevel.INFO
     AM_RUNTIME_VARIABLES.AM_SERVICE_NAME = service_name
     AM_RUNTIME_VARIABLES.AM_JOB_TYPE = JobType.Service.value
@@ -156,16 +158,16 @@ def activate_profile_service(max_bytes: int = 10 * 1024 * 1024, backup_count: in
 
 
 def activate_profile_job(job_type: JobType):
-
-    ctx = ContextSingleton()
-    ctx.insert(ContextPaths.JOB_TYPE, job_type)
-
+    
     # Guard against attemps to activate more than one, activation profile.
     if AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE is not None:
         errmsg = "An attempt was made to activate multiple environment activation profiles. profile={}".format(
             AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE
         )
         raise RuntimeError(errmsg)
+
+    ctx = ContextSingleton()
+    ctx.insert(ContextPaths.JOB_TYPE, job_type)
 
     AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE = ActivationProfile.Job
 
