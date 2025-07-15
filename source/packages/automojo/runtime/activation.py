@@ -216,7 +216,7 @@ def _activate_profile_common(ctx: Context):
         "starttime": starttime_name
     }
 
-    output_directory = None
+    job_output_directory = None
     if AM_RUNTIME_VARIABLES.AM_JOB_ID is None or AM_RUNTIME_VARIABLES.AM_JOB_ID == DefaultValue.NotSet:
         AM_RUNTIME_VARIABLES.AM_JOB_ID = str(uuid.uuid4())
 
@@ -231,34 +231,37 @@ def _activate_profile_common(ctx: Context):
     if jobtype == JobType.Infrastructure:
         default_dir_template = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "results", "infrastructure", "%(starttime)s")
         outdir_template = ctx.lookup(ContextPaths.TEMPLATE_PATH_FOR_ORCHESTRATION, default=default_dir_template)
-        output_directory = outdir_template % fill_dict
-        ctx.insert(ContextPaths.RESULT_PATH_FOR_ORCHESTRATION, output_directory)
+        job_output_directory = outdir_template % fill_dict
+        ctx.insert(ContextPaths.RESULT_PATH_FOR_ORCHESTRATION, job_output_directory)
     elif jobtype == JobType.Orchestration:
         default_dir_template = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "results", "orchestration", "%(starttime)s")
         outdir_template = ctx.lookup(ContextPaths.TEMPLATE_PATH_FOR_ORCHESTRATION, default=default_dir_template)
-        output_directory = outdir_template % fill_dict
-        ctx.insert(ContextPaths.RESULT_PATH_FOR_ORCHESTRATION, output_directory)
+        job_output_directory = outdir_template % fill_dict
+        ctx.insert(ContextPaths.RESULT_PATH_FOR_ORCHESTRATION, job_output_directory)
 
     elif jobtype == JobType.Build:
         default_dir_template = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "results", "build", "%(starttime)s")
         outdir_template = ctx.lookup(ContextPaths.TEMPLATE_PATH_FOR_SERVICES, default=default_dir_template)
-        output_directory = outdir_template % fill_dict
-        ctx.insert(ContextPaths.RESULT_PATH_FOR_SERVICES, output_directory)
+        job_output_directory = outdir_template % fill_dict
+        ctx.insert(ContextPaths.RESULT_PATH_FOR_SERVICES, job_output_directory)
 
     elif jobtype == JobType.TestRun:
         if AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY is None:
             default_dir_template = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "results", "testresults", "%(starttime)s")
             outdir_template = ctx.lookup(ContextPaths.TEMPLATE_PATH_FOR_TESTS, default=default_dir_template)
-            output_directory = outdir_template % fill_dict
-            ctx.insert(ContextPaths.RESULT_PATH_FOR_TESTS, output_directory)
+            job_output_directory = outdir_template % fill_dict
+            ctx.insert(ContextPaths.RESULT_PATH_FOR_TESTS, job_output_directory)
         else:
-            output_directory = AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY % fill_dict
-            ctx.insert(ContextPaths.RESULT_PATH_FOR_TESTS, output_directory)
+            job_output_directory = AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY % fill_dict
+            ctx.insert(ContextPaths.RESULT_PATH_FOR_TESTS, job_output_directory)
     else:
-        output_directory = os.getcwd()
+        job_output_directory = os.getcwd()
 
-    AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY = output_directory
-    ctx.insert(ContextPaths.OUTPUT_DIRECTORY, output_directory)
+    # If output directory was not already set, use the output directory for jobs
+    if AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY is None:
+        AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY = job_output_directory
+
+    ctx.insert(ContextPaths.OUTPUT_DIRECTORY, AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY)
 
     return
 
