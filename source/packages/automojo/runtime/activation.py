@@ -53,8 +53,7 @@ def activate_profile_command():
     ctx = ContextSingleton()
 
     AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE = ActivationProfile.Command
-    os.environ[AM_RUNTIME_VARNAMES.AM_JOB_TYPE] = AM_RUNTIME_VARIABLES.AM_JOB_TYPE
-
+    
     _activate_profile_common(ctx)
 
     log_directory = AM_RUNTIME_VARIABLES.AM_LOG_DIRECTORY
@@ -82,7 +81,6 @@ def activate_profile_console():
     ctx = ContextSingleton()
 
     AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE = ActivationProfile.Console
-    os.environ[AM_RUNTIME_VARNAMES.AM_JOB_TYPE] = AM_RUNTIME_VARIABLES.AM_JOB_TYPE
 
     temp_output_dir = tempfile.mkdtemp()
     AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY = temp_output_dir
@@ -134,12 +132,6 @@ def activate_profile_service(max_bytes: int = 10 * 1024 * 1024, backup_count: in
     AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE = LogLevel.INFO
     AM_RUNTIME_VARIABLES.AM_SERVICE_NAME = service_name
     AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "services", service_name)
-
-    # For console activation we don't want to log to the console and we want
-    # to point the logs to a different output folder
-    os.environ[AM_RUNTIME_VARNAMES.AM_LOG_LEVEL_CONSOLE] = str(AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE)
-    os.environ[AM_RUNTIME_VARNAMES.AM_JOB_TYPE] = AM_RUNTIME_VARIABLES.AM_JOB_TYPE
-    os.environ[AM_RUNTIME_VARNAMES.AM_OUTPUT_DIRECTORY] = str(AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY)
 
     _activate_profile_common(ctx)
 
