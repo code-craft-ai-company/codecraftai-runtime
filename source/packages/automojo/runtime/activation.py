@@ -133,7 +133,6 @@ def activate_profile_service(max_bytes: int = 10 * 1024 * 1024, backup_count: in
 
     AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE = LogLevel.INFO
     AM_RUNTIME_VARIABLES.AM_SERVICE_NAME = service_name
-    AM_RUNTIME_VARIABLES.AM_JOB_TYPE = JobType.Service.value
     AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "services", service_name)
 
     # For console activation we don't want to log to the console and we want
