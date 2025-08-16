@@ -79,11 +79,10 @@ class ActivationCommonTests(unittest.TestCase):
         AM_RUNTIME_VARIABLES.AM_STARTTIME = self._saved_starttime
 
     def test_activate_profile_common_output_directory_template(self):
-        AM_RUNTIME_VARIABLES.AM_JOB_TYPE = JobType.TestRun
         AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY = '/tmp/out_%(starttime)s'
         fixed_time = datetime(2020, 1, 1, 1, 1, 1)
         AM_RUNTIME_VARIABLES.AM_STARTTIME = fixed_time
-        activation.activate_profile_common()
+        activation.activate_profile_job(job_type=JobType.TestRun)
         expected = '/tmp/out_' + fixed_time.strftime(DATETIME_FORMAT_FILESYSTEM)
         self.assertEqual(self.ctx.lookup(activation.ContextPaths.OUTPUT_DIRECTORY), expected)
 
