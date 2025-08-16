@@ -78,7 +78,7 @@ class ActivationCommonTests(unittest.TestCase):
         AM_RUNTIME_VARIABLES.AM_JOB_ID = self._saved_job_id
         AM_RUNTIME_VARIABLES.AM_STARTTIME = self._saved_starttime
 
-    def test_activate_profile_common_output_directory_template(self):
+    def test_activate_profile_job_output_directory_template(self):
         AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY = '/tmp/out_%(starttime)s'
         fixed_time = datetime(2020, 1, 1, 1, 1, 1)
         AM_RUNTIME_VARIABLES.AM_STARTTIME = fixed_time
