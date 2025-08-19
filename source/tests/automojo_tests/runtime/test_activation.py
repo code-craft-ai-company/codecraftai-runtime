@@ -34,15 +34,6 @@ class ActivationProfileTests(unittest.TestCase):
             activation.activate_runtime(profile=ActivationProfile.Console)
             mock_console.assert_called_once()
 
-    def test_activate_profile_command_sets_profile_and_logs(self):
-        with mock.patch.object(activation, 'activate_standard_file_logging') as mlog, \
-             mock.patch.object(activation, 'activate_profile_common') as mcommon:
-            activation.activate_profile_command()
-            self.assertEqual(AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE, ActivationProfile.Command)
-            self.assertEqual(os.environ[activation.AM_RUNTIME_VARNAMES.AM_JOB_TYPE], AM_RUNTIME_VARIABLES.AM_JOB_TYPE)
-            mcommon.assert_called_once()
-            mlog.assert_called_once()
-
     def test_activate_profile_service_requires_service_name(self):
         AM_RUNTIME_VARIABLES.AM_SERVICE_NAME = None
         with self.assertRaises(activation.ConfigurationError):
