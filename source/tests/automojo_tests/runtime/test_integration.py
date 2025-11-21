@@ -1,7 +1,10 @@
 import unittest
 from unittest.mock import MagicMock, patch
 
-import automojo.runtime.integration as integration
+from automojo.presence import wellknown
+from automojo.presence.contextpaths import ContextPaths
+
+from automojo.runtime import integration
 
 
 class DummyPaths:
@@ -22,59 +25,108 @@ class DummyPaths:
 class IntegrationFunctionsTest(unittest.TestCase):
 
     def setUp(self):
-        self.context = MagicMock()
-        self.patch_ctx = patch.object(integration, 'ContextSingleton', return_value=self.context)
-        self.patch_paths = patch.object(integration, 'ContextPaths', DummyPaths)
-        self.patch_ctx.start()
-        self.patch_paths.start()
+        wellknown.CONTEXT_SINGLETON = None
+        self.ctx = wellknown.ContextSingleton()
 
-    def tearDown(self):
-        self.patch_ctx.stop()
-        self.patch_paths.stop()
+    def test_get_job_info_returns_none_when_unset(self):
+        self.assertIsNone(integration.get_job_info())
 
-    def _check_lookup(self, func, path_attr, expected):
-        self.context.lookup.reset_mock()
-        self.context.lookup.return_value = expected
-        result = func()
-        self.context.lookup.assert_called_once_with(getattr(DummyPaths, path_attr))
-        self.assertEqual(result, expected)
+    def test_get_job_info_returns_cursor(self):
+        info = {"id": "1"}
+        self.ctx.insert(ContextPaths.JOB_INFO, info)
+        cursor = integration.get_job_info()
+        self.assertEqual(cursor.value, info)
 
-    def test_get_job_info(self):
-        self._check_lookup(integration.get_job_info, 'JOB_INFO', {'info': 'val'})
+    def test_get_job_id_returns_none_when_unset(self):
+        self.assertIsNone(integration.get_job_id())
 
-    def test_get_job_id(self):
-        self._check_lookup(integration.get_job_id, 'JOB_ID', 'jid')
+    def test_get_job_id_returns_value(self):
+        self.ctx.insert(ContextPaths.JOB_ID, "jid")
+        value = integration.get_job_id()
+        self.assertEqual(value, "jid")
 
-    def test_get_job_initiator(self):
-        self._check_lookup(integration.get_job_initiator, 'JOB_INITIATOR', 'initiator')
+    def test_get_job_initiator_returns_none_when_unset(self):
+        self.assertIsNone(integration.get_job_initiator())
 
-    def test_get_job_label(self):
-        self._check_lookup(integration.get_job_label, 'JOB_LABEL', 'label')
+    def test_get_job_initiator_returns_value(self):
+        self.ctx.insert(ContextPaths.JOB_INITIATOR, "init")
+        value = integration.get_job_initiator()
+        self.assertEqual(value, "init")
 
-    def test_get_job_name(self):
-        self._check_lookup(integration.get_job_name, 'JOB_NAME', 'name')
+    def test_get_job_label_returns_none_when_unset(self):
+        self.assertIsNone(integration.get_job_label())
 
-    def test_get_job_owner(self):
-        self._check_lookup(integration.get_job_owner, 'JOB_OWNER', 'owner')
+    def test_get_job_label_returns_value(self):
+        self.ctx.insert(ContextPaths.JOB_LABEL, "label")
+        value = integration.get_job_label()
+        self.assertEqual(value, "label")
 
-    def test_get_job_type(self):
-        self._check_lookup(integration.get_job_type, 'JOB_TYPE', 'type')
+    def test_get_job_name_returns_none_when_unset(self):
+        self.assertIsNone(integration.get_job_name())
 
-    def test_get_job_venue(self):
-        self._check_lookup(integration.get_job_venue, 'JOB_VENUE', 'venue')
+    def test_get_job_name_returns_value(self):
+        self.ctx.insert(ContextPaths.JOB_NAME, "name")
+        value = integration.get_job_name()
+        self.assertEqual(value, "name")
 
-    def test_get_pipeline_info(self):
-        self._check_lookup(integration.get_pipeline_info, 'PIPELINE_INFO', {'p': 1})
+    def test_get_job_owner_returns_none_when_unset(self):
+        self.assertIsNone(integration.get_job_owner())
 
-    def test_get_pipeline_id(self):
-        self._check_lookup(integration.get_pipeline_id, 'PIPELINE_ID', 'pid')
+    def test_get_job_owner_returns_value(self):
+        self.ctx.insert(ContextPaths.JOB_OWNER, "owner")
+        value = integration.get_job_owner()
+        self.assertEqual(value, "owner")
 
-    def test_get_pipeline_instance(self):
-        self._check_lookup(integration.get_pipeline_instance, 'PIPELINE_INSTANCE', 'inst')
+    def test_get_job_type_returns_none_when_unset(self):
+        self.assertIsNone(integration.get_job_type())
 
-    def test_get_pipeline_name(self):
-        self._check_lookup(integration.get_pipeline_name, 'PIPELINE_NAME', 'pname')
+    def test_get_job_type_returns_value(self):
+        self.ctx.insert(ContextPaths.JOB_TYPE, "type")
+        value = integration.get_job_type()
+        self.assertEqual(value, "type")
+
+    def test_get_job_venue_returns_none_when_unset(self):
+        self.assertIsNone(integration.get_job_venue())
+
+    def test_get_job_venue_returns_value(self):
+        self.ctx.insert(ContextPaths.JOB_VENUE, "venue")
+        value = integration.get_job_venue()
+        self.assertEqual(value, "venue")
+
+    def test_get_pipeline_info_returns_none_when_unset(self):
+        self.assertIsNone(integration.get_pipeline_info())
+
+    def test_get_pipeline_info_returns_cursor(self):
+        info = {"foo": "bar"}
+        self.ctx.insert(ContextPaths.PIPELINE_INFO, info)
+        cursor = integration.get_pipeline_info()
+        self.assertEqual(cursor.value, info)
+
+    def test_get_pipeline_id_returns_none_when_unset(self):
+        self.assertIsNone(integration.get_pipeline_id())
+
+    def test_get_pipeline_id_returns_value(self):
+        self.ctx.insert(ContextPaths.PIPELINE_ID, "pid")
+        value = integration.get_pipeline_id()
+        self.assertEqual(value, "pid")
+
+    def test_get_pipeline_instance_returns_none_when_unset(self):
+        self.assertIsNone(integration.get_pipeline_instance())
+
+    def test_get_pipeline_instance_returns_value(self):
+        self.ctx.insert(ContextPaths.PIPELINE_INSTANCE, "inst")
+        value = integration.get_pipeline_instance()
+        self.assertEqual(value, "inst")
+
+    def test_get_pipeline_name_returns_none_when_unset(self):
+        self.assertIsNone(integration.get_pipeline_name())
+
+    def test_get_pipeline_name_returns_value(self):
+        self.ctx.insert(ContextPaths.PIPELINE_NAME, "pname")
+        value = integration.get_pipeline_name()
+        self.assertEqual(value, "pname")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+
     unittest.main()
