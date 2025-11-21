@@ -46,7 +46,7 @@ class ActivationProfile(str, Enum):
     Service = "service"
 
 class JobType(str, Enum):
-    NotSet = "NotSet"
+    Unknown = "Unknown"
     Build = "Build"
     Infrastructure = "Infrastructure"
     Orchestration = "Orchestration"

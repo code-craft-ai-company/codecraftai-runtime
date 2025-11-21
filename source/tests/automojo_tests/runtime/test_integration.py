@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import MagicMock, patch
 
 from automojo.presence import wellknown
 from automojo.presence.contextpaths import ContextPaths
@@ -6,7 +7,22 @@ from automojo.presence.contextpaths import ContextPaths
 from automojo.runtime import integration
 
 
-class TestIntegration(unittest.TestCase):
+class DummyPaths:
+    JOB_INFO = 'job_info'
+    JOB_ID = 'job_id'
+    JOB_INITIATOR = 'job_initiator'
+    JOB_LABEL = 'job_label'
+    JOB_NAME = 'job_name'
+    JOB_OWNER = 'job_owner'
+    JOB_TYPE = 'job_type'
+    JOB_VENUE = 'job_venue'
+    PIPELINE_INFO = 'pipeline_info'
+    PIPELINE_ID = 'pipeline_id'
+    PIPELINE_INSTANCE = 'pipeline_instance'
+    PIPELINE_NAME = 'pipeline_name'
+
+
+class IntegrationFunctionsTest(unittest.TestCase):
 
     def setUp(self):
         wellknown.CONTEXT_SINGLETON = None
@@ -112,4 +128,5 @@ class TestIntegration(unittest.TestCase):
 
 
 if __name__ == "__main__":
+
     unittest.main()

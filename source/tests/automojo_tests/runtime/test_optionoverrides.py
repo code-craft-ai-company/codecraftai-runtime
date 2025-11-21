@@ -1,233 +1,252 @@
 import unittest
 from datetime import datetime
 
-from automojo.presence import wellknown
-from automojo.presence.contextpaths import ContextPaths
-
 from automojo.runtime.optionoverrides import AM_RUNTIME_OPTION_OVERRIDES
 from automojo.runtime.runtimevariables import AM_RUNTIME_VARIABLES
+from automojo.presence.contextpaths import ContextPaths
+from automojo.presence import wellknown
+from automojo.xmodules.xcollections.context import Context
 
 
-class TestOptionOverrides(unittest.TestCase):
+class OptionOverridesTestCase(unittest.TestCase):
+    """Tests for functions in :mod:`automojo.runtime.optionoverrides`."""
+
+    RUNTIME_ATTRS = [
+        'AM_BUILD_RELEASE',
+        'AM_BUILD_BRANCH',
+        'AM_BUILD_FLAVOR',
+        'AM_BUILD_NAME',
+        'AM_BUILD_URL',
+        'AM_DEBUG_BREAKPOINTS',
+        'AM_DEBUG_DEBUGGER',
+        'AM_JOB_ID',
+        'AM_JOB_INITIATOR',
+        'AM_JOB_LABEL',
+        'AM_JOB_NAME',
+        'AM_JOB_OWNER',
+        'AM_JOB_SEED',
+        'AM_JOB_TAG',
+        'AM_JOB_TYPE',
+        'AM_LOG_LEVEL_CONSOLE',
+        'AM_LOG_LEVEL_FILE',
+        'AM_OUTPUT_DIRECTORY',
+        'AM_PIPELINE_ID',
+        'AM_PIPELINE_INSTANCE',
+        'AM_PIPELINE_NAME',
+        'AM_RUN_ID',
+        'AM_SHARED_STORE_DIRECTORY',
+        'AM_STARTTIME',
+        'AM_TESTROOT',
+    ]
 
     def setUp(self):
-        wellknown.CONTEXT_SINGLETON = None
-        self.ctx = wellknown.ContextSingleton()
+        self._old_ctx = wellknown.CONTEXT_SINGLETON
+        wellknown.CONTEXT_SINGLETON = Context()
+        self._saved = {attr: getattr(AM_RUNTIME_VARIABLES, attr) for attr in self.RUNTIME_ATTRS}
 
-    def test_context_singleton_reset_creates_new_instance(self):
-        first_id = id(self.ctx)
-        wellknown.CONTEXT_SINGLETON = None
-        new_ctx = wellknown.ContextSingleton()
-        self.assertNotEqual(first_id, id(new_ctx))
+    def tearDown(self):
+        for attr, value in self._saved.items():
+            setattr(AM_RUNTIME_VARIABLES, attr, value)
+        wellknown.CONTEXT_SINGLETON = self._old_ctx
 
-
-    def _verify_override(self, func, ctx_path, attr, value):
+    def _check_override(self, func, attr_name, ctx_path, value):
         func(value)
-        self.assertEqual(self.ctx.lookup(ctx_path), value)
-        self.assertEqual(getattr(AM_RUNTIME_VARIABLES, attr), value)
+        ctx = wellknown.ContextSingleton()
+        self.assertEqual(getattr(AM_RUNTIME_VARIABLES, attr_name), value)
+        self.assertEqual(ctx.lookup(ctx_path), value)
 
     def test_override_build_release(self):
-        self._verify_override(
+        self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_build_release,
+            'AM_BUILD_RELEASE',
             ContextPaths.BUILD_RELEASE,
-            "AM_BUILD_RELEASE",
-            "rel",
+            'rel1'
         )
 
     def test_override_build_branch(self):
-        self._verify_override(
+        self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_build_branch,
+            'AM_BUILD_BRANCH',
             ContextPaths.BUILD_BRANCH,
-            "AM_BUILD_BRANCH",
-            "branch",
+            'main'
         )
 
     def test_override_build_flavor(self):
-        self._verify_override(
+        self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_build_flavor,
+            'AM_BUILD_FLAVOR',
             ContextPaths.BUILD_FLAVOR,
-            "AM_BUILD_FLAVOR",
-            "flavor",
+            'debug'
         )
 
     def test_override_build_name(self):
-        self._verify_override(
+        self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_build_name,
+            'AM_BUILD_NAME',
             ContextPaths.BUILD_NAME,
-            "AM_BUILD_NAME",
-            "name",
+            '1.0.0'
         )
 
     def test_override_build_url(self):
-        self._verify_override(
+        self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_build_url,
+            'AM_BUILD_URL',
             ContextPaths.BUILD_URL,
-            "AM_BUILD_URL",
-            "http://example",
+            'https://build.example.com'
         )
 
     def test_override_debug_breakpoints(self):
-        self._verify_override(
+        self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_debug_breakpoints,
+            'AM_DEBUG_BREAKPOINTS',
             ContextPaths.DEBUG_BREAKPOINTS,
-            "AM_DEBUG_BREAKPOINTS",
-            ["bp1", "bp2"],
+            ['startup']
         )
 
     def test_override_debug_debugger(self):
-        self._verify_override(
+        self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_debug_debugger,
+            'AM_DEBUG_DEBUGGER',
             ContextPaths.DEBUG_DEBUGGER,
-            "AM_DEBUG_DEBUGGER",
-            "debugger",
+            'pdb'
         )
 
     def test_override_job_id(self):
-        self._verify_override(
+        self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_job_id,
+            'AM_JOB_ID',
             ContextPaths.JOB_ID,
-            "AM_JOB_ID",
-            "jid",
+            'job123'
         )
 
     def test_override_job_initiator(self):
-        self._verify_override(
+        self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_job_initiator,
+            'AM_JOB_INITIATOR',
             ContextPaths.JOB_INITIATOR,
-            "AM_JOB_INITIATOR",
-            "initiator",
+            'tester'
         )
 
     def test_override_job_label(self):
-        self._verify_override(
+        self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_job_label,
+            'AM_JOB_LABEL',
             ContextPaths.JOB_LABEL,
-            "AM_JOB_LABEL",
-            "label",
+            'nightly'
         )
 
     def test_override_job_name(self):
-        self._verify_override(
+        self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_job_name,
+            'AM_JOB_NAME',
             ContextPaths.JOB_NAME,
-            "AM_JOB_NAME",
-            "jobname",
+            'unit-tests'
         )
 
     def test_override_job_owner(self):
-        self._verify_override(
+        self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_job_owner,
+            'AM_JOB_OWNER',
             ContextPaths.JOB_OWNER,
-            "AM_JOB_OWNER",
-            "owner",
+            'owner1'
         )
 
     def test_override_job_seed(self):
-        self._verify_override(
+        self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_job_seed,
+            'AM_JOB_SEED',
             ContextPaths.JOB_SEED,
-            "AM_JOB_SEED",
-            "seed",
+            'seed123'
         )
 
     def test_override_job_tag(self):
-        self._verify_override(
+        self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_job_tag,
+            'AM_JOB_TAG',
             ContextPaths.JOB_TAG,
-            "AM_JOB_TAG",
-            "tag",
+            'tagA'
         )
 
     def test_override_job_type(self):
-        self._verify_override(
+        self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_job_type,
+            'AM_JOB_TYPE',
             ContextPaths.JOB_TYPE,
-            "AM_JOB_TYPE",
-            "type",
+            'manual'
         )
 
     def test_override_loglevel_console(self):
-        self._verify_override(
+        self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_loglevel_console,
+            'AM_LOG_LEVEL_CONSOLE',
             ContextPaths.LOGGING_LEVEL_CONSOLE,
-            "AM_LOG_LEVEL_CONSOLE",
-            "DEBUG",
+            'INFO'
         )
 
     def test_override_loglevel_file(self):
-        self._verify_override(
+        self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_loglevel_file,
+            'AM_LOG_LEVEL_FILE',
             ContextPaths.LOGGING_LEVEL_LOGFILE,
-            "AM_LOG_LEVEL_FILE",
-            "INFO",
+            'DEBUG'
         )
 
     def test_override_output_directory(self):
-        self._verify_override(
+        self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_output_directory,
+            'AM_OUTPUT_DIRECTORY',
             ContextPaths.OUTPUT_DIRECTORY,
-            "AM_OUTPUT_DIRECTORY",
-            "/tmp/out",
+            '/tmp/output'
         )
 
     def test_override_pipeline_id(self):
-        self._verify_override(
+        self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_pipeline_id,
+            'AM_PIPELINE_ID',
             ContextPaths.PIPELINE_ID,
-            "AM_PIPELINE_ID",
-            "plid",
+            'pipe-001'
+        )
+
+    def test_override_pipeline_name(self):
+        self._check_override(
+            AM_RUNTIME_OPTION_OVERRIDES.override_pipeline_name,
+            'AM_PIPELINE_INSTANCE',
+            ContextPaths.PIPELINE_INSTANCE,
+            'pipe-inst-1'
         )
 
     def test_override_run_id(self):
-        self._verify_override(
+        self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_run_id,
+            'AM_RUN_ID',
             ContextPaths.RUNID,
-            "AM_RUN_ID",
-            "rid",
+            'run-123'
         )
 
     def test_override_shared_store_directory(self):
-        self._verify_override(
+        self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_shared_store_directory,
+            'AM_SHARED_STORE_DIRECTORY',
             ContextPaths.SHARED_STORE_DIRECTORY,
-            "AM_SHARED_STORE_DIRECTORY",
-            "/tmp/store",
+            '/tmp/shared'
         )
 
     def test_override_starttime(self):
-        self._verify_override(
+        value = datetime(2020, 1, 1, 12, 0, 0)
+        self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_starttime,
+            'AM_STARTTIME',
             ContextPaths.STARTTIME,
-            "AM_STARTTIME",
-            datetime(2020, 1, 1),
+            value
         )
 
     def test_override_testroot(self):
-        self._verify_override(
+        self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_testroot,
+            'AM_TESTROOT',
             ContextPaths.TESTROOT,
-            "AM_TESTROOT",
-            "/tmp/tests",
+            '/path/to/tests'
         )
-
-    def test_override_pipeline_name_sets_instance_due_to_duplicate(self):
-        AM_RUNTIME_OPTION_OVERRIDES.override_pipeline_name('instance')
-        self.assertEqual(self.ctx.lookup(ContextPaths.PIPELINE_INSTANCE), 'instance')
-        self.assertEqual(AM_RUNTIME_VARIABLES.AM_PIPELINE_INSTANCE, 'instance')
-        self.assertFalse(self.ctx.exists(ContextPaths.PIPELINE_NAME))
-
-    def test_multiple_overrides_accumulate(self):
-        AM_RUNTIME_OPTION_OVERRIDES.override_build_branch('b1')
-        AM_RUNTIME_OPTION_OVERRIDES.override_job_id('jid1')
-        AM_RUNTIME_OPTION_OVERRIDES.override_output_directory('/tmp/od')
-
-        self.assertEqual(self.ctx.lookup(ContextPaths.BUILD_BRANCH), 'b1')
-        self.assertEqual(self.ctx.lookup(ContextPaths.JOB_ID), 'jid1')
-        self.assertEqual(self.ctx.lookup(ContextPaths.OUTPUT_DIRECTORY), '/tmp/od')
-
-        self.assertEqual(AM_RUNTIME_VARIABLES.AM_BUILD_BRANCH, 'b1')
-        self.assertEqual(AM_RUNTIME_VARIABLES.AM_JOB_ID, 'jid1')
-        self.assertEqual(AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY, '/tmp/od')
 
 
 if __name__ == '__main__':

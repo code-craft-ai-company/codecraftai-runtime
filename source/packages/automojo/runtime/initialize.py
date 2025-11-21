@@ -23,8 +23,8 @@ class AM_RUNTIME_STATE:
 
 
 def initialize_runtime(*, name: Optional[str]=None, home_dir: Optional[str]=None, settings_file: Optional[str]=None,
-                       extension_modules: Optional[str]=None, logger_name: Optional[str]=None, default_configuration: dict=None,
-                       service_name: Optional[str]=None, **other):
+                       extension_modules: Optional[str]=None, logger_name: Optional[str]=None, log_basename: Optional[str]=None,
+                       log_directory: Optional[str]=None, default_configuration: dict=None, service_name: Optional[str]=None, **other):
 
     # =======================================================================================
     # The way we start up the test framework and the order which things come up in is a very
@@ -38,7 +38,8 @@ def initialize_runtime(*, name: Optional[str]=None, home_dir: Optional[str]=None
     AM_RUNTIME_STATE.INITIALIZED = True
 
     establish_runtime_settings(name=name, home_dir=home_dir, settings_file=settings_file, extension_modules=extension_modules,
-                               logger_name=logger_name, default_configuration=default_configuration, service_name=service_name, **other)
+                               logger_name=logger_name, log_basename=log_basename, log_directory=log_directory,
+                               default_configuration=default_configuration, service_name=service_name, **other)
     
     from automojo.runtime.runtimevariables import resolve_runtime_variables
 

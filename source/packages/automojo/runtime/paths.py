@@ -183,7 +183,7 @@ def get_path_for_artifacts(label: str) -> str:
         :returns: A path that is descendant from (testresultdir)/artifacts
     """
 
-    if AM_RUNTIME_VARIABLES.AM_JOB_TYPE == JobType.NotSet:
+    if AM_RUNTIME_VARIABLES.AM_JOB_TYPE == JobType.Unknown:
         errmsg = f"The 'artifacts' folder is only available for runtimes activated as a job. jobtype={AM_RUNTIME_VARIABLES.AM_JOB_TYPE}"
         raise SemanticError(errmsg)
 
@@ -245,7 +245,7 @@ def get_path_for_diagnostics(label: str) -> str:
                   one job type.
     """
 
-    if AM_RUNTIME_VARIABLES.AM_JOB_TYPE == JobType.NotSet:
+    if AM_RUNTIME_VARIABLES.AM_JOB_TYPE == JobType.Unknown:
         errmsg = f"The 'artifacts' folder is only available for runtimes activated as a job. jobtype={AM_RUNTIME_VARIABLES.AM_JOB_TYPE}"
         raise SemanticError(errmsg)
 
@@ -270,7 +270,7 @@ def get_path_for_testresults() -> str:
         utilize get_path_for_output instead of this API.
     """
 
-    if AM_RUNTIME_VARIABLES.AM_JOB_TYPE == JobType.NotSet:
+    if AM_RUNTIME_VARIABLES.AM_JOB_TYPE == JobType.Unknown:
         errmsg = f"The 'artifacts' folder is only available for runtimes activated as a job. jobtype={AM_RUNTIME_VARIABLES.AM_JOB_TYPE}"
         raise SemanticError(errmsg)
 
@@ -294,7 +294,7 @@ def get_path_for_testcase_by_products(test_id: str) -> str:
         Returns a path to the tc-by-products
     """
 
-    if AM_RUNTIME_VARIABLES.AM_JOB_TYPE == JobType.NotSet:
+    if AM_RUNTIME_VARIABLES.AM_JOB_TYPE == JobType.Unknown:
         errmsg = f"The 'artifacts' folder is only available for runtimes activated as a job. jobtype={AM_RUNTIME_VARIABLES.AM_JOB_TYPE}"
         raise SemanticError(errmsg)
 

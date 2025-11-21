@@ -23,6 +23,7 @@ from automojo.errors.xtraceback import (
     VALID_MEMBER_TRACE_POLICY,
 )
 
+from automojo.xmodules.xcollections.context import Context
 from automojo.xmodules.xlogging.levels import LogLevel
 
 from automojo.presence.contextpaths import ContextPaths
@@ -49,10 +50,11 @@ def activate_profile_command():
         )
         raise SemanticError(errmsg)
 
-    AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE = ActivationProfile.Command
-    os.environ[AM_RUNTIME_VARNAMES.AM_JOB_TYPE] = AM_RUNTIME_VARIABLES.AM_JOB_TYPE
+    ctx = ContextSingleton()
 
-    activate_profile_common()
+    AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE = ActivationProfile.Command
+    
+    _activate_profile_common(ctx)
 
     log_directory = AM_RUNTIME_VARIABLES.AM_LOG_DIRECTORY
     log_basename = AM_RUNTIME_VARIABLES.AM_LOG_BASENAME
@@ -76,8 +78,9 @@ def activate_profile_console():
         )
         raise SemanticError(errmsg)
 
+    ctx = ContextSingleton()
+
     AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE = ActivationProfile.Console
-    os.environ[AM_RUNTIME_VARNAMES.AM_JOB_TYPE] = AM_RUNTIME_VARIABLES.AM_JOB_TYPE
 
     temp_output_dir = tempfile.mkdtemp()
     AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY = temp_output_dir
@@ -96,7 +99,9 @@ def activate_profile_console():
 
     file_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
 
-    activate_interactive_console_logging(file_level, logging_location)
+    _activate_profile_common(ctx)
+
+    activate_interactive_console_logging(logging_location, file_level)
 
     return
 
@@ -122,18 +127,13 @@ def activate_profile_service(max_bytes: int = 10 * 1024 * 1024, backup_count: in
 
         service_name = os.environ[AM_RUNTIME_VARNAMES.AM_SERVICE_NAME]
 
+    ctx = ContextSingleton()
+
     AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE = LogLevel.INFO
     AM_RUNTIME_VARIABLES.AM_SERVICE_NAME = service_name
-    AM_RUNTIME_VARIABLES.AM_JOB_TYPE = JobType.Service.value
     AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "services", service_name)
 
-    # For console activation we don't want to log to the console and we want
-    # to point the logs to a different output folder
-    os.environ[AM_RUNTIME_VARNAMES.AM_LOG_LEVEL_CONSOLE] = str(AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE)
-    os.environ[AM_RUNTIME_VARNAMES.AM_JOB_TYPE] = AM_RUNTIME_VARIABLES.AM_JOB_TYPE
-    os.environ[AM_RUNTIME_VARNAMES.AM_OUTPUT_DIRECTORY] = str(AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY)
-
-    activate_profile_common()
+    _activate_profile_common(ctx)
 
     log_directory = AM_RUNTIME_VARIABLES.AM_LOG_DIRECTORY
     log_basename = AM_RUNTIME_VARIABLES.AM_LOG_BASENAME
@@ -143,13 +143,13 @@ def activate_profile_service(max_bytes: int = 10 * 1024 * 1024, backup_count: in
     console_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
     file_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
 
-    activate_service_logging(console_level, file_level, logging_location, max_bytes, backup_count)
+    activate_service_logging(logging_location, console_level, file_level, max_bytes, backup_count)
 
     return
 
 
 def activate_profile_job(job_type: JobType):
-
+    
     # Guard against attemps to activate more than one, activation profile.
     if AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE is not None:
         errmsg = "An attempt was made to activate multiple environment activation profiles. profile={}".format(
@@ -157,11 +157,14 @@ def activate_profile_job(job_type: JobType):
         )
         raise RuntimeError(errmsg)
 
+    ctx = ContextSingleton()
+    ctx.insert(ContextPaths.JOB_TYPE, job_type)
+
     AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE = ActivationProfile.Job
 
     AM_RUNTIME_VARIABLES.AM_JOB_TYPE = job_type
 
-    activate_profile_common()
+    _activate_profile_common(ctx)
 
     AM_RUNTIME_VARIABLES.AM_LOG_DIRECTORY =  AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY
 
@@ -173,17 +176,15 @@ def activate_profile_job(job_type: JobType):
     console_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
     file_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
 
-    activate_standard_file_logging(console_level, file_level, logging_location)
+    activate_standard_file_logging(logging_location, console_level, file_level)
 
     return
 
 
-def activate_profile_common():
+def _activate_profile_common(ctx: Context):
     """
     """
     
-    ctx = ContextSingleton()
-
     from automojo.xmodules.xdatetime import DATETIME_FORMAT_FILESYSTEM
 
     # We set all the variables for config file options from the environment
@@ -206,7 +207,7 @@ def activate_profile_common():
         "starttime": starttime_name
     }
 
-    output_directory = None
+    job_output_directory = None
     if AM_RUNTIME_VARIABLES.AM_JOB_ID is None or AM_RUNTIME_VARIABLES.AM_JOB_ID == DefaultValue.NotSet:
         AM_RUNTIME_VARIABLES.AM_JOB_ID = str(uuid.uuid4())
 
@@ -221,54 +222,37 @@ def activate_profile_common():
     if jobtype == JobType.Infrastructure:
         default_dir_template = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "results", "infrastructure", "%(starttime)s")
         outdir_template = ctx.lookup(ContextPaths.TEMPLATE_PATH_FOR_ORCHESTRATION, default=default_dir_template)
-        output_directory = outdir_template % fill_dict
-        ctx.insert(ContextPaths.RESULT_PATH_FOR_ORCHESTRATION, output_directory)
+        job_output_directory = outdir_template % fill_dict
+        ctx.insert(ContextPaths.RESULT_PATH_FOR_ORCHESTRATION, job_output_directory)
     elif jobtype == JobType.Orchestration:
         default_dir_template = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "results", "orchestration", "%(starttime)s")
         outdir_template = ctx.lookup(ContextPaths.TEMPLATE_PATH_FOR_ORCHESTRATION, default=default_dir_template)
-        output_directory = outdir_template % fill_dict
-        ctx.insert(ContextPaths.RESULT_PATH_FOR_ORCHESTRATION, output_directory)
+        job_output_directory = outdir_template % fill_dict
+        ctx.insert(ContextPaths.RESULT_PATH_FOR_ORCHESTRATION, job_output_directory)
 
     elif jobtype == JobType.Build:
         default_dir_template = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "results", "build", "%(starttime)s")
         outdir_template = ctx.lookup(ContextPaths.TEMPLATE_PATH_FOR_SERVICES, default=default_dir_template)
-        output_directory = outdir_template % fill_dict
-        ctx.insert(ContextPaths.RESULT_PATH_FOR_SERVICES, output_directory)
+        job_output_directory = outdir_template % fill_dict
+        ctx.insert(ContextPaths.RESULT_PATH_FOR_SERVICES, job_output_directory)
 
     elif jobtype == JobType.TestRun:
         if AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY is None:
             default_dir_template = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "results", "testresults", "%(starttime)s")
             outdir_template = ctx.lookup(ContextPaths.TEMPLATE_PATH_FOR_TESTS, default=default_dir_template)
-            output_directory = outdir_template % fill_dict
-            ctx.insert(ContextPaths.RESULT_PATH_FOR_TESTS, output_directory)
+            job_output_directory = outdir_template % fill_dict
+            ctx.insert(ContextPaths.RESULT_PATH_FOR_TESTS, job_output_directory)
         else:
-            output_directory = AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY % fill_dict
-            ctx.insert(ContextPaths.RESULT_PATH_FOR_TESTS, output_directory)
+            job_output_directory = AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY % fill_dict
+            ctx.insert(ContextPaths.RESULT_PATH_FOR_TESTS, job_output_directory)
     else:
-        output_directory = os.getcwd()
+        job_output_directory = os.getcwd()
 
-    ctx.insert(ContextPaths.OUTPUT_DIRECTORY, output_directory)
+    # If output directory was not already set, use the output directory for jobs
+    if AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY is None:
+        AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY = job_output_directory
+
+    ctx.insert(ContextPaths.OUTPUT_DIRECTORY, AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY)
 
     return
 
-
-def activate_runtime(*, profile: Optional[ActivationProfile]=ActivationProfile.Console, job_type: Optional[JobType] = None):
-
-    # Activate the runtime profile specified
-    if profile == ActivationProfile.Command:
-        activate_profile_command()
-    elif profile == ActivationProfile.Console:
-        activate_profile_console()
-    elif profile == ActivationProfile.Service:
-        activate_profile_service()
-    elif profile == ActivationProfile.Job:
-        if job_type is None:
-            errmsg = "If the specified activation profile is 'Job', then a job_type parameter must be passed."
-            raise SemanticError(errmsg)
-
-        activate_profile_job(job_type)
-    else:
-        errmsg = f"Unknown runtime activation profile. profile={profile}"
-        raise SemanticError(errmsg)
-
-    return
