@@ -31,7 +31,7 @@ class ActivationProfileTests(unittest.TestCase):
 
     def test_activate_runtime_dispatches(self):
         with mock.patch.object(activation, 'activate_profile_console') as mock_console:
-            activation.activate_runtime(profile=ActivationProfile.Console)
+            activation.(profile=ActivationProfile.Console)
             mock_console.assert_called_once()
 
     def test_activate_profile_service_requires_service_name(self):
@@ -46,7 +46,7 @@ class ActivationProfileTests(unittest.TestCase):
         fake_jobtype.Service = mock.Mock(value='Service')
         with mock.patch.object(activation, 'JobType', fake_jobtype), \
              mock.patch.object(activation, 'activate_service_logging') as mlog, \
-             mock.patch.object(activation, 'activate_profile_common') as mcommon:
+             mock.patch.object(activation, '_activate_profile_common') as mcommon:
             activation.activate_profile_service()
             self.assertEqual(AM_RUNTIME_VARIABLES.AM_SERVICE_NAME, 'testsvc')
             self.assertIn('testsvc', AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY)

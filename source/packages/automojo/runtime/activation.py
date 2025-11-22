@@ -54,7 +54,7 @@ def activate_profile_command():
 
     AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE = ActivationProfile.Command
     
-    activate_profile_common(ctx)
+    _activate_profile_common(ctx)
 
     log_directory = AM_RUNTIME_VARIABLES.AM_LOG_DIRECTORY
     log_basename = AM_RUNTIME_VARIABLES.AM_LOG_BASENAME
@@ -99,7 +99,7 @@ def activate_profile_console():
 
     file_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
 
-    activate_profile_common(ctx)
+    _activate_profile_common(ctx)
 
     activate_interactive_console_logging(logging_location, file_level)
 
@@ -133,7 +133,7 @@ def activate_profile_service(max_bytes: int = 10 * 1024 * 1024, backup_count: in
     AM_RUNTIME_VARIABLES.AM_SERVICE_NAME = service_name
     AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "services", service_name)
 
-    activate_profile_common(ctx)
+    _activate_profile_common(ctx)
 
     log_directory = AM_RUNTIME_VARIABLES.AM_LOG_DIRECTORY
     log_basename = AM_RUNTIME_VARIABLES.AM_LOG_BASENAME
@@ -164,7 +164,7 @@ def activate_profile_job(job_type: JobType):
 
     AM_RUNTIME_VARIABLES.AM_JOB_TYPE = job_type
 
-    activate_profile_common(ctx)
+    _activate_profile_common(ctx)
 
     AM_RUNTIME_VARIABLES.AM_LOG_DIRECTORY =  AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY
 
@@ -181,16 +181,9 @@ def activate_profile_job(job_type: JobType):
     return
 
 
-def activate_profile_common(ctx: Context):
-    """Shared activation logic used by all activation profiles."""
-
-    _activate_profile_common(ctx)
-
-    return
-
-
 def _activate_profile_common(ctx: Context):
-    """Internal helper that applies activation defaults to the provided context."""
+    """
+    """
     
     from automojo.xmodules.xdatetime import DATETIME_FORMAT_FILESYSTEM
 
