@@ -41,6 +41,31 @@ from automojo.runtime.variablenames import AM_RUNTIME_VARNAMES
 from automojo.runtime.runtimevariables import AM_RUNTIME_VARIABLES, DefaultValue
 
 
+def activate_runtime(*, profile: ActivationProfile = ActivationProfile.Console, job_type: Optional[JobType] = None, **kwargs):
+    """Dispatch helper that activates the runtime according to the requested profile."""
+
+    if profile == ActivationProfile.Command:
+        activate_profile_command()
+    elif profile == ActivationProfile.Console:
+        activate_profile_console()
+    elif profile == ActivationProfile.Service:
+        activate_profile_service(**kwargs)
+    elif profile == ActivationProfile.Job:
+        runtime_job_type = job_type
+        if runtime_job_type is None:
+            runtime_job_type = AM_RUNTIME_VARIABLES.AM_JOB_TYPE
+
+        if isinstance(runtime_job_type, str):
+            runtime_job_type = JobType(runtime_job_type)
+
+        activate_profile_job(runtime_job_type)
+    else:
+        errmsg = f"Unknown activation profile provided. profile={profile}"
+        raise ConfigurationError(errmsg)
+
+    return
+
+
 def activate_profile_command():
 
     # Guard against attemps to activate more than one, activation profile.
