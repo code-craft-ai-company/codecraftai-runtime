@@ -31,7 +31,7 @@ class ActivationProfileTests(unittest.TestCase):
 
     def test_activate_runtime_dispatches(self):
         with mock.patch.object(activation, '_activate_profile_common') as mock_console:
-            activation.activate_profile_console(profile=ActivationProfile.Console)
+            activation.activate_profile_console()
             mock_console.assert_called_once()
 
     def test_activate_profile_service_requires_service_name(self):
