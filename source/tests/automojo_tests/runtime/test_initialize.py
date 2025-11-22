@@ -9,6 +9,7 @@ class TestInitializeRuntime(unittest.TestCase):
         initialize.AM_RUNTIME_STATE.INITIALIZED = False
 
     def test_initialize_sets_state_and_calls_dependencies(self):
+
         with mock.patch('automojo.runtime.initialize.establish_runtime_settings') as mock_establish, \
              mock.patch('automojo.runtime.runtimevariables.resolve_runtime_variables') as mock_resolve:
             initialize.initialize_runtime(name="am", home_dir="/tmp/home", settings_file="settings.ini",
@@ -17,7 +18,9 @@ class TestInitializeRuntime(unittest.TestCase):
 
             self.assertTrue(initialize.AM_RUNTIME_STATE.INITIALIZED)
             mock_establish.assert_called_once_with(name="am", home_dir="/tmp/home", settings_file="settings.ini",
-                                                   extension_modules="mods", logger_name="log", default_configuration={},
+                                                   extension_modules="mods", logger_name="log", log_basename=None,
+                                                   log_directory=None, default_configuration={},
                                                    service_name="svc")
             mock_resolve.assert_called_once_with()
 
+        return
