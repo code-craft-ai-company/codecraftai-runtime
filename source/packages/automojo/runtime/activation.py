@@ -26,8 +26,8 @@ from automojo.errors.xtraceback import (
 from automojo.xmodules.xcollections.context import Context
 from automojo.xmodules.xlogging.levels import LogLevel
 
-from automojo.presence.contextpaths import ContextPaths
-from automojo.presence.wellknown import ContextSingleton # pylint: disable=wrong-import-position
+from automojo.thisapp.thisapplication import ThisApplication
+from automojo.thisapp.wellknown import ThisApplicationSingleton
 
 from automojo.xmodules.xlogging.parameters import LoggingLocation, LoggingReduction
 from automojo.xmodules.xlogging.activation import (
@@ -37,32 +37,31 @@ from automojo.xmodules.xlogging.activation import (
 )
 
 from automojo.runtime.enumerations import ActivationProfile, JobType
-from automojo.runtime.variablenames import AM_RUNTIME_VARNAMES
-from automojo.runtime.runtimevariables import AM_RUNTIME_VARIABLES, DefaultValue
+from automojo.runtime.runtimevariables import RuntimeVariables, RuntimeVariablesDesc, DefaultValue
 
 
 def activate_profile_command():
 
     # Guard against attemps to activate more than one, activation profile.
-    if AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE is not None:
+    if RuntimeVariables.AM_ACTIVATION_PROFILE is not None:
         errmsg = "An attempt was made to activate multiple environment activation profiles. profile={}".format(
-            AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE
+            RuntimeVariables.AM_ACTIVATION_PROFILE
         )
         raise SemanticError(errmsg)
 
-    ctx = ContextSingleton()
+    this_app = ThisApplicationSingleton()
 
-    AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE = ActivationProfile.Command
+    this_app.override_variable_value(RuntimeVariablesDesc.AM_ACTIVATION_PROFILE, ActivationProfile.Command)
     
-    _activate_profile_common(ctx)
+    _activate_profile_common(this_app)
 
-    log_directory = AM_RUNTIME_VARIABLES.AM_LOG_DIRECTORY
-    log_basename = AM_RUNTIME_VARIABLES.AM_LOG_BASENAME
+    log_directory = RuntimeVariables.AM_LOG_DIRECTORY
+    log_basename = RuntimeVariables.AM_LOG_BASENAME
 
     logging_location = LoggingLocation(log_directory, log_basename)
 
-    console_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
-    file_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
+    console_level = RuntimeVariables.AM_LOG_LEVEL_CONSOLE
+    file_level = RuntimeVariables.AM_LOG_LEVEL_CONSOLE
 
     activate_standard_file_logging(console_level, file_level, logging_location)
 
@@ -72,34 +71,35 @@ def activate_profile_command():
 def activate_profile_console():
 
     # Guard against attemps to activate more than one, activation profile.
-    if AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE is not None:
+    if RuntimeVariables.AM_ACTIVATION_PROFILE is not None:
         errmsg = "An attempt was made to activate multiple environment activation profiles. profile={}".format(
-            AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE
+            RuntimeVariables.AM_ACTIVATION_PROFILE
         )
         raise SemanticError(errmsg)
 
-    ctx = ContextSingleton()
+    this_app = ThisApplicationSingleton()
 
-    AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE = ActivationProfile.Console
+    this_app.override_variable_value(RuntimeVariablesDesc.AM_ACTIVATION_PROFILE, ActivationProfile.Console)
+    
 
     temp_output_dir = tempfile.mkdtemp()
-    AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY = temp_output_dir
+    this_app.override_variable_value(RuntimeVariablesDesc.AM_OUTPUT_DIRECTORY, temp_output_dir)
 
     def showlog():
 
-        print("OUTPUT FOLDER: {}".format(AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY))
+        print("OUTPUT FOLDER: {}".format(RuntimeVariables.AM_OUTPUT_DIRECTORY))
         print("")
 
         return
 
-    log_directory = AM_RUNTIME_VARIABLES.AM_LOG_DIRECTORY
-    log_basename = AM_RUNTIME_VARIABLES.AM_LOG_BASENAME
+    log_directory = RuntimeVariables.AM_LOG_DIRECTORY
+    log_basename = RuntimeVariables.AM_LOG_BASENAME
 
     logging_location = LoggingLocation(log_directory, log_basename)
 
-    file_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
+    file_level = RuntimeVariables.AM_LOG_LEVEL_CONSOLE
 
-    _activate_profile_common(ctx)
+    _activate_profile_common(this_app)
 
     activate_interactive_console_logging(logging_location, file_level)
 
@@ -109,39 +109,34 @@ def activate_profile_console():
 def activate_profile_service(max_bytes: int = 10 * 1024 * 1024, backup_count: int = 10):
 
     # Guard against attempts to activate more than one, activation profile.
-    if AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE is not None:
+    if RuntimeVariables.AM_ACTIVATION_PROFILE is not None:
         errmsg = "An attempt was made to activate multiple environment activation profiles. profile={}".format(
-            AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE
+            RuntimeVariables.AM_ACTIVATION_PROFILE
         )
         raise SemanticError(errmsg)
 
-    AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE = ActivationProfile.Service
+    this_app = ThisApplicationSingleton()
 
-    service_name = AM_RUNTIME_VARIABLES.AM_SERVICE_NAME
+    this_app.override_variable_value(RuntimeVariablesDesc.AM_ACTIVATION_PROFILE, ActivationProfile.Service)
 
+    service_name = this_app.service_name
     if service_name is None:
-        if AM_RUNTIME_VARNAMES.AM_SERVICE_NAME not in os.environ:
-            errmsg = "To use the Mojo Runtime to provide a service, you must " \
-                    "set the '{}' environment variable.".format(AM_RUNTIME_VARNAMES.AM_SERVICE_NAME)
-            raise ConfigurationError(errmsg)
+        errmsg = "The 'service_name' needs to be set on when you call 'establish_app_persona'."
+        raise SemanticError(errmsg)
 
-        service_name = os.environ[AM_RUNTIME_VARNAMES.AM_SERVICE_NAME]
+    this_app.override_variable_value(RuntimeVariablesDesc.AM_LOG_LEVEL_CONSOLE, LogLevel)
+    RuntimeVariablesDesc.AM_LOG_LEVEL_CONSOLE = LogLevel.INFO
+    RuntimeVariablesDesc.AM_OUTPUT_DIRECTORY = os.path.join(this_app.presence_dir, "services", service_name)
 
-    ctx = ContextSingleton()
+    _activate_profile_common(this_app)
 
-    AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE = LogLevel.INFO
-    AM_RUNTIME_VARIABLES.AM_SERVICE_NAME = service_name
-    AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "services", service_name)
-
-    _activate_profile_common(ctx)
-
-    log_directory = AM_RUNTIME_VARIABLES.AM_LOG_DIRECTORY
-    log_basename = AM_RUNTIME_VARIABLES.AM_LOG_BASENAME
+    log_directory = RuntimeVariables.AM_LOG_DIRECTORY
+    log_basename = RuntimeVariables.AM_LOG_BASENAME
 
     logging_location = LoggingLocation(log_directory, log_basename)
 
-    console_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
-    file_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
+    console_level = RuntimeVariables.AM_LOG_LEVEL_CONSOLE
+    file_level = RuntimeVariables.AM_LOG_LEVEL_CONSOLE
 
     activate_service_logging(logging_location, console_level, file_level, max_bytes, backup_count)
 
@@ -151,45 +146,45 @@ def activate_profile_service(max_bytes: int = 10 * 1024 * 1024, backup_count: in
 def activate_profile_job(job_type: JobType):
     
     # Guard against attemps to activate more than one, activation profile.
-    if AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE is not None:
+    if RuntimeVariables.AM_ACTIVATION_PROFILE is not None:
         errmsg = "An attempt was made to activate multiple environment activation profiles. profile={}".format(
-            AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE
+            RuntimeVariables.AM_ACTIVATION_PROFILE
         )
         raise RuntimeError(errmsg)
 
-    ctx = ContextSingleton()
-    ctx.insert(ContextPaths.JOB_TYPE, job_type)
+    this_app = ThisApplicationSingleton()
+    this_app.override_variable_value(RuntimeVariablesDesc.AM_ACTIVATION_PROFILE, ActivationProfile.Job)
+    this_app.override_variable_value(RuntimeVariablesDesc.AM_JOB_TYPE, job_type)
 
-    AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE = ActivationProfile.Job
+    _activate_profile_common(this_app)
 
-    AM_RUNTIME_VARIABLES.AM_JOB_TYPE = job_type
-
-    _activate_profile_common(ctx)
-
-    AM_RUNTIME_VARIABLES.AM_LOG_DIRECTORY =  AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY
-
-    log_directory = AM_RUNTIME_VARIABLES.AM_LOG_DIRECTORY
-    log_basename = AM_RUNTIME_VARIABLES.AM_LOG_BASENAME
+    this_app.override_variable_value(RuntimeVariablesDesc.AM_LOG_DIRECTORY, RuntimeVariables.AM_OUTPUT_DIRECTORY)
+    
+    log_directory = RuntimeVariables.AM_LOG_DIRECTORY
+    log_basename = RuntimeVariables.AM_LOG_BASENAME
 
     logging_location = LoggingLocation(log_directory, log_basename)
 
-    console_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
-    file_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
+    console_level = RuntimeVariables.AM_LOG_LEVEL_CONSOLE
+    file_level = RuntimeVariables.AM_LOG_LEVEL_CONSOLE
 
     activate_standard_file_logging(logging_location, console_level, file_level)
 
     return
 
 
-def _activate_profile_common(ctx: Context):
+def _activate_profile_common(this_app: ThisApplication):
     """
     """
     
     from automojo.xmodules.xdatetime import DATETIME_FORMAT_FILESYSTEM
 
+    
+
     # We set all the variables for config file options from the environment
     # we just loaded, these might get overridden late but that is ok
     current_traceback_policy = ctx.lookup(ContextPaths.DIAGNOSTICS_TRACEBACK_POLICY_OVERRIDE, default=None)
+
     if current_traceback_policy is None and TRACEBACK_CONFIG.TRACEBACK_POLICY_OVERRIDE is not None:
         if TRACEBACK_CONFIG.TRACEBACK_POLICY_OVERRIDE in VALID_MEMBER_TRACE_POLICY:
             ctx.insert(ContextPaths.DIAGNOSTICS_TRACEBACK_POLICY_OVERRIDE, TRACEBACK_CONFIG.TRACEBACK_POLICY_OVERRIDE)
@@ -199,60 +194,60 @@ def _activate_profile_common(ctx: Context):
             )
             raise ConfigurationError(errmsg)
 
-    jobtype = ctx.lookup(ContextPaths.JOB_TYPE, default=AM_RUNTIME_VARIABLES.AM_JOB_TYPE)
+    jobtype = ctx.lookup(ContextPaths.JOB_TYPE, default=RuntimeVariables.AM_JOB_TYPE)
 
-    starttime_name = AM_RUNTIME_VARIABLES.AM_STARTTIME.strftime(DATETIME_FORMAT_FILESYSTEM)
+    starttime_name = RuntimeVariables.AM_STARTTIME.strftime(DATETIME_FORMAT_FILESYSTEM)
 
     fill_dict = {
         "starttime": starttime_name
     }
 
     job_output_directory = None
-    if AM_RUNTIME_VARIABLES.AM_JOB_ID is None or AM_RUNTIME_VARIABLES.AM_JOB_ID == DefaultValue.NotSet:
+    if RuntimeVariables.AM_JOB_ID is None or RuntimeVariables.AM_JOB_ID == DefaultValue.NotSet:
         AM_RUNTIME_VARIABLES.AM_JOB_ID = str(uuid.uuid4())
 
     # We want to pull the console and testresults value from the configuration, because if its not there it
     # will be set from the default_dir_template variable
-    ctx.insert(ContextPaths.STARTTIME, AM_RUNTIME_VARIABLES.AM_STARTTIME)
-    ctx.insert(ContextPaths.JOB_ID, AM_RUNTIME_VARIABLES.AM_JOB_ID)
+    ctx.insert(ContextPaths.STARTTIME, RuntimeVariables.AM_STARTTIME)
+    ctx.insert(ContextPaths.JOB_ID, RuntimeVariables.AM_JOB_ID)
 
     # Figure out which output directory to set as the current process output directory.  The output directory
     # determines where loggin will go and is different depending on the activation mode of the test framework
     
     if jobtype == JobType.Infrastructure:
-        default_dir_template = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "results", "infrastructure", "%(starttime)s")
+        default_dir_template = os.path.join(RuntimeVariables.AM_PRESENCE_DIRECTORY, "results", "infrastructure", "%(starttime)s")
         outdir_template = ctx.lookup(ContextPaths.TEMPLATE_PATH_FOR_ORCHESTRATION, default=default_dir_template)
         job_output_directory = outdir_template % fill_dict
         ctx.insert(ContextPaths.RESULT_PATH_FOR_ORCHESTRATION, job_output_directory)
     elif jobtype == JobType.Orchestration:
-        default_dir_template = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "results", "orchestration", "%(starttime)s")
+        default_dir_template = os.path.join(RuntimeVariables.AM_PRESENCE_DIRECTORY, "results", "orchestration", "%(starttime)s")
         outdir_template = ctx.lookup(ContextPaths.TEMPLATE_PATH_FOR_ORCHESTRATION, default=default_dir_template)
         job_output_directory = outdir_template % fill_dict
         ctx.insert(ContextPaths.RESULT_PATH_FOR_ORCHESTRATION, job_output_directory)
 
     elif jobtype == JobType.Build:
-        default_dir_template = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "results", "build", "%(starttime)s")
+        default_dir_template = os.path.join(RuntimeVariables.AM_PRESENCE_DIRECTORY, "results", "build", "%(starttime)s")
         outdir_template = ctx.lookup(ContextPaths.TEMPLATE_PATH_FOR_SERVICES, default=default_dir_template)
         job_output_directory = outdir_template % fill_dict
         ctx.insert(ContextPaths.RESULT_PATH_FOR_SERVICES, job_output_directory)
 
     elif jobtype == JobType.TestRun:
-        if AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY is None:
-            default_dir_template = os.path.join(AM_RUNTIME_VARIABLES.AM_PRESENCE_DIRECTORY, "results", "testresults", "%(starttime)s")
+        if RuntimeVariables.AM_OUTPUT_DIRECTORY is None:
+            default_dir_template = os.path.join(RuntimeVariables.AM_PRESENCE_DIRECTORY, "results", "testresults", "%(starttime)s")
             outdir_template = ctx.lookup(ContextPaths.TEMPLATE_PATH_FOR_TESTS, default=default_dir_template)
             job_output_directory = outdir_template % fill_dict
             ctx.insert(ContextPaths.RESULT_PATH_FOR_TESTS, job_output_directory)
         else:
-            job_output_directory = AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY % fill_dict
+            job_output_directory = RuntimeVariables.AM_OUTPUT_DIRECTORY % fill_dict
             ctx.insert(ContextPaths.RESULT_PATH_FOR_TESTS, job_output_directory)
     else:
         job_output_directory = os.getcwd()
 
     # If output directory was not already set, use the output directory for jobs
-    if AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY is None:
+    if RuntimeVariables.AM_OUTPUT_DIRECTORY is None:
         AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY = job_output_directory
 
-    ctx.insert(ContextPaths.OUTPUT_DIRECTORY, AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY)
+    ctx.insert(ContextPaths.OUTPUT_DIRECTORY, RuntimeVariables.AM_OUTPUT_DIRECTORY)
 
     return
 
