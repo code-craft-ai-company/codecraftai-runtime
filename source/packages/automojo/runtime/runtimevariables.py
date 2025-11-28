@@ -24,7 +24,7 @@ from automojo.xmodules.xlogging.levels import LogLevel
 
 from automojo.thisapp.appvardesc import AppVarDesc
 from automojo.thisapp.appvaraccessor import AppVarAccessor
-from automojo.thisapp.personavariables import PersonaVariables
+from automojo.thisapp.personavariables import PersonaVariablesDesc, PersonaVariables
 from automojo.thisapp.wellknown import ThisApplicationSingleton
 
 from automojo.runtime.enumerations import JobType
@@ -34,7 +34,7 @@ class DefaultValue:
     NotSet = "(not-set)"
 
 
-class RuntimeVariablesDesc(PersonaVariables):
+class RuntimeVariablesDesc(PersonaVariablesDesc):
 
     AM_ACTIVATION_PROFILE = AppVarDesc(default=None)
     AM_AUTOMATION_POD = AppVarDesc(default=DefaultValue.NotSet)
@@ -96,60 +96,58 @@ class RuntimeVariablesDesc(PersonaVariables):
     AM_TESTROOT = AppVarDesc(default=None)
 
 
-class RuntimeVariables:
+class RuntimeVariables(PersonaVariables):
     """
         Container for all the configuration variables that can be passed via environmental variables.
     """
 
-    AM_OUTPUT_DIRECTORY = AppVarAccessor()
+    AM_OUTPUT_DIRECTORY = AppVarAccessor(RuntimeVariablesDesc.AM_OUTPUT_DIRECTORY)
 
-    AM_HAS_SHARED_OUTPUT_DIRECTORY = AppVarAccessor()
-    AM_SHARED_STORE_DIRECTORY = AppVarAccessor()
+    AM_HAS_SHARED_OUTPUT_DIRECTORY = AppVarAccessor(RuntimeVariablesDesc.AM_HAS_SHARED_OUTPUT_DIRECTORY)
+    AM_SHARED_STORE_DIRECTORY = AppVarAccessor(RuntimeVariablesDesc.AM_SHARED_STORE_DIRECTORY)
 
-    AM_ACTIVATION_PROFILE = AppVarAccessor()
+    AM_ACTIVATION_PROFILE = AppVarAccessor(RuntimeVariablesDesc.AM_ACTIVATION_PROFILE)
 
-    AM_AUTOMATION_POD = AppVarAccessor()
+    AM_AUTOMATION_POD = AppVarAccessor(RuntimeVariablesDesc.AM_AUTOMATION_POD)
 
-    AM_BUILD_RELEASE = AppVarAccessor()
-    AM_BUILD_BRANCH = AppVarAccessor()
-    AM_BUILD_FLAVOR = AppVarAccessor()
-    AM_BUILD_NAME = AppVarAccessor()
-    AM_BUILD_URL = AppVarAccessor()
+    AM_BUILD_RELEASE = AppVarAccessor(RuntimeVariablesDesc.AM_BUILD_RELEASE)
+    AM_BUILD_BRANCH = AppVarAccessor(RuntimeVariablesDesc.AM_BUILD_BRANCH)
+    AM_BUILD_FLAVOR = AppVarAccessor(RuntimeVariablesDesc.AM_BUILD_FLAVOR)
+    AM_BUILD_NAME = AppVarAccessor(RuntimeVariablesDesc.AM_BUILD_NAME)
+    AM_BUILD_URL = AppVarAccessor(RuntimeVariablesDesc.AM_BUILD_URL)
 
-    AM_DEBUG_BREAKPOINTS = AppVarAccessor()
-    AM_DEBUG_DEBUGGER = AppVarAccessor()
+    AM_DEBUG_BREAKPOINTS = AppVarAccessor(RuntimeVariablesDesc.AM_DEBUG_BREAKPOINTS)
+    AM_DEBUG_DEBUGGER = AppVarAccessor(RuntimeVariablesDesc.AM_DEBUG_DEBUGGER)
 
-    AM_INTERACTIVE_CONSOLE = AppVarAccessor()
+    AM_INTERACTIVE_CONSOLE = AppVarAccessor(RuntimeVariablesDesc.AM_INTERACTIVE_CONSOLE)
 
-    AM_RUN_ID = AppVarAccessor()
+    AM_RUN_ID = AppVarAccessor(RuntimeVariablesDesc.AM_RUN_ID)
 
-    AM_PIPELINE_ID = AppVarAccessor()
-    AM_PIPELINE_NAME = AppVarAccessor()
-    AM_PIPELINE_INSTANCE = AppVarAccessor()
+    AM_PIPELINE_ID = AppVarAccessor(RuntimeVariablesDesc.AM_PIPELINE_ID)
+    AM_PIPELINE_NAME = AppVarAccessor(RuntimeVariablesDesc.AM_PIPELINE_NAME)
+    AM_PIPELINE_INSTANCE = AppVarAccessor(RuntimeVariablesDesc.AM_PIPELINE_INSTANCE)
 
-    AM_JOB_CLASS = AppVarAccessor()
-    AM_JOB_ID = AppVarAccessor()
-    AM_JOB_TYPE = AppVarAccessor()
-    AM_JOB_INITIATOR = AppVarAccessor()
-    AM_JOB_LABEL = AppVarAccessor()
-    AM_JOB_NAME = AppVarAccessor()
-    AM_JOB_OWNER = AppVarAccessor()
-    AM_JOB_SEED = AppVarAccessor()
-    AM_JOB_TAG = AppVarAccessor()
-    AM_JOB_VENUE = AppVarAccessor()
+    AM_JOB_CLASS = AppVarAccessor(RuntimeVariablesDesc.AM_JOB_CLASS)
+    AM_JOB_ID = AppVarAccessor(RuntimeVariablesDesc.AM_JOB_ID)
+    AM_JOB_TYPE = AppVarAccessor(RuntimeVariablesDesc.AM_JOB_TYPE)
+    AM_JOB_INITIATOR = AppVarAccessor(RuntimeVariablesDesc.AM_JOB_INITIATOR)
+    AM_JOB_LABEL = AppVarAccessor(RuntimeVariablesDesc.AM_JOB_LABEL)
+    AM_JOB_NAME = AppVarAccessor(RuntimeVariablesDesc.AM_JOB_NAME)
+    AM_JOB_OWNER = AppVarAccessor(RuntimeVariablesDesc.AM_JOB_OWNER)
+    AM_JOB_SEED = AppVarAccessor(RuntimeVariablesDesc.AM_JOB_SEED)
+    AM_JOB_TAG = AppVarAccessor(RuntimeVariablesDesc.AM_JOB_TAG)
+    AM_JOB_VENUE = AppVarAccessor(RuntimeVariablesDesc.AM_JOB_VENUE)
 
-    AM_LOG_BASENAME = AppVarAccessor()
-    AM_LOG_DIRECTORY = AppVarAccessor()
-    AM_LOG_LEVEL_CONSOLE = AppVarAccessor()
-    AM_LOG_LEVEL_FILE = AppVarAccessor()
+    AM_LOG_LEVEL_CONSOLE = AppVarAccessor(RuntimeVariablesDesc.AM_LOG_LEVEL_CONSOLE)
+    AM_LOG_LEVEL_FILE = AppVarAccessor(RuntimeVariablesDesc.AM_LOG_LEVEL_FILE)
 
-    AM_RESULTS_STATIC_SUMMARY_TEMPLATE = AppVarAccessor()
-    AM_RESULTS_STATIC_RESOURCE_DEST_DIR = AppVarAccessor()
-    AM_RESULTS_STATIC_RESOURCE_SRC_DIR = AppVarAccessor()
+    AM_RESULTS_STATIC_SUMMARY_TEMPLATE = AppVarAccessor(RuntimeVariablesDesc.AM_RESULTS_STATIC_SUMMARY_TEMPLATE)
+    AM_RESULTS_STATIC_RESOURCE_DEST_DIR = AppVarAccessor(RuntimeVariablesDesc.AM_RESULTS_STATIC_RESOURCE_DEST_DIR)
+    AM_RESULTS_STATIC_RESOURCE_SRC_DIR = AppVarAccessor(RuntimeVariablesDesc.AM_RESULTS_STATIC_RESOURCE_SRC_DIR)
 
-    AM_STARTTIME = AppVarAccessor()
+    AM_STARTTIME = AppVarAccessor(RuntimeVariablesDesc.AM_STARTTIME)
 
-    AM_TESTROOT = AppVarAccessor()
+    AM_TESTROOT = AppVarAccessor(RuntimeVariablesDesc.AM_TESTROOT)
 
 
 def get_runtime_seed() -> str:
@@ -160,7 +158,6 @@ def get_runtime_seed() -> str:
 def resolve_runtime_variables():
 
     this_app = ThisApplicationSingleton()
-
     this_app.resolve_variable_set(RuntimeVariablesDesc)
 
     return
