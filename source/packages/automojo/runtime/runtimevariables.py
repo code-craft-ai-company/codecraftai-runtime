@@ -40,12 +40,12 @@ class RuntimeVariablesDesc(PersonaVariablesDesc):
     AM_ACTIVATION_PROFILE = AppVarDesc(default=None)
     AM_AUTOMATION_POD = AppVarDesc(default=DefaultValue.NotSet)
 
-    AM_BUG_SERVER_TYPE = AppVarDesc()
-    AM_BUG_SERVER_ENDPOINT = AppVarDesc()
-    AM_BUG_PROJECTS = AppVarDesc()
-    AM_BUG_TEAM = AppVarDesc()
-    AM_BUG_USERNAME = AppVarDesc()
-    AM_BUG_TOKEN = AppVarDesc()
+    AM_BUG_SERVER_TYPE = AppVarDesc(default=None)
+    AM_BUG_SERVER_ENDPOINT = AppVarDesc(default=None)
+    AM_BUG_PROJECTS = AppVarDesc(default=None)
+    AM_BUG_TEAM = AppVarDesc(default=None)
+    AM_BUG_USERNAME = AppVarDesc(default=None)
+    AM_BUG_TOKEN = AppVarDesc(default=None)
 
     AM_BUILD_RELEASE = AppVarDesc(default=DefaultValue.NotSet, context_path=RuntimeContextPaths.BUILD_RELEASE)
     AM_BUILD_BRANCH = AppVarDesc(default=DefaultValue.NotSet, context_path=RuntimeContextPaths.BUILD_BRANCH)
@@ -115,6 +115,13 @@ class RuntimeVariables(PersonaVariables):
     AM_ACTIVATION_PROFILE = AppVarAccessor(RuntimeVariablesDesc.AM_ACTIVATION_PROFILE)
 
     AM_AUTOMATION_POD = AppVarAccessor(RuntimeVariablesDesc.AM_AUTOMATION_POD)
+
+    AM_BUG_SERVER_TYPE = AppVarAccessor(RuntimeVariablesDesc.AM_BUG_SERVER_TYPE)
+    AM_BUG_SERVER_ENDPOINT = AppVarAccessor(RuntimeVariablesDesc.AM_BUG_SERVER_ENDPOINT)
+    AM_BUG_PROJECTS = AppVarAccessor(RuntimeVariablesDesc.AM_BUG_PROJECTS)
+    AM_BUG_TEAM = AppVarAccessor(RuntimeVariablesDesc.AM_BUG_TEAM)
+    AM_BUG_USERNAME = AppVarAccessor(RuntimeVariablesDesc.AM_BUG_USERNAME)
+    AM_BUG_TOKEN = AppVarAccessor(RuntimeVariablesDesc.AM_BUG_TOKEN)
 
     AM_BUILD_RELEASE = AppVarAccessor(RuntimeVariablesDesc.AM_BUILD_RELEASE)
     AM_BUILD_BRANCH = AppVarAccessor(RuntimeVariablesDesc.AM_BUILD_BRANCH)
