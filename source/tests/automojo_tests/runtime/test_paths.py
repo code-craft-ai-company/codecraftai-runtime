@@ -2,23 +2,20 @@ import os
 import shutil
 import tempfile
 import unittest
+from unittest import mock
 
-from automojo.presence.contextpaths import ContextPaths
-from automojo.presence.wellknown import ContextSingleton
 from automojo.runtime import paths
 from automojo.runtime.enumerations import JobType
-from automojo.runtime.runtimevariables import AM_RUNTIME_VARIABLES
+from automojo.runtime.runtimevariables import RuntimeVariables, RuntimeVariablesDesc
+from automojo.thisapp import wellknown
+from automojo.thisapp.appvaraccessor import AppVarAccessor
+from automojo.thisapp.thisapplication import ThisApplication
 
 
 class PathsTestCase(unittest.TestCase):
 
     def setUp(self):
-        # create isolated temp directory for each test
         self.workdir = tempfile.mkdtemp()
-        # clear context and setup minimal paths
-        self.ctx = ContextSingleton()
-        self.ctx._store.clear()
-
         self.presence_dir = os.path.join(self.workdir, "presence")
         self.output_dir = os.path.join(self.workdir, "output")
         self.shared_dir = os.path.join(self.workdir, "shared")
@@ -26,13 +23,35 @@ class PathsTestCase(unittest.TestCase):
         os.makedirs(self.output_dir, exist_ok=True)
         os.makedirs(self.shared_dir, exist_ok=True)
 
-        self.ctx.insert(ContextPaths.PRESENCE_HOME_DIRECTORY, self.presence_dir)
-        self.ctx.insert(ContextPaths.OUTPUT_DIRECTORY, self.output_dir)
-        self.ctx.insert(ContextPaths.SHARED_STORE_DIRECTORY, self.shared_dir)
-        self.ctx.insert(ContextPaths.RESULT_PATH_FOR_TESTS, os.path.join(self.output_dir, "testresults"))
-        self.ctx.insert(ContextPaths.OUTPUT_DIRECTORY_IS_SHARED, True)
+        self.env_patch = mock.patch.dict(os.environ, {}, clear=True)
+        self.env_patch.start()
 
-        # save globals and reset
+        AppVarAccessor._this_app = None
+
+        self.context_store = {}
+        self.this_app = ThisApplication(
+            name="testruntime",
+            logger_name="testruntime",
+            log_basename="testruntime",
+            presence_dir=self.presence_dir,
+            log_directory=os.path.join(self.presence_dir, "logs"),
+            settings_file=os.path.join(self.presence_dir, "settings.config"),
+            extensions="",
+            service_name=None,
+            context_insert=self.context_store.__setitem__,
+            from_establish_app_persona=True
+        )
+        wellknown.THISAPPLICATION_SINGLETON = self.this_app
+
+        self.this_app.override_variable_value(RuntimeVariablesDesc.AM_PRESENCE_DIR, self.presence_dir)
+        self.this_app.override_variable_value(RuntimeVariablesDesc.AM_LOG_DIRECTORY, os.path.join(self.presence_dir, "logs"))
+        self.this_app.override_variable_value(RuntimeVariablesDesc.AM_OUTPUT_DIRECTORY, self.output_dir)
+        self.this_app.override_variable_value(RuntimeVariablesDesc.AM_SHARED_STORE_DIRECTORY, self.shared_dir)
+        self.this_app.override_variable_value(RuntimeVariablesDesc.AM_RESULT_PATH_FOR_TESTS, os.path.join(self.output_dir, "testresults"))
+        self.this_app.override_variable_value(RuntimeVariablesDesc.AM_HAS_SHARED_OUTPUT_DIRECTORY, "True")
+        self.this_app.override_variable_value(RuntimeVariablesDesc.AM_JOB_TYPE, JobType.TestRun.value)
+
+        # reset cached directory globals
         self.prev_globals = {
             'DIR_PRESENCE_DIRECTORY': paths.DIR_PRESENCE_DIRECTORY,
             'DIR_CACHE_DIRECTORY': paths.DIR_CACHE_DIRECTORY,
@@ -50,17 +69,11 @@ class PathsTestCase(unittest.TestCase):
         paths.DIR_TESTRESULTS_DIRECTORY = None
         paths.DIR_TESTCASE_BYPRODUCTS_DIRECTORY = None
 
-        self.prev_job_type = AM_RUNTIME_VARIABLES.AM_JOB_TYPE
-        AM_RUNTIME_VARIABLES.AM_JOB_TYPE = JobType.TestRun
-
-        # Some implementations of paths expect a NotSet value on JobType
-        self.added_notset = False
-        if not hasattr(JobType, "NotSet"):
-            setattr(JobType, "NotSet", JobType.Unknown)
-            self.added_notset = True
-
     def tearDown(self):
         shutil.rmtree(self.workdir, ignore_errors=True)
+        wellknown.THISAPPLICATION_SINGLETON = None
+        self.env_patch.stop()
+        AppVarAccessor._this_app = None
         # restore globals
         paths.DIR_PRESENCE_DIRECTORY = self.prev_globals['DIR_PRESENCE_DIRECTORY']
         paths.DIR_CACHE_DIRECTORY = self.prev_globals['DIR_CACHE_DIRECTORY']
@@ -69,12 +82,6 @@ class PathsTestCase(unittest.TestCase):
         paths.DIR_SHARED_STORE_DIRECTORY = self.prev_globals['DIR_SHARED_STORE_DIRECTORY']
         paths.DIR_TESTRESULTS_DIRECTORY = self.prev_globals['DIR_TESTRESULTS_DIRECTORY']
         paths.DIR_TESTCASE_BYPRODUCTS_DIRECTORY = self.prev_globals['DIR_TESTCASE_BYPRODUCTS_DIRECTORY']
-
-        AM_RUNTIME_VARIABLES.AM_JOB_TYPE = self.prev_job_type
-        self.ctx._store.clear()
-
-        if self.added_notset:
-            delattr(JobType, "NotSet")
 
     def test_collect_python_modules_depth_limit(self):
         root = os.path.join(self.workdir, "mods")

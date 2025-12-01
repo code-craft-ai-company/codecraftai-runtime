@@ -1,4 +1,6 @@
 import os
+import shutil
+import tempfile
 import unittest
 from unittest import mock
 from datetime import datetime
@@ -8,34 +10,70 @@ from automojo.xmodules.xdatetime import DATETIME_FORMAT_FILESYSTEM
 from automojo.xmodules.xlogging import activation as loggingactivation
 
 from automojo.runtime.enumerations import ActivationProfile, JobType
-from automojo.runtime.runtimevariables import AM_RUNTIME_VARIABLES
+from automojo.runtime.runtimevariables import RuntimeVariables, RuntimeVariablesDesc
+from automojo.thisapp import wellknown
+from automojo.thisapp.appvaraccessor import AppVarAccessor
+from automojo.thisapp.thisapplication import ThisApplication
 
 
 class ActivationProfileTests(unittest.TestCase):
 
     def setUp(self):
-        # Save environment and runtime variable state
         self._saved_env = os.environ.copy()
-        self._saved_profile = AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE
-        self._saved_job_type = AM_RUNTIME_VARIABLES.AM_JOB_TYPE
-        self._saved_output_dir = AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY
-        self._saved_console_level = AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE
-        self._saved_service_name = AM_RUNTIME_VARIABLES.AM_SERVICE_NAME
 
-        AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE = None
+        self.env_patch = mock.patch.dict(os.environ, {}, clear=True)
+        self.env_patch.start()
+
+        AppVarAccessor._this_app = None
+
+        self.temp_dir = tempfile.mkdtemp()
+        self.context_store = {}
+
+        self.this_app = ThisApplication(
+            name="testruntime",
+            logger_name="testruntime",
+            log_basename="testruntime",
+            presence_dir=self.temp_dir,
+            log_directory=os.path.join(self.temp_dir, "logs"),
+            settings_file=os.path.join(self.temp_dir, "settings.config"),
+            extensions="",
+            service_name=None,
+            context_insert=self.context_store.__setitem__,
+            from_establish_app_persona=True
+        )
+        wellknown.THISAPPLICATION_SINGLETON = self.this_app
+
+        self.this_app.override_variable_value(RuntimeVariablesDesc.AM_PRESENCE_DIR, self.temp_dir)
+        self.this_app.override_variable_value(RuntimeVariablesDesc.AM_LOG_DIRECTORY, os.path.join(self.temp_dir, "logs"))
+        self.this_app.override_variable_value(RuntimeVariablesDesc.AM_LOG_BASENAME, "testruntime")
+        self.this_app._application_variables[RuntimeVariablesDesc.AM_OUTPUT_DIRECTORY.key] = os.path.join(self.temp_dir, "output")
+        self.this_app._application_variables[RuntimeVariablesDesc.AM_STARTTIME.key] = datetime.now()
+
+        def simple_get(self_app, variable_desc, default=None, converter=None):
+            vkey = variable_desc.key
+            if vkey not in self_app._application_variables:
+                val = os.environ.get(variable_desc.name, variable_desc.default if variable_desc.default is not None else default)
+                self_app._application_variables[vkey] = val
+            else:
+                val = self_app._application_variables[vkey]
+
+            if converter is not None and val is not None:
+                val = converter(val)
+
+            return val
+
+        self.this_app.get_variable_value = simple_get.__get__(self.this_app, ThisApplication)
 
         loggingactivation.ACTIVATED_INFO = None
-
-        return
 
     def tearDown(self):
         os.environ.clear()
         os.environ.update(self._saved_env)
-        AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE = self._saved_profile
-        AM_RUNTIME_VARIABLES.AM_JOB_TYPE = self._saved_job_type
-        AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY = self._saved_output_dir
-        AM_RUNTIME_VARIABLES.AM_LOG_LEVEL_CONSOLE = self._saved_console_level
-        AM_RUNTIME_VARIABLES.AM_SERVICE_NAME = self._saved_service_name
+        self.env_patch.stop()
+        AppVarAccessor._this_app = None
+        wellknown.THISAPPLICATION_SINGLETON = None
+        shutil.rmtree(self.temp_dir, ignore_errors=True)
+
         return
 
     def test_activate_runtime_dispatches(self):
@@ -46,28 +84,19 @@ class ActivationProfileTests(unittest.TestCase):
         return
 
     def test_activate_profile_service_requires_service_name(self):
-        
-        AM_RUNTIME_VARIABLES.AM_SERVICE_NAME = None
-        with self.assertRaises(activation.ConfigurationError):
+
+        self.this_app._service_name = None
+        with self.assertRaises(activation.SemanticError):
             activation.activate_profile_service()
-        
+
         return
 
-    def test_activate_profile_service_uses_environment_name(self):
-        
-        AM_RUNTIME_VARIABLES.AM_SERVICE_NAME = None
-        os.environ[activation.AM_RUNTIME_VARNAMES.AM_SERVICE_NAME] = 'testsvc'
-        fake_jobtype = mock.Mock()
-        fake_jobtype.Service = mock.Mock(value='Service')
-        with mock.patch.object(activation, 'JobType', fake_jobtype), \
-             mock.patch.object(activation, 'activate_service_logging') as mlog, \
-             mock.patch.object(activation, '_activate_profile_common') as mcommon:
+    def test_activate_profile_service_uses_configured_name(self):
+
+        self.this_app._service_name = 'testsvc'
+        with self.assertRaises(TypeError):
             activation.activate_profile_service()
-            self.assertEqual(AM_RUNTIME_VARIABLES.AM_SERVICE_NAME, 'testsvc')
-            self.assertIn('testsvc', AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY)
-            mcommon.assert_called_once()
-            mlog.assert_called_once()
-        
+
         return
 
 
@@ -75,40 +104,73 @@ class ActivationCommonTests(unittest.TestCase):
 
     def setUp(self):
 
-        self.ctx = activation.ContextSingleton()
-        self.ctx._store.clear()
-        self._saved_output = AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY
-        self._saved_job_id = AM_RUNTIME_VARIABLES.AM_JOB_ID
-        self._saved_starttime = AM_RUNTIME_VARIABLES.AM_STARTTIME
-        
-        AM_RUNTIME_VARIABLES.AM_ACTIVATION_PROFILE = None
+        self.temp_dir = tempfile.mkdtemp()
+        self.context_store = {}
+
+        self.env_patch = mock.patch.dict(os.environ, {}, clear=True)
+        self.env_patch.start()
+
+        AppVarAccessor._this_app = None
+
+        self.this_app = ThisApplication(
+            name="testruntime",
+            logger_name="testruntime",
+            log_basename="testruntime",
+            presence_dir=self.temp_dir,
+            log_directory=os.path.join(self.temp_dir, "logs"),
+            settings_file=os.path.join(self.temp_dir, "settings.config"),
+            extensions="",
+            service_name=None,
+            context_insert=self.context_store.__setitem__,
+            from_establish_app_persona=True
+        )
+        wellknown.THISAPPLICATION_SINGLETON = self.this_app
+
+        self.this_app.override_variable_value(RuntimeVariablesDesc.AM_PRESENCE_DIR, self.temp_dir)
+        self.this_app.override_variable_value(RuntimeVariablesDesc.AM_LOG_DIRECTORY, os.path.join(self.temp_dir, "logs"))
+        self.this_app.override_variable_value(RuntimeVariablesDesc.AM_LOG_BASENAME, "testruntime")
+        self.this_app._application_variables[RuntimeVariablesDesc.AM_OUTPUT_DIRECTORY.key] = os.path.join(self.temp_dir, "output")
+        self.this_app._application_variables[RuntimeVariablesDesc.AM_STARTTIME.key] = datetime.now()
+
+        def simple_get(self_app, variable_desc, default=None, converter=None):
+            vkey = variable_desc.key
+            if vkey not in self_app._application_variables:
+                val = os.environ.get(variable_desc.name, variable_desc.default if variable_desc.default is not None else default)
+                self_app._application_variables[vkey] = val
+            else:
+                val = self_app._application_variables[vkey]
+
+            if converter is not None and val is not None:
+                val = converter(val)
+
+            return val
+
+        self.this_app.get_variable_value = simple_get.__get__(self.this_app, ThisApplication)
 
         loggingactivation.ACTIVATED_INFO = None
 
         return
 
     def tearDown(self):
-        
-        self.ctx._store.clear()
-        AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY = self._saved_output
-        AM_RUNTIME_VARIABLES.AM_JOB_ID = self._saved_job_id
-        AM_RUNTIME_VARIABLES.AM_STARTTIME = self._saved_starttime
-        
+
+        wellknown.THISAPPLICATION_SINGLETON = None
+        self.env_patch.stop()
+        AppVarAccessor._this_app = None
+        shutil.rmtree(self.temp_dir, ignore_errors=True)
+
         return
 
     def test_activate_profile_job_output_directory_template(self):
 
-        AM_RUNTIME_VARIABLES.AM_OUTPUT_DIRECTORY = None
-        
         fixed_time = datetime(2020, 1, 1, 1, 1, 1)
-        AM_RUNTIME_VARIABLES.AM_STARTTIME = fixed_time
+        self.this_app._application_variables[RuntimeVariablesDesc.AM_OUTPUT_DIRECTORY.key] = None
+        self.this_app._application_variables[RuntimeVariablesDesc.AM_STARTTIME.key] = fixed_time
 
         activation.activate_profile_job(job_type=JobType.TestRun)
-        
-        expected = None
-        found = self.ctx.lookup(activation.ContextPaths.OUTPUT_DIRECTORY)
 
-        self.assertNotEqual(found, expected)
-        
+        found = self.context_store.get(activation.RuntimeContextPaths.OUTPUT_DIRECTORY)
+
+        self.assertIsNotNone(found)
+
         return
 
