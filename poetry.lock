@@ -98,7 +98,7 @@ automojo-extension = {git = "https://github.com/automationmojo/automojo-extensio
 type = "git"
 url = "https://github.com/automationmojo/automojo-this-app.git"
 reference = "main"
-resolved_reference = "b6a88acedd5e8f2c2d1d3b8118408febb2cac08b"
+resolved_reference = "b2c8e3a1d0e54fec1b2dfe6d7ead0bc18c4600b5"
 
 [[package]]
 name = "automojo-waiting"
