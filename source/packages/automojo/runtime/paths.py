@@ -22,9 +22,6 @@ from automojo.errors.exceptions import SemanticError
 
 from automojo.xmodules.fspath import expand_path
 
-from automojo.presence.contextpaths import ContextPaths
-from automojo.presence.wellknown import ContextSingleton
-
 from automojo.runtime.enumerations import JobType
 from automojo.runtime.runtimevariables import RuntimeVariables
 
@@ -100,9 +97,8 @@ def get_directory_for_cached_files(create=True) -> str:
     global DIR_CACHE_DIRECTORY
 
     if DIR_CACHE_DIRECTORY is None:
-        ctx = ContextSingleton()
-
-        runtime_home_dir = expand_path(ctx.lookup(ContextPaths.PRESENCE_HOME_DIRECTORY))
+        
+        runtime_home_dir = expand_path(RuntimeVariables.AM_PRESENCE_DIR)
         DIR_CACHE_DIRECTORY = os.path.join(runtime_home_dir, "cache")
         if create and not os.path.exists(DIR_CACHE_DIRECTORY):
             os.makedirs(DIR_CACHE_DIRECTORY)
@@ -127,50 +123,6 @@ def get_directory_for_code_container(container: str) -> str:
         raise RuntimeError("Unable to get parent dir for module") from None
 
     return container_dir
-
-
-def get_files_for_credentials() -> str:
-    """
-        Returns the paths to the credentials files.
-    """
-
-    ctx = ContextSingleton()
-    files = expand_path(ctx.lookup(ContextPaths.CONFIG_CREDENTIAL_URIS))
-
-    return files
-
-
-def get_files_for_landscape() -> str:
-    """
-        Returns the paths to the landscape files.
-    """
-
-    ctx = ContextSingleton()
-    files = expand_path(ctx.lookup(ContextPaths.CONFIG_LANDSCAPE_URIS))
-
-    return files
-
-
-def get_files_for_runtime() -> str:
-    """
-        Returns the paths to the landscape files.
-    """
-
-    ctx = ContextSingleton()
-    files = expand_path(ctx.lookup(ContextPaths.CONFIG_RUNTIME_URIS))
-
-    return files
-
-
-def get_files_for_topology() -> str:
-    """
-        Returns the paths to the topology files.
-    """
-
-    ctx = ContextSingleton()
-    files = expand_path(ctx.lookup(ContextPaths.CONFIG_TOPOLOGY_URIS))
-
-    return files
 
 
 def get_path_for_artifacts(label: str) -> str:
@@ -203,9 +155,8 @@ def get_path_for_output(create=True) -> str:
     global DIR_RESULTS_DIRECTORY
 
     if DIR_RESULTS_DIRECTORY is None:
-        ctx = ContextSingleton()
-
-        DIR_RESULTS_DIRECTORY = expand_path(ctx.lookup(ContextPaths.OUTPUT_DIRECTORY))
+        
+        DIR_RESULTS_DIRECTORY = expand_path(RuntimeVariables.AM_OUTPUT_DIRECTORY)
         if create and not os.path.exists(DIR_RESULTS_DIRECTORY):
             os.makedirs(DIR_RESULTS_DIRECTORY)
 
@@ -220,13 +171,11 @@ def get_path_for_shared_store(create=True) -> str:
     global DIR_SHARED_STORE_DIRECTORY
 
     if DIR_SHARED_STORE_DIRECTORY is None:
-        ctx = ContextSingleton()
 
-        DIR_SHARED_STORE_DIRECTORY = ctx.lookup(ContextPaths.SHARED_STORE_DIRECTORY)
+        DIR_SHARED_STORE_DIRECTORY = expand_path(RuntimeVariables.AM_SHARED_STORE_DIRECTORY)
         if create:
-            fullpath = expand_path(DIR_SHARED_STORE_DIRECTORY)
-            if not os.path.exists(fullpath):
-                os.makedirs(fullpath)
+            if not os.path.exists(DIR_SHARED_STORE_DIRECTORY):
+                os.makedirs(DIR_SHARED_STORE_DIRECTORY)
     
     return DIR_SHARED_STORE_DIRECTORY
 
@@ -277,9 +226,8 @@ def get_path_for_testresults() -> str:
     global DIR_TESTRESULTS_DIRECTORY
 
     if DIR_TESTRESULTS_DIRECTORY is None:
-        ctx = ContextSingleton()
-
-        tr_dir = expand_path(ctx.lookup(ContextPaths.RESULT_PATH_FOR_TESTS))
+        
+        tr_dir = expand_path(RuntimeVariables.AM_RESULT_PATH_FOR_TESTS)
 
         DIR_TESTRESULTS_DIRECTORY = tr_dir
 
@@ -319,9 +267,8 @@ def get_presence_directory() -> str:
     global DIR_PRESENCE_DIRECTORY
 
     if DIR_PRESENCE_DIRECTORY is None:
-        ctx = ContextSingleton()
-
-        presence_dir = ctx.lookup(ContextPaths.PRESENCE_HOME_DIRECTORY)
+        
+        presence_dir = RuntimeVariables.AM_PRESENCE_DIR
         DIR_PRESENCE_DIRECTORY = expand_path(presence_dir)
     
     return DIR_PRESENCE_DIRECTORY
@@ -333,9 +280,8 @@ def get_summary_html_template_source() -> str:
 
         :returns: The path to the html summary template
     """
-    ctx = ContextSingleton()
-
-    template = expand_path(ctx.lookup(ContextPaths.FILE_RESULTS_TEMPLATE))
+    
+    template = expand_path(RuntimeVariables.AM_RESULTS_STATIC_SUMMARY_TEMPLATE)
 
     if template is None:
         errmsg = "Error attempting to lookup the summary html template source."
@@ -348,8 +294,7 @@ def get_summary_static_resource_dest_dir(create=True) -> str:
     """
         Returns the path where the static resources for test summaries should be published.
     """
-    ctx = ContextSingleton()
-    res_dir = expand_path(ctx.lookup(ContextPaths.DIR_RESULTS_RESOURCE_DEST))
+    res_dir = expand_path(RuntimeVariables.AM_RESULTS_STATIC_RESOURCE_DEST_DIR)
 
     if create and not os.path.exists(res_dir):
         os.makedirs(res_dir)
@@ -361,8 +306,7 @@ def get_summary_static_resource_src_dir() -> str:
     """
         Returns the path that is the source path for the test summary static resources.
     """
-    ctx = ContextSingleton()
-    res_dir = expand_path(ctx.lookup(ContextPaths.DIR_RESULTS_RESOURCE_SRC))
+    res_dir = expand_path(RuntimeVariables.AM_RESULTS_STATIC_RESOURCE_SRC_DIR)
 
     return res_dir
 
@@ -409,8 +353,6 @@ def utilizing_shared_output_path() -> bool:
         path across compute resources.
     """
 
-    ctx = ContextSingleton()
-
-    op_is_shared = ctx.lookup(ContextPaths.OUTPUT_DIRECTORY_IS_SHARED, False)
+    op_is_shared = RuntimeVariables.AM_HAS_SHARED_OUTPUT_DIRECTORY
 
     return op_is_shared
