@@ -57,6 +57,8 @@ class RuntimeVariablesDesc(PersonaVariablesDesc):
     AM_DEBUG_BREAKPOINTS = AppVarDesc(default=None, context_path=ContextPaths.DEBUG_BREAKPOINTS)
     AM_DEBUG_DEBUGGER = AppVarDesc(default=None, context_path=ContextPaths.DEBUG_DEBUGGER)
 
+    AM_DIAGNOSTICS_POSTRUN = AppVarDesc(default=None,  context_path=ContextPaths.DIAGNOSTICS_POSTRUN)
+    AM_DIAGNOSTICS_PRERUN = AppVarDesc(default=None, context_path=ContextPaths.DIAGNOSTICS_PRERUN)
     AM_DIAGNOSTICS_TRACEBACK_POLICY_OVERRIDE = AppVarDesc(default=None, context_path=ContextPaths.DIAGNOSTICS_TRACEBACK_POLICY_OVERRIDE)
 
     AM_INTERACTIVE_CONSOLE = AppVarDesc(default=False)
@@ -133,6 +135,8 @@ class RuntimeVariables(PersonaVariables):
     AM_DEBUG_BREAKPOINTS = AppVarAccessor(RuntimeVariablesDesc.AM_DEBUG_BREAKPOINTS)
     AM_DEBUG_DEBUGGER = AppVarAccessor(RuntimeVariablesDesc.AM_DEBUG_DEBUGGER)
 
+    AM_DIAGNOSTICS_POSTRUN = AppVarAccessor(RuntimeVariablesDesc.AM_DIAGNOSTICS_POSTRUN)
+    AM_DIAGNOSTICS_PRERUN = AppVarAccessor(RuntimeVariablesDesc.AM_DIAGNOSTICS_PRERUN)
     AM_DIAGNOSTICS_TRACEBACK_POLICY_OVERRIDE = AppVarAccessor(RuntimeVariablesDesc.AM_DIAGNOSTICS_TRACEBACK_POLICY_OVERRIDE)
 
     AM_INTERACTIVE_CONSOLE = AppVarAccessor(RuntimeVariablesDesc.AM_INTERACTIVE_CONSOLE)
