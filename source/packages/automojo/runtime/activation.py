@@ -37,7 +37,6 @@ from automojo.xmodules.xlogging.activation import (
 
 from automojo.runtime.enumerations import ActivationProfile, JobType
 from automojo.runtime.runtimevariables import RuntimeVariables, RuntimeVariablesDesc, DefaultValue
-from automojo.runtime.runtimecontextpaths import RuntimeContextPaths
 
 
 def activate_profile_command():
