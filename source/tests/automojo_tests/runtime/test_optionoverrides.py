@@ -19,7 +19,6 @@ class OptionOverridesTestCase(unittest.TestCase):
 
     def setUp(self):
         self.temp_dir = tempfile.mkdtemp()
-        self.context_store = {}
 
         AppVarAccessor._this_app = None
 
@@ -32,7 +31,6 @@ class OptionOverridesTestCase(unittest.TestCase):
             settings_file=os.path.join(self.temp_dir, "settings.config"),
             extensions="",
             service_name=None,
-            context_insert=self.context_store.__setitem__,
             from_establish_app_persona=True
         )
         wellknown.THISAPPLICATION_SINGLETON = self.this_app
@@ -48,7 +46,7 @@ class OptionOverridesTestCase(unittest.TestCase):
     def _check_override(self, func, attr_name, ctx_path, value):
         func(value)
         self.assertEqual(getattr(RuntimeVariables, attr_name), value)
-        self.assertEqual(self.context_store.get(ctx_path), value)
+        self.assertEqual(self.this_app.context.get(ctx_path), value)
 
     def test_override_build_release(self):
         self._check_override(
