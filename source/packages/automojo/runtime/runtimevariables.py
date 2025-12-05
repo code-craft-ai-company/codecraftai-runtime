@@ -24,10 +24,11 @@ from automojo.xmodules.xlogging.levels import LogLevel
 
 from automojo.thisapp.appvardesc import AppVarDesc
 from automojo.thisapp.appvaraccessor import AppVarAccessor
+from automojo.thisapp.contextpaths import ContextPaths
 from automojo.thisapp.personavariables import PersonaVariablesDesc, PersonaVariables
 from automojo.thisapp.wellknown import ThisApplicationSingleton
 
-from automojo.runtime.runtimecontextpaths import RuntimeContextPaths
+
 from automojo.runtime.enumerations import JobType
 
 
@@ -47,59 +48,59 @@ class RuntimeVariablesDesc(PersonaVariablesDesc):
     AM_BUG_USERNAME = AppVarDesc(default=None)
     AM_BUG_TOKEN = AppVarDesc(default=None)
 
-    AM_BUILD_RELEASE = AppVarDesc(default=DefaultValue.NotSet, context_path=RuntimeContextPaths.BUILD_RELEASE)
-    AM_BUILD_BRANCH = AppVarDesc(default=DefaultValue.NotSet, context_path=RuntimeContextPaths.BUILD_BRANCH)
-    AM_BUILD_FLAVOR = AppVarDesc(default=DefaultValue.NotSet, context_path=RuntimeContextPaths.BUILD_FLAVOR)
-    AM_BUILD_NAME = AppVarDesc(default=DefaultValue.NotSet, context_path=RuntimeContextPaths.BUILD_NAME)
-    AM_BUILD_URL = AppVarDesc(default=DefaultValue.NotSet, context_path=RuntimeContextPaths.BUILD_URL)
+    AM_BUILD_RELEASE = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.BUILD_RELEASE)
+    AM_BUILD_BRANCH = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.BUILD_BRANCH)
+    AM_BUILD_FLAVOR = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.BUILD_FLAVOR)
+    AM_BUILD_NAME = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.BUILD_NAME)
+    AM_BUILD_URL = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.BUILD_URL)
 
-    AM_DEBUG_BREAKPOINTS = AppVarDesc(default=None, context_path=RuntimeContextPaths.DEBUG_BREAKPOINTS)
-    AM_DEBUG_DEBUGGER = AppVarDesc(default=None, context_path=RuntimeContextPaths.DEBUG_DEBUGGER)
+    AM_DEBUG_BREAKPOINTS = AppVarDesc(default=None, context_path=ContextPaths.DEBUG_BREAKPOINTS)
+    AM_DEBUG_DEBUGGER = AppVarDesc(default=None, context_path=ContextPaths.DEBUG_DEBUGGER)
 
-    AM_DIAGNOSTICS_TRACEBACK_POLICY_OVERRIDE = AppVarDesc(default=None, context_path=RuntimeContextPaths.DIAGNOSTICS_TRACEBACK_POLICY_OVERRIDE)
+    AM_DIAGNOSTICS_TRACEBACK_POLICY_OVERRIDE = AppVarDesc(default=None, context_path=ContextPaths.DIAGNOSTICS_TRACEBACK_POLICY_OVERRIDE)
 
     AM_INTERACTIVE_CONSOLE = AppVarDesc(default=False)
 
-    AM_RUN_ID = AppVarDesc(default=DefaultValue.NotSet, context_path=RuntimeContextPaths.RUNID)
+    AM_RUN_ID = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.RUNID)
 
-    AM_PIPELINE_ID = AppVarDesc(default=DefaultValue.NotSet, context_path=RuntimeContextPaths.PIPELINE_ID)
-    AM_PIPELINE_NAME = AppVarDesc(default=DefaultValue.NotSet, context_path=RuntimeContextPaths.PIPELINE_NAME)
-    AM_PIPELINE_INSTANCE = AppVarDesc(default=DefaultValue.NotSet, context_path=RuntimeContextPaths.PIPELINE_INSTANCE)
+    AM_PIPELINE_ID = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.PIPELINE_ID)
+    AM_PIPELINE_NAME = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.PIPELINE_NAME)
+    AM_PIPELINE_INSTANCE = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.PIPELINE_INSTANCE)
 
-    AM_JOB_CLASS = AppVarDesc(default=DefaultValue.NotSet, context_path=RuntimeContextPaths.JOB_CLASS)
-    AM_JOB_ID = AppVarDesc(default=DefaultValue.NotSet, context_path=RuntimeContextPaths.JOB_ID)
-    AM_JOB_INITIATOR = AppVarDesc(default=DefaultValue.NotSet, context_path=RuntimeContextPaths.JOB_INITIATOR)
-    AM_JOB_LABEL = AppVarDesc(default=DefaultValue.NotSet, context_path=RuntimeContextPaths.JOB_LABEL)
-    AM_JOB_NAME = AppVarDesc(default=DefaultValue.NotSet, context_path=RuntimeContextPaths.JOB_NAME)
-    AM_JOB_OWNER = AppVarDesc(default=DefaultValue.NotSet, context_path=RuntimeContextPaths.JOB_OWNER)
-    AM_JOB_SEED = AppVarDesc(default=DefaultValue.NotSet, context_path=RuntimeContextPaths.JOB_SEED)
-    AM_JOB_TAG = AppVarDesc(default=DefaultValue.NotSet, context_path=RuntimeContextPaths.JOB_TAG)
-    AM_JOB_TYPE = AppVarDesc(default=JobType.Unknown.value, context_path=RuntimeContextPaths.JOB_TYPE)
-    AM_JOB_VENUE = AppVarDesc(default=DefaultValue.NotSet, context_path=RuntimeContextPaths.JOB_VENUE)
+    AM_JOB_CLASS = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.JOB_CLASS)
+    AM_JOB_ID = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.JOB_ID)
+    AM_JOB_INITIATOR = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.JOB_INITIATOR)
+    AM_JOB_LABEL = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.JOB_LABEL)
+    AM_JOB_NAME = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.JOB_NAME)
+    AM_JOB_OWNER = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.JOB_OWNER)
+    AM_JOB_SEED = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.JOB_SEED)
+    AM_JOB_TAG = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.JOB_TAG)
+    AM_JOB_TYPE = AppVarDesc(default=JobType.Unknown.value, context_path=ContextPaths.JOB_TYPE)
+    AM_JOB_VENUE = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.JOB_VENUE)
 
-    AM_LOG_LEVEL_CONSOLE = AppVarDesc(default=LogLevel.WARNING, context_path=RuntimeContextPaths.LOGGING_LEVEL_CONSOLE)
-    AM_LOG_LEVEL_FILE = AppVarDesc(default=LogLevel.DEBUG, context_path=RuntimeContextPaths.LOGGING_LEVEL_LOGFILE)
+    AM_LOG_LEVEL_CONSOLE = AppVarDesc(default=LogLevel.WARNING, context_path=ContextPaths.LOGGING_LEVEL_CONSOLE)
+    AM_LOG_LEVEL_FILE = AppVarDesc(default=LogLevel.DEBUG, context_path=ContextPaths.LOGGING_LEVEL_LOGFILE)
 
-    AM_OUTPUT_DIRECTORY = AppVarDesc(default=None, context_path=RuntimeContextPaths.OUTPUT_DIRECTORY)
+    AM_OUTPUT_DIRECTORY = AppVarDesc(default=None, context_path=ContextPaths.OUTPUT_DIRECTORY)
 
-    AM_HAS_SHARED_OUTPUT_DIRECTORY = AppVarDesc(default=False, context_path=RuntimeContextPaths.OUTPUT_DIRECTORY_IS_SHARED)
-    AM_SHARED_STORE_DIRECTORY = AppVarDesc(default=None, context_path=RuntimeContextPaths.SHARED_STORE_DIRECTORY)
+    AM_HAS_SHARED_OUTPUT_DIRECTORY = AppVarDesc(default=False, context_path=ContextPaths.OUTPUT_DIRECTORY_IS_SHARED)
+    AM_SHARED_STORE_DIRECTORY = AppVarDesc(default=None, context_path=ContextPaths.SHARED_STORE_DIRECTORY)
 
     AM_RESULTS_STATIC_SUMMARY_TEMPLATE = AppVarDesc(default=None)
     AM_RESULTS_STATIC_RESOURCE_DEST_DIR = AppVarDesc(default=None)
     AM_RESULTS_STATIC_RESOURCE_SRC_DIR = AppVarDesc(default=None)
 
-    AM_STARTTIME = AppVarDesc(default=datetime.now(), context_path=RuntimeContextPaths.STARTTIME)
+    AM_STARTTIME = AppVarDesc(default=datetime.now(), context_path=ContextPaths.STARTTIME)
 
-    AM_TESTROOT = AppVarDesc(default=None, context_path=RuntimeContextPaths.TESTROOT)
+    AM_TESTROOT = AppVarDesc(default=None, context_path=ContextPaths.TESTROOT)
 
-    AM_TEMPLATE_PATH_FOR_ORCHESTRATION = AppVarDesc(default=None, context_path=RuntimeContextPaths.TEMPLATE_PATH_FOR_ORCHESTRATION)
-    AM_TEMPLATE_PATH_FOR_SERVICES = AppVarDesc(default=None, context_path=RuntimeContextPaths.TEMPLATE_PATH_FOR_SERVICES)
-    AM_TEMPLATE_PATH_FOR_TESTS = AppVarDesc(default=None, context_path=RuntimeContextPaths.TEMPLATE_PATH_FOR_TESTS)
+    AM_TEMPLATE_PATH_FOR_ORCHESTRATION = AppVarDesc(default=None, context_path=ContextPaths.TEMPLATE_PATH_FOR_ORCHESTRATION)
+    AM_TEMPLATE_PATH_FOR_SERVICES = AppVarDesc(default=None, context_path=ContextPaths.TEMPLATE_PATH_FOR_SERVICES)
+    AM_TEMPLATE_PATH_FOR_TESTS = AppVarDesc(default=None, context_path=ContextPaths.TEMPLATE_PATH_FOR_TESTS)
 
-    AM_RESULT_PATH_FOR_ORCHESTRATION = AppVarDesc(default=None, context_path=RuntimeContextPaths.RESULT_PATH_FOR_ORCHESTRATION)
-    AM_RESULT_PATH_FOR_SERVICES = AppVarDesc(default=None, context_path=RuntimeContextPaths.RESULT_PATH_FOR_SERVICES)
-    AM_RESULT_PATH_FOR_TESTS = AppVarDesc(default=None, context_path=RuntimeContextPaths.RESULT_PATH_FOR_TESTS)
+    AM_RESULT_PATH_FOR_ORCHESTRATION = AppVarDesc(default=None, context_path=ContextPaths.RESULT_PATH_FOR_ORCHESTRATION)
+    AM_RESULT_PATH_FOR_SERVICES = AppVarDesc(default=None, context_path=ContextPaths.RESULT_PATH_FOR_SERVICES)
+    AM_RESULT_PATH_FOR_TESTS = AppVarDesc(default=None, context_path=ContextPaths.RESULT_PATH_FOR_TESTS)
 
 
 class RuntimeVariables(PersonaVariables):
