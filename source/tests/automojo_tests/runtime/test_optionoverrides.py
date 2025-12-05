@@ -46,7 +46,7 @@ class OptionOverridesTestCase(unittest.TestCase):
     def _check_override(self, func, attr_name, ctx_path, value):
         func(value)
         self.assertEqual(getattr(RuntimeVariables, attr_name), value)
-        self.assertEqual(self.this_app.context.get(ctx_path), value)
+        self.assertEqual(self.this_app.context.lookup(ctx_path), value)
 
     def test_override_build_release(self):
         self._check_override(
