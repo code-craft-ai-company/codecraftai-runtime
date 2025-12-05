@@ -143,6 +143,30 @@ class AM_RUNTIME_OPTION_OVERRIDES:
         return
 
     @staticmethod
+    def override_diagnostics_postrun(diags: dict):
+        """
+            This override function provides a mechanism for overriding the AM_DIAGNOSTICS_POSTRUN
+            variable and context configuration settings.
+        
+            :param diags: A dictionary of diagnostics details to capture.
+        """
+        this_app = ThisApplicationSingleton()
+        this_app.override_variable_value(RuntimeVariablesDesc.AM_DIAGNOSTICS_POSTRUN, diags)
+        return
+
+    @staticmethod
+    def override_diagnostics_prerun(diags: dict):
+        """
+            This override function provides a mechanism for overriding the AM_DIAGNOSTICS_PRERUN
+            variable and context configuration settings.
+        
+            :param diags: A dictionary of diagnostics details to capture.
+        """
+        this_app = ThisApplicationSingleton()
+        this_app.override_variable_value(RuntimeVariablesDesc.AM_DIAGNOSTICS_PRERUN, diags)
+        return
+
+    @staticmethod
     def override_job_name(job_name: str):
         """
             This override function provides a mechanism overriding the AM_JOB_NAME
