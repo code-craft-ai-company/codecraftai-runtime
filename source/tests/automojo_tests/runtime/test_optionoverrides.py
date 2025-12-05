@@ -4,12 +4,14 @@ import tempfile
 import unittest
 from datetime import datetime
 
-from automojo.runtime.optionoverrides import AM_RUNTIME_OPTION_OVERRIDES
-from automojo.runtime.runtimevariables import RuntimeVariables, RuntimeVariablesDesc
-from automojo.runtime.runtimecontextpaths import RuntimeContextPaths
+from automojo.thisapp.contextpaths import ContextPaths
 from automojo.thisapp import wellknown
 from automojo.thisapp.appvaraccessor import AppVarAccessor
 from automojo.thisapp.thisapplication import ThisApplication
+
+
+from automojo.runtime.optionoverrides import AM_RUNTIME_OPTION_OVERRIDES
+from automojo.runtime.runtimevariables import RuntimeVariables, RuntimeVariablesDesc
 
 
 class OptionOverridesTestCase(unittest.TestCase):
@@ -52,7 +54,7 @@ class OptionOverridesTestCase(unittest.TestCase):
         self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_build_release,
             'AM_BUILD_RELEASE',
-            RuntimeContextPaths.BUILD_RELEASE,
+            ContextPaths.BUILD_RELEASE,
             'rel1'
         )
 
@@ -60,7 +62,7 @@ class OptionOverridesTestCase(unittest.TestCase):
         self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_build_branch,
             'AM_BUILD_BRANCH',
-            RuntimeContextPaths.BUILD_BRANCH,
+            ContextPaths.BUILD_BRANCH,
             'main'
         )
 
@@ -68,7 +70,7 @@ class OptionOverridesTestCase(unittest.TestCase):
         self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_build_flavor,
             'AM_BUILD_FLAVOR',
-            RuntimeContextPaths.BUILD_FLAVOR,
+            ContextPaths.BUILD_FLAVOR,
             'debug'
         )
 
@@ -76,7 +78,7 @@ class OptionOverridesTestCase(unittest.TestCase):
         self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_build_name,
             'AM_BUILD_NAME',
-            RuntimeContextPaths.BUILD_NAME,
+            ContextPaths.BUILD_NAME,
             '1.0.0'
         )
 
@@ -84,7 +86,7 @@ class OptionOverridesTestCase(unittest.TestCase):
         self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_build_url,
             'AM_BUILD_URL',
-            RuntimeContextPaths.BUILD_URL,
+            ContextPaths.BUILD_URL,
             'https://build.example.com'
         )
 
@@ -92,7 +94,7 @@ class OptionOverridesTestCase(unittest.TestCase):
         self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_debug_breakpoints,
             'AM_DEBUG_BREAKPOINTS',
-            RuntimeContextPaths.DEBUG_BREAKPOINTS,
+            ContextPaths.DEBUG_BREAKPOINTS,
             'startup'
         )
 
@@ -100,7 +102,7 @@ class OptionOverridesTestCase(unittest.TestCase):
         self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_debug_debugger,
             'AM_DEBUG_DEBUGGER',
-            RuntimeContextPaths.DEBUG_DEBUGGER,
+            ContextPaths.DEBUG_DEBUGGER,
             'pdb'
         )
 
@@ -108,7 +110,7 @@ class OptionOverridesTestCase(unittest.TestCase):
         self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_job_id,
             'AM_JOB_ID',
-            RuntimeContextPaths.JOB_ID,
+            ContextPaths.JOB_ID,
             'job123'
         )
 
@@ -116,7 +118,7 @@ class OptionOverridesTestCase(unittest.TestCase):
         self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_job_initiator,
             'AM_JOB_INITIATOR',
-            RuntimeContextPaths.JOB_INITIATOR,
+            ContextPaths.JOB_INITIATOR,
             'tester'
         )
 
@@ -124,7 +126,7 @@ class OptionOverridesTestCase(unittest.TestCase):
         self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_job_label,
             'AM_JOB_LABEL',
-            RuntimeContextPaths.JOB_LABEL,
+            ContextPaths.JOB_LABEL,
             'nightly'
         )
 
@@ -132,7 +134,7 @@ class OptionOverridesTestCase(unittest.TestCase):
         self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_job_name,
             'AM_JOB_NAME',
-            RuntimeContextPaths.JOB_NAME,
+            ContextPaths.JOB_NAME,
             'unit-tests'
         )
 
@@ -140,7 +142,7 @@ class OptionOverridesTestCase(unittest.TestCase):
         self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_job_owner,
             'AM_JOB_OWNER',
-            RuntimeContextPaths.JOB_OWNER,
+            ContextPaths.JOB_OWNER,
             'owner1'
         )
 
@@ -148,7 +150,7 @@ class OptionOverridesTestCase(unittest.TestCase):
         self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_job_seed,
             'AM_JOB_SEED',
-            RuntimeContextPaths.JOB_SEED,
+            ContextPaths.JOB_SEED,
             'seed123'
         )
 
@@ -156,7 +158,7 @@ class OptionOverridesTestCase(unittest.TestCase):
         self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_job_tag,
             'AM_JOB_TAG',
-            RuntimeContextPaths.JOB_TAG,
+            ContextPaths.JOB_TAG,
             'tagA'
         )
 
@@ -164,7 +166,7 @@ class OptionOverridesTestCase(unittest.TestCase):
         self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_job_type,
             'AM_JOB_TYPE',
-            RuntimeContextPaths.JOB_TYPE,
+            ContextPaths.JOB_TYPE,
             'manual'
         )
 
@@ -172,7 +174,7 @@ class OptionOverridesTestCase(unittest.TestCase):
         self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_loglevel_console,
             'AM_LOG_LEVEL_CONSOLE',
-            RuntimeContextPaths.LOGGING_LEVEL_CONSOLE,
+            ContextPaths.LOGGING_LEVEL_CONSOLE,
             'INFO'
         )
 
@@ -180,7 +182,7 @@ class OptionOverridesTestCase(unittest.TestCase):
         self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_loglevel_file,
             'AM_LOG_LEVEL_FILE',
-            RuntimeContextPaths.LOGGING_LEVEL_LOGFILE,
+            ContextPaths.LOGGING_LEVEL_LOGFILE,
             'DEBUG'
         )
 
@@ -188,7 +190,7 @@ class OptionOverridesTestCase(unittest.TestCase):
         self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_output_directory,
             'AM_OUTPUT_DIRECTORY',
-            RuntimeContextPaths.OUTPUT_DIRECTORY,
+            ContextPaths.OUTPUT_DIRECTORY,
             '/tmp/output'
         )
 
@@ -196,7 +198,7 @@ class OptionOverridesTestCase(unittest.TestCase):
         self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_pipeline_id,
             'AM_PIPELINE_ID',
-            RuntimeContextPaths.PIPELINE_ID,
+            ContextPaths.PIPELINE_ID,
             'pipe-001'
         )
 
@@ -204,7 +206,7 @@ class OptionOverridesTestCase(unittest.TestCase):
         self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_pipeline_name,
             'AM_PIPELINE_INSTANCE',
-            RuntimeContextPaths.PIPELINE_INSTANCE,
+            ContextPaths.PIPELINE_INSTANCE,
             'pipe-inst-1'
         )
 
@@ -212,7 +214,7 @@ class OptionOverridesTestCase(unittest.TestCase):
         self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_run_id,
             'AM_RUN_ID',
-            RuntimeContextPaths.RUNID,
+            ContextPaths.RUNID,
             'run-123'
         )
 
@@ -220,7 +222,7 @@ class OptionOverridesTestCase(unittest.TestCase):
         self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_shared_store_directory,
             'AM_SHARED_STORE_DIRECTORY',
-            RuntimeContextPaths.SHARED_STORE_DIRECTORY,
+            ContextPaths.SHARED_STORE_DIRECTORY,
             '/tmp/shared'
         )
 
@@ -229,7 +231,7 @@ class OptionOverridesTestCase(unittest.TestCase):
         self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_starttime,
             'AM_STARTTIME',
-            RuntimeContextPaths.STARTTIME,
+            ContextPaths.STARTTIME,
             value.isoformat()
         )
 
@@ -237,7 +239,7 @@ class OptionOverridesTestCase(unittest.TestCase):
         self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_testroot,
             'AM_TESTROOT',
-            RuntimeContextPaths.TESTROOT,
+            ContextPaths.TESTROOT,
             '/path/to/tests'
         )
 
