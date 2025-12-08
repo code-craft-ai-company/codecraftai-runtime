@@ -123,9 +123,8 @@ def activate_profile_service(max_bytes: int = 10 * 1024 * 1024, backup_count: in
         errmsg = "The 'service_name' needs to be set on when you call 'establish_app_persona'."
         raise SemanticError(errmsg)
 
-    this_app.override_variable_value(RuntimeVariablesDesc.AM_LOG_LEVEL_CONSOLE, LogLevel)
-    RuntimeVariablesDesc.AM_LOG_LEVEL_CONSOLE = LogLevel.INFO
-    RuntimeVariablesDesc.AM_OUTPUT_DIRECTORY = os.path.join(this_app.presence_dir, "services", service_name)
+    this_app.override_variable_value(RuntimeVariablesDesc.AM_LOG_LEVEL_CONSOLE, LogLevel.INFO)
+    this_app.override_variable_value(RuntimeVariablesDesc.AM_OUTPUT_DIRECTORY, os.path.join(this_app.presence_dir, "services", service_name))
 
     _activate_profile_common(this_app)
 
