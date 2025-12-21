@@ -39,6 +39,10 @@ def default_template_path_for_tests():
     rtnval = os.path.join(RuntimeVariables.AM_PRESENCE_DIR, "results", "testresults", "%(starttime)s")
     return rtnval
 
+def default_job_seed():
+    rtnval = str(uuid4())
+    return rtnval
+
 class RuntimeVariablesDesc(PersonaVariablesDesc):
 
     AM_ACTIVATION_PROFILE = AppVarDesc(default=None)
@@ -78,7 +82,7 @@ class RuntimeVariablesDesc(PersonaVariablesDesc):
     AM_JOB_LABEL = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.JOB_LABEL)
     AM_JOB_NAME = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.JOB_NAME)
     AM_JOB_OWNER = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.JOB_OWNER)
-    AM_JOB_SEED = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.JOB_SEED)
+    AM_JOB_SEED = AppVarDesc(default=default_job_seed, context_path=ContextPaths.JOB_SEED)
     AM_JOB_TAG = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.JOB_TAG)
     AM_JOB_TYPE = AppVarDesc(default=JobType.Unknown.value, context_path=ContextPaths.JOB_TYPE)
     AM_JOB_VENUE = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.JOB_VENUE)
