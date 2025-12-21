@@ -35,6 +35,9 @@ from automojo.runtime.enumerations import JobType
 class DefaultValue:
     NotSet = "(not-set)"
 
+def default_template_path_for_tests():
+    rtnval = os.path.join(RuntimeVariables.AM_PRESENCE_DIR, "results", "testresults", "%(starttime)s")
+    return rtnval
 
 class RuntimeVariablesDesc(PersonaVariablesDesc):
 
@@ -98,7 +101,7 @@ class RuntimeVariablesDesc(PersonaVariablesDesc):
 
     AM_TEMPLATE_PATH_FOR_ORCHESTRATION = AppVarDesc(default=None, context_path=ContextPaths.TEMPLATE_PATH_FOR_ORCHESTRATION)
     AM_TEMPLATE_PATH_FOR_SERVICES = AppVarDesc(default=None, context_path=ContextPaths.TEMPLATE_PATH_FOR_SERVICES)
-    AM_TEMPLATE_PATH_FOR_TESTS = AppVarDesc(default=None, context_path=ContextPaths.TEMPLATE_PATH_FOR_TESTS)
+    AM_TEMPLATE_PATH_FOR_TESTS = AppVarDesc(default=None, default=default_template_path_for_tests, context_path=ContextPaths.TEMPLATE_PATH_FOR_TESTS)
 
     AM_RESULT_PATH_FOR_ORCHESTRATION = AppVarDesc(default=None, context_path=ContextPaths.RESULT_PATH_FOR_ORCHESTRATION)
     AM_RESULT_PATH_FOR_SERVICES = AppVarDesc(default=None, context_path=ContextPaths.RESULT_PATH_FOR_SERVICES)
