@@ -202,8 +202,7 @@ def resolve_runtime_variables():
     RUNTIME_VARIABLES_RESOLVED = True
 
     this_app = ThisApplicationSingleton()
-    this_app.resolve_variable_set(RuntimeVariablesDesc)
-
+    
     starttime_value = RuntimeVariables.AM_STARTTIME
     if isinstance(starttime_value, str):
         try:
@@ -220,7 +219,6 @@ def resolve_runtime_variables():
             shared_output_directory = RuntimeVariablesDesc.AM_HAS_SHARED_OUTPUT_DIRECTORY.default
     this_app.override_variable_value(RuntimeVariablesDesc.AM_HAS_SHARED_OUTPUT_DIRECTORY, shared_output_directory)
 
-    job_seed_value = RuntimeVariables.AM_JOB_SEED
-    this_app.override_variable_value(RuntimeVariablesDesc.AM_JOB_SEED, job_seed_value)
+    this_app.resolve_variable_set(RuntimeVariablesDesc)
 
     return

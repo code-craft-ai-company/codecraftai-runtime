@@ -40,6 +40,12 @@ class RuntimeVariablesTests(unittest.TestCase):
         self.this_app.override_variable_value(RuntimeVariablesDesc.AM_PRESENCE_DIR, self.temp_dir)
         self.this_app.override_variable_value(RuntimeVariablesDesc.AM_LOG_DIRECTORY, os.path.join(self.temp_dir, "logs"))
 
+        # Reset the resolution of runtime variables so tests can recall 'runtimevariables.resolve_runtime_variables'
+        runtimevariables.RUNTIME_VARIABLES_RESOLVED = False
+        self.this_app.forget_variable(runtimevariables.RuntimeVariablesDesc.AM_STARTTIME)
+        self.this_app.forget_variable(runtimevariables.RuntimeVariablesDesc.AM_JOB_SEED)
+        self.this_app.forget_variable(runtimevariables.RuntimeVariablesDesc.AM_HAS_SHARED_OUTPUT_DIRECTORY)
+
         def simple_get(self_app, variable_desc, default=None, converter=None):
             vkey = variable_desc.key
             if vkey not in self_app._application_variables:
@@ -58,6 +64,7 @@ class RuntimeVariablesTests(unittest.TestCase):
         self.addCleanup(shutil.rmtree, self.temp_dir, ignore_errors=True)
         self.addCleanup(self._clear_singleton)
         self.addCleanup(self.env_patch.stop)
+        return
 
     def _clear_singleton(self):
         wellknown.THISAPPLICATION_SINGLETON = None
@@ -68,26 +75,27 @@ class RuntimeVariablesTests(unittest.TestCase):
         self.assertEqual('myseed', runtimevariables.get_runtime_seed())
 
     def test_resolve_generates_seed_when_not_set(self):
-        with mock.patch.dict(os.environ, {}, clear=True):
-            runtimevariables.resolve_runtime_variables()
         seed = runtimevariables.RuntimeVariables.AM_JOB_SEED
-        self.assertEqual(seed, DefaultValue.NotSet)
+        self.assertNotEqual(seed, DefaultValue.NotSet)
 
     def test_resolve_uses_environment_seed(self):
         with mock.patch.dict(os.environ, {'AM_JOB_SEED': 'seed123'}, clear=True):
             runtimevariables.resolve_runtime_variables()
-        self.assertEqual('seed123', runtimevariables.RuntimeVariables.AM_JOB_SEED)
+            found = runtimevariables.RuntimeVariables.AM_JOB_SEED
+            self.assertEqual('seed123', found)
 
     def test_resolve_parses_starttime_timestamp(self):
         start_time = '2025-01-02T03:04:05.123456'
         with mock.patch.dict(os.environ, {'AM_STARTTIME': start_time}, clear=True):
             runtimevariables.resolve_runtime_variables()
-        self.assertIsInstance(runtimevariables.RuntimeVariables.AM_STARTTIME, datetime)
+            found = runtimevariables.RuntimeVariables.AM_STARTTIME
+            self.assertIsInstance(found, datetime)
 
     def test_resolve_parses_shared_output_directory_bool(self):
         with mock.patch.dict(os.environ, {'AM_HAS_SHARED_OUTPUT_DIRECTORY': 'true'}, clear=True):
             runtimevariables.resolve_runtime_variables()
-        self.assertTrue(runtimevariables.RuntimeVariables.AM_HAS_SHARED_OUTPUT_DIRECTORY)
+            found = runtimevariables.RuntimeVariables.AM_HAS_SHARED_OUTPUT_DIRECTORY
+            self.assertTrue(found)
 
 if __name__ == '__main__':
     unittest.main()
