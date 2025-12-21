@@ -9,6 +9,7 @@ from automojo.runtime import activation
 from automojo.xmodules.xdatetime import DATETIME_FORMAT_FILESYSTEM
 from automojo.xmodules.xlogging import activation as loggingactivation
 
+from automojo.thisapp.contextpaths import ContextPaths
 from automojo.runtime.enumerations import ActivationProfile, JobType
 from automojo.runtime.runtimevariables import RuntimeVariables, RuntimeVariablesDesc
 from automojo.thisapp import wellknown
@@ -94,8 +95,9 @@ class ActivationProfileTests(unittest.TestCase):
     def test_activate_profile_service_uses_configured_name(self):
 
         self.this_app._service_name = 'testsvc'
-        with self.assertRaises(TypeError):
-            activation.activate_profile_service()
+        activation.activate_profile_service()
+        expected_output_dir = os.path.join(self.temp_dir, "services", self.this_app.service_name)
+        self.assertEqual(expected_output_dir, RuntimeVariables.AM_OUTPUT_DIRECTORY)
 
         return
 
@@ -168,9 +170,8 @@ class ActivationCommonTests(unittest.TestCase):
 
         activation.activate_profile_job(job_type=JobType.TestRun)
 
-        found = self.context_store.get(activation.RuntimeContextPaths.OUTPUT_DIRECTORY)
+        found = self.this_app.context.lookup(ContextPaths.OUTPUT_DIRECTORY, default=None)
 
         self.assertIsNotNone(found)
 
         return
-
