@@ -76,7 +76,7 @@ class RuntimeVariablesTests(unittest.TestCase):
     def test_resolve_uses_environment_seed(self):
         with mock.patch.dict(os.environ, {'AM_JOB_SEED': 'seed123'}, clear=True):
             runtimevariables.resolve_runtime_variables()
-        self.assertEqual(DefaultValue.NotSet, runtimevariables.RuntimeVariables.AM_JOB_SEED)
+        self.assertEqual('seed123', runtimevariables.RuntimeVariables.AM_JOB_SEED)
 
     def test_resolve_parses_starttime_timestamp(self):
         start_time = '2025-01-02T03:04:05.123456'
@@ -87,7 +87,7 @@ class RuntimeVariablesTests(unittest.TestCase):
     def test_resolve_parses_shared_output_directory_bool(self):
         with mock.patch.dict(os.environ, {'AM_HAS_SHARED_OUTPUT_DIRECTORY': 'true'}, clear=True):
             runtimevariables.resolve_runtime_variables()
-        self.assertFalse(runtimevariables.RuntimeVariables.AM_HAS_SHARED_OUTPUT_DIRECTORY)
+        self.assertTrue(runtimevariables.RuntimeVariables.AM_HAS_SHARED_OUTPUT_DIRECTORY)
 
 if __name__ == '__main__':
     unittest.main()

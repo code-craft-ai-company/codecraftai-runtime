@@ -188,4 +188,23 @@ def resolve_runtime_variables():
     this_app = ThisApplicationSingleton()
     this_app.resolve_variable_set(RuntimeVariablesDesc)
 
+    starttime_value = RuntimeVariables.AM_STARTTIME
+    if isinstance(starttime_value, str):
+        try:
+            starttime_value = parse_datetime(starttime_value, DATETIME_FORMAT_TIMESTAMP)
+        except ValueError:
+            starttime_value = parse_datetime(starttime_value, DATETIME_FORMAT_FILESYSTEM)
+    this_app.override_variable_value(RuntimeVariablesDesc.AM_STARTTIME, starttime_value)
+
+    shared_output_directory = RuntimeVariables.AM_HAS_SHARED_OUTPUT_DIRECTORY
+    if isinstance(shared_output_directory, str):
+        try:
+            shared_output_directory = parse_bool(shared_output_directory)
+        except ValueError:
+            shared_output_directory = RuntimeVariablesDesc.AM_HAS_SHARED_OUTPUT_DIRECTORY.default
+    this_app.override_variable_value(RuntimeVariablesDesc.AM_HAS_SHARED_OUTPUT_DIRECTORY, shared_output_directory)
+
+    job_seed_value = RuntimeVariables.AM_JOB_SEED
+    this_app.override_variable_value(RuntimeVariablesDesc.AM_JOB_SEED, job_seed_value)
+
     return
