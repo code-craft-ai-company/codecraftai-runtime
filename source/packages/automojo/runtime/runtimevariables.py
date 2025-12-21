@@ -186,7 +186,16 @@ def get_runtime_seed() -> str:
     return rtnval
 
 
+RUNTIME_VARIABLES_RESOLVED = False
+
 def resolve_runtime_variables():
+
+    global RUNTIME_VARIABLES_RESOLVED
+
+    if RUNTIME_VARIABLES_RESOLVED:
+        return
+    
+    RUNTIME_VARIABLES_RESOLVED = True
 
     this_app = ThisApplicationSingleton()
     this_app.resolve_variable_set(RuntimeVariablesDesc)
