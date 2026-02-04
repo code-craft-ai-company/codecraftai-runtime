@@ -203,6 +203,14 @@ class OptionOverridesTestCase(unittest.TestCase):
     def test_override_pipeline_name(self):
         self._check_override(
             AM_RUNTIME_OPTION_OVERRIDES.override_pipeline_name,
+            'AM_PIPELINE_NAME',
+            ContextPaths.PIPELINE_NAME,
+            'pipeline-alpha'
+        )
+
+    def test_override_pipeline_instance(self):
+        self._check_override(
+            AM_RUNTIME_OPTION_OVERRIDES.override_pipeline_instance,
             'AM_PIPELINE_INSTANCE',
             ContextPaths.PIPELINE_INSTANCE,
             'pipe-inst-1'
