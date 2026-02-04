@@ -62,7 +62,7 @@ def activate_profile_command():
     console_level = RuntimeVariables.AM_LOG_LEVEL_CONSOLE
     file_level = RuntimeVariables.AM_LOG_LEVEL_CONSOLE
 
-    activate_standard_file_logging(console_level, file_level, logging_location)
+    activate_standard_file_logging(logging_location, console_level, file_level)
 
     return
 

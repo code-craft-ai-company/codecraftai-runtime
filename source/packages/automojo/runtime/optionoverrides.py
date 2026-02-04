@@ -287,9 +287,9 @@ class AM_RUNTIME_OPTION_OVERRIDES:
         return
 
     @staticmethod
-    def override_pipeline_name(pipeline_instance: str):
+    def override_pipeline_instance(pipeline_instance: str):
         """
-            This override function provides a mechanism overriding the AM_PIPELINE_NAME
+            This override function provides a mechanism overriding the AM_PIPELINE_INSTANCE
             variable and context configuration setting.
 
             :param pipeline_instance: A uuid string that represents the instance of a given pipeline.

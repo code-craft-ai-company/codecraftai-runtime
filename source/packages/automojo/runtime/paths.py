@@ -32,7 +32,7 @@ DIR_DIAGNOSTICS_DIRECTORY = None
 DIR_RESULTS_DIRECTORY = None
 DIR_SHARED_STORE_DIRECTORY = None
 DIR_TESTRESULTS_DIRECTORY = None
-DIR_TESTCASE_BYPRODUCTS_DIRECTORY = None
+DIR_TESTCASE_BYPRODUCTS_DIRECTORY = {}
 
 TRANSLATE_TABLE_NORMALIZE_FOR_PATH = str.maketrans(",.:;", "    ")
 
@@ -249,14 +249,19 @@ def get_path_for_testcase_by_products(test_id: str) -> str:
     global DIR_TESTCASE_BYPRODUCTS_DIRECTORY
 
     if DIR_TESTCASE_BYPRODUCTS_DIRECTORY is None:
+        DIR_TESTCASE_BYPRODUCTS_DIRECTORY = {}
+
+    if test_id not in DIR_TESTCASE_BYPRODUCTS_DIRECTORY:
 
         trdir = get_path_for_testresults()
-        DIR_TESTCASE_BYPRODUCTS_DIRECTORY = os.path.join(trdir, "tc-by-products", test_id)
+        byproducts_dir = os.path.join(trdir, "tc-by-products", test_id)
 
-        if not os.path.exists(DIR_TESTCASE_BYPRODUCTS_DIRECTORY):
-            os.makedirs(DIR_TESTCASE_BYPRODUCTS_DIRECTORY)
+        if not os.path.exists(byproducts_dir):
+            os.makedirs(byproducts_dir)
 
-    return DIR_TESTCASE_BYPRODUCTS_DIRECTORY
+        DIR_TESTCASE_BYPRODUCTS_DIRECTORY[test_id] = byproducts_dir
+
+    return DIR_TESTCASE_BYPRODUCTS_DIRECTORY[test_id]
 
 
 def get_presence_directory() -> str:
