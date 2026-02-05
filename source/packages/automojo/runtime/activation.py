@@ -60,7 +60,7 @@ def activate_profile_command():
     logging_location = LoggingLocation(log_directory, log_basename)
 
     console_level = RuntimeVariables.AM_LOG_LEVEL_CONSOLE
-    file_level = RuntimeVariables.AM_LOG_LEVEL_CONSOLE
+    file_level = RuntimeVariables.AM_LOG_LEVEL_FILE
 
     activate_standard_file_logging(logging_location, console_level, file_level)
 
@@ -134,7 +134,7 @@ def activate_profile_service(max_bytes: int = 10 * 1024 * 1024, backup_count: in
     logging_location = LoggingLocation(log_directory, log_basename)
 
     console_level = RuntimeVariables.AM_LOG_LEVEL_CONSOLE
-    file_level = RuntimeVariables.AM_LOG_LEVEL_CONSOLE
+    file_level = RuntimeVariables.AM_LOG_LEVEL_FILE
 
     activate_service_logging(logging_location, console_level, file_level, max_bytes, backup_count)
 
@@ -164,7 +164,7 @@ def activate_profile_job(job_type: JobType):
     logging_location = LoggingLocation(log_directory, log_basename)
 
     console_level = RuntimeVariables.AM_LOG_LEVEL_CONSOLE
-    file_level = RuntimeVariables.AM_LOG_LEVEL_CONSOLE
+    file_level = RuntimeVariables.AM_LOG_LEVEL_FILE
 
     activate_standard_file_logging(logging_location, console_level, file_level)
 
