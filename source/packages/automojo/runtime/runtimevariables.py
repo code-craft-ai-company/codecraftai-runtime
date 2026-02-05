@@ -106,10 +106,14 @@ class RuntimeVariablesDesc(PersonaVariablesDesc):
     AM_TEMPLATE_PATH_FOR_ORCHESTRATION = AppVarDesc(default=None, context_path=ContextPaths.TEMPLATE_PATH_FOR_ORCHESTRATION)
     AM_TEMPLATE_PATH_FOR_SERVICES = AppVarDesc(default=None, context_path=ContextPaths.TEMPLATE_PATH_FOR_SERVICES)
     AM_TEMPLATE_PATH_FOR_TESTS = AppVarDesc(default=default_template_path_for_tests, context_path=ContextPaths.TEMPLATE_PATH_FOR_TESTS)
+    AM_TEMPLATE_PATH_FOR_BUILD = AppVarDesc(default=None)
+    AM_TEMPLATE_PATH_FOR_INFRASTRUCTURE = AppVarDesc(default=None)
 
     AM_RESULT_PATH_FOR_ORCHESTRATION = AppVarDesc(default=None, context_path=ContextPaths.RESULT_PATH_FOR_ORCHESTRATION)
     AM_RESULT_PATH_FOR_SERVICES = AppVarDesc(default=None, context_path=ContextPaths.RESULT_PATH_FOR_SERVICES)
     AM_RESULT_PATH_FOR_TESTS = AppVarDesc(default=None, context_path=ContextPaths.RESULT_PATH_FOR_TESTS)
+    AM_RESULT_PATH_FOR_BUILD = AppVarDesc(default=None)
+    AM_RESULT_PATH_FOR_INFRASTRUCTURE = AppVarDesc(default=None)
 
 
 class RuntimeVariables(PersonaVariables):
@@ -179,10 +183,14 @@ class RuntimeVariables(PersonaVariables):
     AM_TEMPLATE_PATH_FOR_ORCHESTRATION = AppVarAccessor(RuntimeVariablesDesc.AM_TEMPLATE_PATH_FOR_ORCHESTRATION)
     AM_TEMPLATE_PATH_FOR_SERVICES = AppVarAccessor(RuntimeVariablesDesc.AM_TEMPLATE_PATH_FOR_SERVICES)
     AM_TEMPLATE_PATH_FOR_TESTS = AppVarAccessor(RuntimeVariablesDesc.AM_TEMPLATE_PATH_FOR_TESTS)
+    AM_TEMPLATE_PATH_FOR_BUILD = AppVarAccessor(RuntimeVariablesDesc.AM_TEMPLATE_PATH_FOR_BUILD)
+    AM_TEMPLATE_PATH_FOR_INFRASTRUCTURE = AppVarAccessor(RuntimeVariablesDesc.AM_TEMPLATE_PATH_FOR_INFRASTRUCTURE)
 
     AM_RESULT_PATH_FOR_ORCHESTRATION = AppVarAccessor(RuntimeVariablesDesc.AM_RESULT_PATH_FOR_ORCHESTRATION)
     AM_RESULT_PATH_FOR_SERVICES = AppVarAccessor(RuntimeVariablesDesc.AM_RESULT_PATH_FOR_SERVICES)
     AM_RESULT_PATH_FOR_TESTS = AppVarAccessor(RuntimeVariablesDesc.AM_RESULT_PATH_FOR_TESTS)
+    AM_RESULT_PATH_FOR_BUILD = AppVarAccessor(RuntimeVariablesDesc.AM_RESULT_PATH_FOR_BUILD)
+    AM_RESULT_PATH_FOR_INFRASTRUCTURE = AppVarAccessor(RuntimeVariablesDesc.AM_RESULT_PATH_FOR_INFRASTRUCTURE)
 
 
 def get_runtime_seed() -> str:
