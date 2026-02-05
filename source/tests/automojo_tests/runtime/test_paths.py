@@ -86,15 +86,24 @@ class PathsTestCase(unittest.TestCase):
     def test_collect_python_modules_depth_limit(self):
         root = os.path.join(self.workdir, "mods")
         os.makedirs(os.path.join(root, "sub", "deep"), exist_ok=True)
+        # Create a sibling directory to 'sub' to ensure we don't abort early
+        os.makedirs(os.path.join(root, "sub2"), exist_ok=True)
+
         with open(os.path.join(root, "m1.py"), "w") as f:
             f.write("pass")
         with open(os.path.join(root, "sub", "m2.py"), "w") as f:
             f.write("pass")
         with open(os.path.join(root, "sub", "deep", "m3.py"), "w") as f:
             f.write("pass")
+        with open(os.path.join(root, "sub2", "m4.py"), "w") as f:
+            f.write("pass")
 
         found = paths.collect_python_modules(root, max_depth=1)
-        expected = {os.path.join(root, "m1.py"), os.path.join(root, "sub", "m2.py")}
+        expected = {
+            os.path.join(root, "m1.py"),
+            os.path.join(root, "sub", "m2.py"),
+            os.path.join(root, "sub2", "m4.py")
+        }
         self.assertEqual(set(found), expected)
 
     def test_ensure_directory_is_package(self):
