@@ -220,7 +220,7 @@ class AM_RUNTIME_OPTION_OVERRIDES:
             This override function provides a mechanism overriding the AM_JOB_TYPE
             variable and context configuration setting.
 
-            :param job_owner: The type of the job.
+            :param job_type: The type of the job.
         """
         this_app = ThisApplicationSingleton()
         this_app.override_variable_value(RuntimeVariablesDesc.AM_JOB_TYPE, job_type)

@@ -335,7 +335,8 @@ def get_temporary_file(suffix: str = '', prefix: str = '') -> str:
     """
     tempdir = get_temporary_directory()
 
-    tmpfile = tempfile.mktemp(suffix=suffix, prefix=prefix, dir=tempdir)
+    fd, tmpfile = tempfile.mkstemp(suffix=suffix, prefix=prefix, dir=tempdir)
+    os.close(fd)
 
     return tmpfile
 

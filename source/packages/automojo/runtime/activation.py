@@ -212,26 +212,34 @@ def _activate_profile_common(this_app: ThisApplication):
 
     if jobtype == JobType.Infrastructure:
         default_dir_template = os.path.join(presence_dir, "results", "infrastructure", "%(starttime)s")
-        outdir_template = this_app.get_variable_value(RuntimeVariablesDesc.AM_TEMPLATE_PATH_FOR_ORCHESTRATION, default=default_dir_template)
+        outdir_template = RuntimeVariables.AM_TEMPLATE_PATH_FOR_INFRASTRUCTURE
+        if outdir_template is None:
+            outdir_template = default_dir_template
         job_output_directory = outdir_template % fill_dict
-        this_app.override_variable_value(RuntimeVariablesDesc.AM_RESULT_PATH_FOR_ORCHESTRATION, job_output_directory)
+        this_app.override_variable_value(RuntimeVariablesDesc.AM_RESULT_PATH_FOR_INFRASTRUCTURE, job_output_directory)
 
     elif jobtype == JobType.Orchestration:
         default_dir_template = os.path.join(presence_dir, "results", "orchestration", "%(starttime)s")
-        outdir_template =this_app.get_variable_value(RuntimeVariablesDesc.AM_TEMPLATE_PATH_FOR_ORCHESTRATION, default=default_dir_template)
+        outdir_template = RuntimeVariables.AM_TEMPLATE_PATH_FOR_ORCHESTRATION
+        if outdir_template is None:
+            outdir_template = default_dir_template
         job_output_directory = outdir_template % fill_dict
         this_app.override_variable_value(RuntimeVariablesDesc.AM_RESULT_PATH_FOR_ORCHESTRATION, job_output_directory)
 
     elif jobtype == JobType.Build:
         default_dir_template = os.path.join(presence_dir, "results", "build", "%(starttime)s")
-        outdir_template = this_app.get_variable_value(RuntimeVariablesDesc.AM_TEMPLATE_PATH_FOR_SERVICES, default=default_dir_template)
+        outdir_template = RuntimeVariables.AM_TEMPLATE_PATH_FOR_BUILD
+        if outdir_template is None:
+            outdir_template = default_dir_template
         job_output_directory = outdir_template % fill_dict
-        this_app.override_variable_value(RuntimeVariablesDesc.AM_RESULT_PATH_FOR_SERVICES, job_output_directory)
+        this_app.override_variable_value(RuntimeVariablesDesc.AM_RESULT_PATH_FOR_BUILD, job_output_directory)
 
     elif jobtype == JobType.TestRun:
         if RuntimeVariables.AM_OUTPUT_DIRECTORY is None:
             default_dir_template = os.path.join(presence_dir, "results", "testresults", "%(starttime)s")
-            outdir_template = this_app.get_variable_value(RuntimeVariablesDesc.AM_TEMPLATE_PATH_FOR_TESTS, default=default_dir_template)
+            outdir_template = RuntimeVariables.AM_TEMPLATE_PATH_FOR_TESTS
+            if outdir_template is None:
+                outdir_template = default_dir_template
             job_output_directory = outdir_template % fill_dict
             this_app.override_variable_value(RuntimeVariablesDesc.AM_RESULT_PATH_FOR_TESTS, job_output_directory)
 
