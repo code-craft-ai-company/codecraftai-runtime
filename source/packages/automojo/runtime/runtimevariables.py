@@ -158,6 +158,8 @@ class RuntimeVariables(PersonaVariables):
     AM_PIPELINE_NAME = AppVarAccessor(RuntimeVariablesDesc.AM_PIPELINE_NAME)
     AM_PIPELINE_INSTANCE = AppVarAccessor(RuntimeVariablesDesc.AM_PIPELINE_INSTANCE)
 
+    AM_PRESENCE_DIR = AppVarAccessor(RuntimeVariablesDesc.AM_PRESENCE_DIR)
+
     AM_JOB_CLASS = AppVarAccessor(RuntimeVariablesDesc.AM_JOB_CLASS)
     AM_JOB_ID = AppVarAccessor(RuntimeVariablesDesc.AM_JOB_ID)
     AM_JOB_TYPE = AppVarAccessor(RuntimeVariablesDesc.AM_JOB_TYPE)
