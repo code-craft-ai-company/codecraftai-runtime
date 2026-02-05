@@ -55,11 +55,11 @@ class RuntimeVariablesDesc(PersonaVariablesDesc):
     AM_BUG_USERNAME = AppVarDesc(default=None)
     AM_BUG_TOKEN = AppVarDesc(default=None)
 
-    AM_BUILD_RELEASE = AppVarDesc(default=DefaultValue.NotSet, context_path="BUILD_RELEASE")
-    AM_BUILD_BRANCH = AppVarDesc(default=DefaultValue.NotSet, context_path="BUILD_BRANCH")
-    AM_BUILD_FLAVOR = AppVarDesc(default=DefaultValue.NotSet, context_path="BUILD_FLAVOR")
-    AM_BUILD_NAME = AppVarDesc(default=DefaultValue.NotSet, context_path="BUILD_NAME")
-    AM_BUILD_URL = AppVarDesc(default=DefaultValue.NotSet, context_path="BUILD_URL")
+    AM_BUILD_RELEASE = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.BUILD_RELEASE)
+    AM_BUILD_BRANCH = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.BUILD_BRANCH)
+    AM_BUILD_FLAVOR = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.BUILD_FLAVOR)
+    AM_BUILD_NAME = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.BUILD_NAME)
+    AM_BUILD_URL = AppVarDesc(default=DefaultValue.NotSet, context_path=ContextPaths.BUILD_URL)
 
     AM_DEBUG_BREAKPOINTS = AppVarDesc(default=None, context_path=ContextPaths.DEBUG_BREAKPOINTS)
     AM_DEBUG_DEBUGGER = AppVarDesc(default=None, context_path=ContextPaths.DEBUG_DEBUGGER)
