@@ -18,7 +18,7 @@ from typing import List, Optional
 import os
 import tempfile
 
-from automojo.errors.exceptions import SemanticError
+from automojo.errors.exceptions import ConfigurationError, SemanticError
 
 from automojo.xmodules.fspath import expand_path
 
@@ -173,7 +173,13 @@ def get_path_for_shared_store(create=True) -> str:
 
     if DIR_SHARED_STORE_DIRECTORY is None:
 
-        DIR_SHARED_STORE_DIRECTORY = expand_path(RuntimeVariables.AM_SHARED_STORE_DIRECTORY)
+        store_dir = RuntimeVariables.AM_SHARED_STORE_DIRECTORY
+        if store_dir is None:
+            errmsg = "The shared store directory (AM_SHARED_STORE_DIRECTORY) is not configured."
+            raise ConfigurationError(errmsg)
+
+        DIR_SHARED_STORE_DIRECTORY = expand_path(store_dir)
+
         if create:
             if not os.path.exists(DIR_SHARED_STORE_DIRECTORY):
                 os.makedirs(DIR_SHARED_STORE_DIRECTORY)
@@ -228,7 +234,11 @@ def get_path_for_testresults() -> str:
 
     if DIR_TESTRESULTS_DIRECTORY is None:
         
-        tr_dir = expand_path(RuntimeVariables.AM_RESULT_PATH_FOR_TESTS)
+        tr_dir = RuntimeVariables.AM_RESULT_PATH_FOR_TESTS
+        if tr_dir is None:
+            tr_dir = get_path_for_output()
+        else:
+            tr_dir = expand_path(tr_dir)
 
         DIR_TESTRESULTS_DIRECTORY = tr_dir
 
