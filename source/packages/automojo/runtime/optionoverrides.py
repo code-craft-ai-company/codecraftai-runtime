@@ -40,7 +40,7 @@ class AM_RUNTIME_OPTION_OVERRIDES:
             This override function provides a mechanism overriding the AM_BUILD_BRANCH
             variable and context configuration setting.
 
-            :param branch: The name of the branch the build came from.
+            :param branch_name: The name of the branch the build came from.
         """
         this_app = ThisApplicationSingleton()
         this_app.override_variable_value(RuntimeVariablesDesc.AM_BUILD_BRANCH, branch_name)
@@ -112,7 +112,7 @@ class AM_RUNTIME_OPTION_OVERRIDES:
             This override function provides a mechanism overriding the AM_JOB_ID
             variable and context configuration setting.
 
-            :param runid: A uuid string that represents the instance of this automation run.
+            :param job_id: A uuid string that represents the instance of this job.
         """
         this_app = ThisApplicationSingleton()
         this_app.override_variable_value(RuntimeVariablesDesc.AM_JOB_ID, job_id)
@@ -196,7 +196,7 @@ class AM_RUNTIME_OPTION_OVERRIDES:
             This override function provides a mechanism overriding the AM_JOB_SEED
             variable and context configuration setting.
 
-            :param job_seed: The type of the job.
+            :param job_seed: The seed of the job.
         """
         this_app = ThisApplicationSingleton()
         this_app.override_variable_value(RuntimeVariablesDesc.AM_JOB_SEED, job_seed)

@@ -196,7 +196,7 @@ def get_path_for_diagnostics(label: str) -> str:
     """
 
     if RuntimeVariables.AM_JOB_TYPE == JobType.Unknown:
-        errmsg = f"The 'artifacts' folder is only available for runtimes activated as a job. jobtype={RuntimeVariables.AM_JOB_TYPE}"
+        errmsg = f"The 'diagnostics' folder is only available for runtimes activated as a job. jobtype={RuntimeVariables.AM_JOB_TYPE}"
         raise SemanticError(errmsg)
 
     trdir = get_path_for_output()
@@ -221,7 +221,7 @@ def get_path_for_testresults() -> str:
     """
 
     if RuntimeVariables.AM_JOB_TYPE == JobType.Unknown:
-        errmsg = f"The 'artifacts' folder is only available for runtimes activated as a job. jobtype={RuntimeVariables.AM_JOB_TYPE}"
+        errmsg = f"The 'testresults' folder is only available for runtimes activated as a job. jobtype={RuntimeVariables.AM_JOB_TYPE}"
         raise SemanticError(errmsg)
 
     global DIR_TESTRESULTS_DIRECTORY
@@ -244,7 +244,7 @@ def get_path_for_testcase_by_products(test_id: str) -> str:
     """
 
     if RuntimeVariables.AM_JOB_TYPE == JobType.Unknown:
-        errmsg = f"The 'artifacts' folder is only available for runtimes activated as a job. jobtype={RuntimeVariables.AM_JOB_TYPE}"
+        errmsg = f"The 'tc-by-products' folder is only available for runtimes activated as a job. jobtype={RuntimeVariables.AM_JOB_TYPE}"
         raise SemanticError(errmsg)
 
     global DIR_TESTCASE_BYPRODUCTS_DIRECTORY
