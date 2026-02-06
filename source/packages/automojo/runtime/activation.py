@@ -212,9 +212,7 @@ def _activate_profile_common(this_app: ThisApplication):
 
     if jobtype == JobType.Infrastructure:
         default_dir_template = os.path.join(presence_dir, "results", "infrastructure", "%(starttime)s")
-        outdir_template = RuntimeVariables.AM_TEMPLATE_PATH_FOR_INFRASTRUCTURE
-        if outdir_template is None:
-            outdir_template = default_dir_template
+        outdir_template = default_dir_template
         job_output_directory = outdir_template % fill_dict
         this_app.override_variable_value(RuntimeVariablesDesc.AM_RESULT_PATH_FOR_INFRASTRUCTURE, job_output_directory)
 
