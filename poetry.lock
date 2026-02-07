@@ -26,7 +26,7 @@ pymongo = ["pymongo (>=4.13.2,<5.0.0)"]
 type = "git"
 url = "https://github.com/automationmojo/automojo-configuration.git"
 reference = "main"
-resolved_reference = "d14a9df8269d3dd442ee2e404e6bff0c2b92fafa"
+resolved_reference = "b8a56146615d6930b8dcc4c97ecfe9c6b12954f0"
 
 [[package]]
 name = "automojo-errors"
@@ -78,7 +78,7 @@ automojo-extension = {git = "https://github.com/automationmojo/automojo-extensio
 type = "git"
 url = "https://github.com/automationmojo/automojo-this-app.git"
 reference = "main"
-resolved_reference = "ef0fb9277b735af257470181ba8348de9bf7306e"
+resolved_reference = "3aa7521898bccd6fc75b9966ebe809cf97e88373"
 
 [[package]]
 name = "automojo-waiting"
@@ -115,7 +115,7 @@ debugpy = "^1.8.14"
 type = "git"
 url = "https://github.com/automationmojo/automojo-xmodules.git"
 reference = "main"
-resolved_reference = "f94b5ca6974e3e1f67348c2020167eb3b7fd37fd"
+resolved_reference = "b31ab8b66ab826a451f7822bae8aa9cf6eb94b08"
 
 [[package]]
 name = "certifi"
