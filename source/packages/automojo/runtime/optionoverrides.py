@@ -345,3 +345,15 @@ class AM_RUNTIME_OPTION_OVERRIDES:
         this_app = ThisApplicationSingleton()
         this_app.override_variable_value(RuntimeVariablesDesc.AM_TESTROOT, testroot)
         return
+
+    @staticmethod
+    def override_testrun_timeout(timeout: int):
+        """
+            This override function provides a mechanism overriding the AM_TESTRUN_TIMEOUT
+            variable and context configuration setting.
+
+            :param timeout: The maximum duration in seconds for the test execution phase.
+        """
+        this_app = ThisApplicationSingleton()
+        this_app.override_variable_value(RuntimeVariablesDesc.AM_TESTRUN_TIMEOUT, timeout)
+        return

@@ -102,6 +102,7 @@ class RuntimeVariablesDesc(PersonaVariablesDesc):
     AM_STARTTIME = AppVarDesc(default=datetime.now(), context_path=ContextPaths.STARTTIME)
 
     AM_TESTROOT = AppVarDesc(default=None, context_path=ContextPaths.TESTROOT)
+    AM_TESTRUN_TIMEOUT = AppVarDesc(default=None)
 
     AM_TEMPLATE_PATH_FOR_ORCHESTRATION = AppVarDesc(default=None, context_path=ContextPaths.TEMPLATE_PATH_FOR_ORCHESTRATION)
     AM_TEMPLATE_PATH_FOR_SERVICES = AppVarDesc(default=None, context_path=ContextPaths.TEMPLATE_PATH_FOR_SERVICES)
@@ -178,6 +179,7 @@ class RuntimeVariables(PersonaVariables):
     AM_STARTTIME = AppVarAccessor(RuntimeVariablesDesc.AM_STARTTIME)
 
     AM_TESTROOT = AppVarAccessor(RuntimeVariablesDesc.AM_TESTROOT)
+    AM_TESTRUN_TIMEOUT = AppVarAccessor(RuntimeVariablesDesc.AM_TESTRUN_TIMEOUT)
 
     AM_TEMPLATE_PATH_FOR_ORCHESTRATION = AppVarAccessor(RuntimeVariablesDesc.AM_TEMPLATE_PATH_FOR_ORCHESTRATION)
     AM_TEMPLATE_PATH_FOR_SERVICES = AppVarAccessor(RuntimeVariablesDesc.AM_TEMPLATE_PATH_FOR_SERVICES)
