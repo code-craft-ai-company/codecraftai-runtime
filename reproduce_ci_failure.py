@@ -18,7 +18,7 @@ mock_modules = [
     "automojo.thisapp.personavariables",
     "automojo.thisapp.wellknown",
     # We do NOT mock automojo.thisapp.contextpaths completely, we want to control ContextPaths
-    "automojo.runtime.enumerations"
+    "automojo.thisapp.enumerations"
 ]
 
 for mod_name in mock_modules:
@@ -78,9 +78,9 @@ mock_contextpaths_mod.ContextPaths = MockContextPaths
 sys.modules["automojo.thisapp.contextpaths"] = mock_contextpaths_mod
 
 # Import RuntimeVariables to trigger the error
-print("Attempting to import automojo.runtime.runtimevariables...")
+print("Attempting to import automojo.thisapp.runtimevariables...")
 try:
-    from automojo.runtime import runtimevariables
+    from automojo.thisapp import runtimevariables
     print("Import successful!")
 except AttributeError as e:
     # Check if the error is related to AM_OUTPUT_DIRECTORY which is expected

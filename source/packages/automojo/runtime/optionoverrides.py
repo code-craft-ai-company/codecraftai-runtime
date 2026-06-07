@@ -18,7 +18,7 @@ from datetime import datetime
 
 from automojo.thisapp.wellknown import ThisApplicationSingleton
 
-from automojo.runtime.runtimevariables import RuntimeVariablesDesc
+from automojo.thisapp.runtimevariables import RuntimeVariablesDesc
 
 class AM_RUNTIME_OPTION_OVERRIDES:
 

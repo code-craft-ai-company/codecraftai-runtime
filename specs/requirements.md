@@ -3,15 +3,24 @@
 ## 1. Introduction
 
 ### 1.1 Purpose
-This document specifies the requirements for the AutoMojo Runtime Package, a comprehensive runtime environment management system for automation testing frameworks. The package provides application lifecycle management, configuration handling, logging activation, and resource path management across different execution contexts.
+This document specifies the requirements for the runtime foundation that `automojo-runtime` historically owned: a comprehensive runtime environment management system for automation testing frameworks providing application lifecycle management, configuration handling, logging activation, and resource path management across different execution contexts.
+
+That runtime foundation has now **moved into `automojo-this-app`** (`automojo.thisapp.{runtimevariables,paths,enumerations,activation}`). As a result, `automojo-runtime` is being **RETIRED**: its `runtimevariables.py`, `paths.py`, `enumerations.py`, and `activation.py` modules are now thin compatibility shims that re-export their `automojo.thisapp.*` counterparts, while `optionoverrides.py` (`AM_RUNTIME_OPTION_OVERRIDES`) remains as real code for now.
+
+The functional requirements below therefore now constrain the relocated foundation in `automojo.thisapp` (with the exception of the override requirements, which `automojo-runtime`'s `optionoverrides.py` still satisfies). They are retained here as the authoritative behavioral specification during the migration, plus added retirement/shim requirements that constrain `automojo-runtime` itself.
 
 ### 1.2 Scope
-The requirements cover the `automojo.runtime` package functionality including:
+The requirements cover the runtime foundation functionality (now owned by `automojo.thisapp`) including:
 - Runtime profile activation and management
 - Configuration variable management and environment integration
 - File system path management and directory structure organization
 - Logging system activation and configuration
 - Error handling and validation mechanisms
+
+They also cover the requirements specific to `automojo-runtime` during its retirement:
+- The transparent re-export shims that preserve the `automojo.runtime.X` import paths
+- The runtime overrides (`AM_RUNTIME_OPTION_OVERRIDES`) that remain real code in this package
+- The migration/retirement plan toward removing the package once importers move to `automojo.thisapp`
 
 ### 1.3 Definitions and Acronyms
 - **AM**: AutoMojo (prefix for environment variables)
@@ -19,6 +28,8 @@ The requirements cover the `automojo.runtime` package functionality including:
 - **Job Type**: Category of automation work (Build, Infrastructure, Orchestration, TestRun)
 - **Presence Directory**: Base directory for application runtime files
 - **Output Directory**: Directory where job results and artifacts are stored
+- **Runtime Foundation**: The runtime variables, well-known paths, enumerations, and activation sequence — now owned by `automojo.thisapp`
+- **Shim**: A thin compatibility module in `automojo-runtime` that re-exports symbols from its `automojo.thisapp` counterpart to preserve the legacy `automojo.runtime.X` import path
 
 ## 2. Functional Requirements
 
@@ -172,6 +183,27 @@ The requirements cover the `automojo.runtime` package functionality including:
 
 **REQ-MOD-007**: The system SHALL support code container directory resolution for modules and packages.
 
+### 2.7 Relocation and Retirement (`automojo-runtime`)
+
+#### 2.7.1 Foundation Relocation
+**REQ-RETIRE-001**: The runtime foundation (runtime variables, well-known paths, enumerations, activation) SHALL be owned by `automojo.thisapp` in the modules `automojo.thisapp.{runtimevariables,paths,enumerations,activation}`.
+
+**REQ-RETIRE-002**: `automojo-runtime`'s `runtimevariables.py`, `paths.py`, `enumerations.py`, and `activation.py` SHALL be thin compatibility shims that re-export their `automojo.thisapp.*` counterparts and SHALL NOT contain an independent implementation of the foundation.
+
+**REQ-RETIRE-003**: Each shim SHALL re-export the full public surface of its `automojo.thisapp` counterpart so that existing `automojo.runtime.X` importers continue to work unchanged during the migration.
+
+#### 2.7.2 Retained Real Code
+**REQ-RETIRE-004**: `automojo-runtime` SHALL continue to ship `optionoverrides.py` as real code (`AM_RUNTIME_OPTION_OVERRIDES`), sourcing `ThisApplicationSingleton` and `RuntimeVariablesDesc` from `automojo.thisapp`.
+
+**REQ-RETIRE-005**: The override requirements (REQ-CONF-005 through REQ-CONF-008) SHALL be satisfied by `automojo-runtime`'s `optionoverrides.py`; all other foundation requirements in this document SHALL be satisfied by `automojo.thisapp`.
+
+#### 2.7.3 Pending Relocations and Removal
+**REQ-RETIRE-006**: The test-reporting path helpers (`get_path_for_testresults`, `get_path_for_diagnostics`, `get_path_for_testcase_by_products`, and the summary-template/static-resource helpers) re-exported by the `paths.py` shim SHALL relocate to `automojo-integration-runtime` alongside the result recorder that consumes them.
+
+**REQ-RETIRE-007**: New runtime-integrated test-execution work (e.g. `IntegratedTestJob`, runtime-backed output context/run metadata/recorder) SHALL belong to `automojo-integration-runtime`, not `automojo-runtime`.
+
+**REQ-RETIRE-008**: Once all `automojo.runtime.X` importers have migrated to `automojo.thisapp` and a permanent home for `optionoverrides.py` is chosen, the shims SHALL be removed and the package retired.
+
 ## 3. Non-Functional Requirements
 
 ### 3.1 Performance Requirements
@@ -235,6 +267,8 @@ The requirements cover the `automojo.runtime` package functionality including:
 
 ### 3.6 Testability Requirements
 
+> Because the foundation modules in `automojo-runtime` are now re-export shims, the real test surface in this package is limited to `optionoverrides.py` (and, optionally, shim re-export checks). Tests of the relocated foundation behavior belong with their home in `automojo-this-app`.
+
 **REQ-TEST-001**: All functionality SHALL be testable using the unittest framework.
 
 **REQ-TEST-002**: Tests SHALL verify individual components in isolation with proper test granularity.
@@ -251,7 +285,7 @@ The requirements cover the `automojo.runtime` package functionality including:
 
 **REQ-INT-001**: The system SHALL integrate with the following automojo modules:
 - `automojo.errors` for exception handling and error reporting
-- `automojo.thisapp` for application singleton and variable management
+- `automojo.thisapp` for the application singleton AND for the relocated runtime foundation (runtime variables, paths, enumerations, activation)
 - `automojo.xmodules.xlogging` for logging system activation
 - `automojo.xmodules.xdatetime` for date/time formatting and parsing
 - `automojo.xmodules.fspath` for file system path utilities

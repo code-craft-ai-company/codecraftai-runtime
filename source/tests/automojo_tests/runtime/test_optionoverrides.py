@@ -11,7 +11,7 @@ from automojo.thisapp.thisapplication import ThisApplication
 
 
 from automojo.runtime.optionoverrides import AM_RUNTIME_OPTION_OVERRIDES
-from automojo.runtime.runtimevariables import RuntimeVariables, RuntimeVariablesDesc
+from automojo.thisapp.runtimevariables import RuntimeVariables, RuntimeVariablesDesc
 
 
 class OptionOverridesTestCase(unittest.TestCase):

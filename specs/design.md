@@ -2,23 +2,41 @@
 
 ## Overview
 
-The `automojo.runtime` package provides a comprehensive runtime environment management system for automation testing frameworks. It handles application lifecycle, configuration management, logging activation, and resource path management across different execution contexts (command-line, console, service, and job modes).
+The `automojo.runtime` package historically provided a comprehensive runtime environment management system for automation testing frameworks. It handled application lifecycle, configuration management, logging activation, and resource path management across different execution contexts (command-line, console, service, and job modes).
+
+That runtime foundation has now **moved into `automojo-this-app`**. The runtime variables, well-known-path helpers, enumerations, and activation sequence now live in `automojo.thisapp.{runtimevariables,paths,enumerations,activation}`. As a result, `automojo-runtime` is being **RETIRED**: its `runtimevariables.py`, `paths.py`, `enumerations.py`, and `activation.py` modules are now thin compatibility shims that re-export their counterparts from `automojo.thisapp.*` so existing `automojo.runtime.X` importers keep working during the migration. The package still ships a real `optionoverrides.py` (`AM_RUNTIME_OPTION_OVERRIDES`) for now.
+
+This document therefore describes two things: (1) the design of the runtime foundation as it now exists in `automojo.thisapp`, and (2) the retirement/relocation shim layer that `automojo-runtime` currently provides.
 
 ## Architecture
 
-### Core Components
+### Relocation Map
 
-The runtime package consists of five main modules:
+The runtime foundation moved as follows. The left column is the legacy import path that the shims preserve; the right column is the authoritative home in `automojo-this-app`:
 
-1. **Activation Module** (`activation.py`) - Manages runtime profile activation and logging setup
-2. **Runtime Variables** (`runtimevariables.py`) - Centralized configuration and environment variable management
-3. **Option Overrides** (`optionoverrides.py`) - Programmatic configuration override mechanisms
-4. **Path Management** (`paths.py`) - File system path resolution and directory management
-5. **Enumerations** (`enumerations.py`) - Runtime type definitions and constants
+| Legacy module (shim)              | Authoritative home                        |
+| --------------------------------- | ----------------------------------------- |
+| `automojo.runtime.runtimevariables` | `automojo.thisapp.runtimevariables`     |
+| `automojo.runtime.paths`            | `automojo.thisapp.paths`                |
+| `automojo.runtime.enumerations`     | `automojo.thisapp.enumerations`         |
+| `automojo.runtime.activation`       | `automojo.thisapp.activation`           |
+| `automojo.runtime.optionoverrides`  | (remains real code in `automojo-runtime`) |
+
+### Current Components
+
+The `automojo-runtime` package now consists of:
+
+1. **Activation Shim** (`activation.py`) - Re-exports `activate_profile_command/console/service/job` from `automojo.thisapp.activation`.
+2. **Runtime Variables Shim** (`runtimevariables.py`) - Re-exports `RuntimeVariables`, `RuntimeVariablesDesc`, `DefaultValue`, `resolve_runtime_variables`, and the seed/template helpers from `automojo.thisapp.runtimevariables`.
+3. **Option Overrides** (`optionoverrides.py`) - **Real code that remains in this package**: programmatic configuration override mechanisms (`AM_RUNTIME_OPTION_OVERRIDES`).
+4. **Path Management Shim** (`paths.py`) - Re-exports the well-known-path helpers from `automojo.thisapp.paths`.
+5. **Enumerations Shim** (`enumerations.py`) - Re-exports `ActivationProfile` and `JobType` from `automojo.thisapp.enumerations`.
+
+> NOTE: The test-reporting path helpers (`get_path_for_testresults`, `get_path_for_diagnostics`, `get_path_for_testcase_by_products`, and the summary-template/static-resource helpers) are re-exported by the `paths.py` shim today, but they are slated to relocate again to `automojo-integration-runtime` alongside the result recorder that consumes them.
 
 ### Design Principles
 
-The package follows these key design principles:
+The relocated foundation (now in `automojo.thisapp`) and the shim layer both follow these key design principles:
 
 - **Debuggability over Performance**: Code prioritizes clear error messages and traceability
 - **Readability over Conciseness**: Explicit, verbose code for maintainability
@@ -26,9 +44,15 @@ The package follows these key design principles:
 - **Configuration Flexibility**: Multiple ways to configure runtime behavior
 - **Context Awareness**: Different behavior based on execution context
 
+The shim layer adds one additional principle:
+
+- **Transparent Relocation**: The shims must re-export the full public surface of their `automojo.thisapp` counterparts so that existing `automojo.runtime.X` importers keep working unchanged during the migration.
+
 ## Module Details
 
-### Activation Module
+> The module behavior below describes the relocated foundation, which now lives in `automojo.thisapp`. In `automojo-runtime` these modules (except `optionoverrides`) are thin shims that re-export the corresponding symbols.
+
+### Activation Module (relocated to `automojo.thisapp.activation`)
 
 **Purpose**: Manages the activation of different runtime profiles and their associated logging configurations.
 
@@ -49,7 +73,7 @@ The package follows these key design principles:
 - Logging system activation
 - Job type-specific path configuration
 
-### Runtime Variables Module
+### Runtime Variables Module (relocated to `automojo.thisapp.runtimevariables`)
 
 **Purpose**: Provides centralized access to all runtime configuration variables with environment variable integration.
 
@@ -71,13 +95,13 @@ The package follows these key design principles:
 - **Singleton Pattern**: Global application state management
 - **Accessor Pattern**: Controlled variable access
 
-### Option Overrides Module
+### Option Overrides Module (remains in `automojo-runtime`)
 
-**Purpose**: Provides programmatic interfaces for overriding runtime configuration at runtime.
+**Purpose**: Provides programmatic interfaces for overriding runtime configuration at runtime. This is the **one module that remains as real code** in `automojo-runtime`; it imports `ThisApplicationSingleton` and `RuntimeVariablesDesc` from `automojo.thisapp`.
 
 **Key Features**:
-- Type-safe override methods for each configuration variable
-- Integration with application singleton for state management
+- Type-safe override methods (`AM_RUNTIME_OPTION_OVERRIDES`) for each configuration variable
+- Integration with the `automojo.thisapp` application singleton for state management
 - Support for complex data types (lists, dictionaries, datetime objects)
 
 **Override Categories**:
@@ -92,7 +116,7 @@ The package follows these key design principles:
 - **Facade Pattern**: Simplified interface for complex configuration
 - **Command Pattern**: Each override method encapsulates a configuration change
 
-### Path Management Module
+### Path Management Module (relocated to `automojo.thisapp.paths`)
 
 **Purpose**: Manages file system paths and directory structures for different runtime contexts.
 
@@ -123,7 +147,7 @@ The package follows these key design principles:
 - **Lazy Initialization**: Directories created on first access
 - **Template Method**: Path generation with variable substitution
 
-### Enumerations Module
+### Enumerations Module (relocated to `automojo.thisapp.enumerations`)
 
 **Purpose**: Defines runtime type constants and execution context enumerations.
 
@@ -141,17 +165,21 @@ The package follows these key design principles:
 
 ### External Dependencies
 
-The runtime package integrates with several external automojo modules:
+The relocated foundation (in `automojo.thisapp`) and the remaining `optionoverrides.py` integrate with several external automojo modules:
 
 - `automojo.errors` - Exception handling and error reporting
-- `automojo.thisapp` - Application singleton and variable management
+- `automojo.thisapp` - Application singleton, runtime variables, paths, enumerations, and activation (now the **home** of the relocated foundation)
 - `automojo.xmodules.xlogging` - Logging system activation
 - `automojo.xmodules.xdatetime` - Date/time formatting and parsing
 - `automojo.xmodules.fspath` - File system path utilities
 
+### Relationship to `automojo-integration-runtime`
+
+The integration test-job layer that was once envisioned to live alongside this runtime now lives in the separate `automojo-integration-runtime` package, which hosts `IntegratedTestJob` and the runtime-backed output context, run metadata, and result recorder. New runtime-integrated test-execution work belongs there, not in `automojo-runtime`. The test-reporting path helpers re-exported by the `paths.py` shim are slated to follow the recorder into `automojo-integration-runtime`.
+
 ### Application Lifecycle Integration
 
-The runtime package integrates with the application lifecycle through:
+The runtime foundation integrates with the application lifecycle through:
 
 1. **Initialization**: Variable resolution from environment
 2. **Activation**: Profile-specific setup and logging configuration
@@ -162,7 +190,7 @@ The runtime package integrates with the application lifecycle through:
 
 ### Variable Resolution Order
 
-1. Programmatic overrides (highest priority)
+1. Programmatic overrides (highest priority) — via `AM_RUNTIME_OPTION_OVERRIDES` in this package
 2. Environment variables
 3. Default values (lowest priority)
 
@@ -198,68 +226,35 @@ Variables can be mapped to context paths for framework integration:
 
 ## Testing Strategy
 
+Because the foundation modules are now re-export shims, the real test surface in this package is limited to `optionoverrides.py`. Tests of the relocated runtime variables, paths, enumerations, and activation behavior belong with their home in `automojo-this-app`.
+
 ### Test Categories
 
-1. **Unit Tests**: Individual function and method testing
-2. **Integration Tests**: Module interaction testing
-3. **Configuration Tests**: Environment variable handling
-4. **Path Tests**: Directory creation and management
+1. **Option Override Tests**: Verify `AM_RUNTIME_OPTION_OVERRIDES` writes the correct values through the `automojo.thisapp` application singleton.
+2. **Shim Re-export Tests** (optional): Verify each shim re-exports the expected symbols from its `automojo.thisapp` counterpart.
 
 ### Test Patterns
 
 - **Mock Environment**: Isolated environment variable testing
-- **Temporary Directories**: Safe file system testing
 - **Singleton Management**: Proper test isolation
 - **State Verification**: Configuration state validation
 
-## Performance Considerations
+## Migration and Retirement
 
-### Optimization Strategies
+### Retirement Plan
 
-- **Lazy Loading**: Directories created only when needed
-- **Caching**: Path resolution results cached globally
-- **Minimal I/O**: Efficient directory existence checking
-- **Memory Management**: Proper cleanup of temporary resources
+`automojo-runtime` is slated for removal once all importers have migrated to `automojo.thisapp`. The migration proceeds as follows:
 
-### Resource Management
-
-- **Directory Lifecycle**: Automatic creation, manual cleanup
-- **File Handles**: Proper resource disposal
-- **Memory Usage**: Minimal object retention
-- **Temporary Files**: Automatic cleanup strategies
-
-## Security Considerations
-
-### Path Security
-
-- **Path Traversal Prevention**: Controlled path construction
-- **Permission Management**: Appropriate directory permissions
-- **Temporary File Security**: Secure temporary file creation
-- **Shared Resource Access**: Controlled shared directory access
-
-### Configuration Security
-
-- **Environment Variable Validation**: Input sanitization
-- **Default Value Security**: Safe default configurations
-- **Override Validation**: Type and range checking
-- **Sensitive Data Handling**: Appropriate handling of credentials
-
-## Future Extensibility
-
-### Extension Points
-
-- **New Activation Profiles**: Additional runtime contexts
-- **Custom Path Providers**: Pluggable path resolution
-- **Variable Converters**: Custom type conversion
-- **Logging Integrations**: Additional logging backends
+1. **Phase 1 (done)**: Move the runtime foundation into `automojo.thisapp`; replace the foundation modules here with thin re-export shims.
+2. **Phase 3 (pending)**: Relocate the test-reporting path helpers (and the recorder that consumes them) into `automojo-integration-runtime`.
+3. **Retirement (pending)**: Migrate all `automojo.runtime.X` importers to `automojo.thisapp.X`, decide on a permanent home for `optionoverrides.py`, then delete the shims and retire the package.
 
 ### Backward Compatibility
 
-- **Variable Naming**: Consistent naming conventions
-- **API Stability**: Stable public interfaces
-- **Configuration Migration**: Smooth upgrade paths
-- **Default Behavior**: Preserved default behaviors
+- **Transparent Imports**: The shims preserve the `automojo.runtime.X` import paths so existing importers keep working unchanged.
+- **Variable Naming**: Consistent `AM_*` naming conventions are preserved by the relocated foundation.
+- **API Stability**: The shims forward the full public surface of their `automojo.thisapp` counterparts.
 
 ## Conclusion
 
-The automojo runtime package provides a robust, flexible foundation for automation testing frameworks. Its modular design, comprehensive configuration management, and context-aware behavior make it suitable for diverse execution environments while maintaining debuggability and maintainability as core principles.
+The `automojo-runtime` package no longer owns the runtime foundation — that foundation now lives in `automojo-this-app`. What remains here is a thin compatibility layer (re-export shims for runtime variables, paths, enumerations, and activation) plus the still-real `optionoverrides.py`. The package's role is now transitional: to keep `automojo.runtime.X` importers working while they migrate to `automojo.thisapp`, after which the package is slated for retirement.

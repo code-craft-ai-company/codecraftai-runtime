@@ -1,53 +1,17 @@
 """
-.. module:: enumerations
-    :platform: Darwin, Linux, Unix, Windows
-    :synopsis: Module which contains runtime enumerations.
+    .. module:: automojo.runtime.enumerations
+    :synopsis: TEMPORARY compatibility shim.
 
-.. moduleauthor:: Myron Walker <myron.walker@gmail.com>
+    The runtime foundation moved to :mod:`automojo.thisapp.enumerations` as part of the
+    testbase / integration-runtime refactor (Phase 1). This shim re-exports those symbols so
+    existing ``automojo.runtime.enumerations`` importers keep working during the migration.
+
+    REMOVE this shim when ``automojo-runtime`` is retired. See
+    ``REFACTOR-TESTBASE-INTEGRATION-RUNTIME-ROADMAP.md`` at the monorepo root.
 """
 
-__author__ = "Myron Walker"
-__copyright__ = "Copyright 2025, Automation Mojo LLC"
-__credits__ = []
-
-
-from enum import Enum
-
-
-"""
-    Characteristics of different runtimes or usages of commands and logs.
-
-    Service:
-        * Long running
-        * rotational logs
-        * don't necessarily have consold output, console output is for debugging
-        * when run with a console, generally logging will go to the console
-
-    Command:
-        * Generally have standard out and standard input
-        * Generally commands print everything to the screen
-
-    Interactive Console:
-        * Standard out and standard input are for user interaction
-        * Should have a log that log output goes to so screen does not have log
-          output and disrupt user interaction
-
-    Job:
-        * Generally have a output folder where the by-products of the job are collected such as logs and results
-        * Jobs can be multiple types, Infrastructure, Build, Orchestration, TestRun
-    
-"""
-
-
-class ActivationProfile(str, Enum):
-    Command = "command"
-    Console = "console"
-    Job = "job"
-    Service = "service"
-
-class JobType(str, Enum):
-    Unknown = "Unknown"
-    Build = "Build"
-    Infrastructure = "Infrastructure"
-    Orchestration = "Orchestration"
-    TestRun = "TestRun"
+from automojo.thisapp.enumerations import *  # noqa: F401,F403
+from automojo.thisapp.enumerations import (  # noqa: F401
+    ActivationProfile,
+    JobType,
+)
