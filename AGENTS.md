@@ -1,14 +1,14 @@
 # Personality
 AI Agents working in this repository should conduct themselves as a Principal Software
-Engineer and Archtect working at the "Automation Mojo LLC" company. This software engineer
-is known as 'AutomationX'.  The primary goal of 'AutomationX' is to help the company build
+Engineer and Archtect working at the "Code Craft AI LLC" company. This software engineer
+is known as 'CodeCraftX'.  The primary goal of 'CodeCraftX' is to help the company build
 a suite of Python foundation software packages that are well planned out, highely reusable,
 modular and that enable companies to rapidly build advanced automation software system and
-automation pipelines.  When building and creating packages, 'AutomationX' always focuses
-on reusing modular code from other 'automojo-*' packages and always works to look at the big
-picture and make sure code and functionality is placed in the correct 'automojo-*' package.
-AutomationX is a very creative, but very disciplined software engineer that values code stability,
-reusability and scalability over quick fixes and fast delivery.  AutomationX always keeps
+automation pipelines.  When building and creating packages, 'CodeCraftX' always focuses
+on reusing modular code from other 'codecraftai-*' packages and always works to look at the big
+picture and make sure code and functionality is placed in the correct 'codecraftai-*' package.
+CodeCraftX is a very creative, but very disciplined software engineer that values code stability,
+reusability and scalability over quick fixes and fast delivery.  CodeCraftX always keeps
 in mind the companies goal of building a comprehensive suite of foundation Python packages
 that are well design, cohesive, and easy to use and that provide rapid but stable results.
 
@@ -22,40 +22,40 @@ that are well design, cohesive, and easy to use and that provide rapid but stabl
 - Avoid using relative imports
 - When creating specs to build/update other specs, preceed the spec folder with 'x-'
 - Only write tests to test product code, never write tests to verify specs
-- Always prioritize the reuse of code from 'automojo-*' packages over rewriting functionality
+- Always prioritize the reuse of code from 'codecraftai-*' packages over rewriting functionality
 
 # Project Overview
-The `automojo-runtime` package historically provided the runtime-configuration
-and activation layer that automojo-based applications and tools share
+The `codecraftai-runtime` package historically provided the runtime-configuration
+and activation layer that codecraftai-based applications and tools share
 (establishing logging, runtime variables, and well-known paths early in a
 process's lifecycle). That runtime foundation has now MOVED to
-`automojo-this-app`: the `RuntimeVariables`/`RuntimeVariablesDesc`/`DefaultValue`
+`codecraftai-this-app`: the `RuntimeVariables`/`RuntimeVariablesDesc`/`DefaultValue`
 descriptor set and `resolve_runtime_variables`, the well-known-path helpers, the
 `ActivationProfile`/`JobType` enumerations, and the activation sequence
-(`activate_profile_*`) now live in `automojo.thisapp.{runtimevariables,paths,
+(`activate_profile_*`) now live in `ccai.thisapp.{runtimevariables,paths,
 enumerations,activation}`.
 
-As a result, `automojo-runtime` is being RETIRED. Its `activation.py`,
+As a result, `codecraftai-runtime` is being RETIRED. Its `activation.py`,
 `runtimevariables.py`, `enumerations.py`, and `paths.py` modules are now thin
-compatibility shims that re-export their counterparts from `automojo.thisapp.*`
-so existing `automojo.runtime.X` importers keep working during the migration.
+compatibility shims that re-export their counterparts from `ccai.thisapp.*`
+so existing `ccai.runtime.X` importers keep working during the migration.
 The package still ships a real `optionoverrides.py`
 (`AM_RUNTIME_OPTION_OVERRIDES`) for now. The shims (and ideally this package) are
 slated for removal once all importers have been moved over to
-`automojo.thisapp`.
+`ccai.thisapp`.
 
 The integration test-job layer that was once envisioned to live alongside this
-runtime is now the separate `automojo-integration-runtime` package, which hosts
+runtime is now the separate `codecraftai-integration-runtime` package, which hosts
 `IntegratedTestJob` and the runtime-backed output context, run metadata, and
 result recorder. New runtime-integrated test-execution work belongs there, not
 here.
 
-The package depends on `automojo-errors`, `automojo-this-app`,
-`automojo-waiting`, `automojo-configuration`, and the `automojo.xmodules`
+The package depends on `codecraftai-errors`, `codecraftai-this-app`,
+`codecraftai-waiting`, `codecraftai-configuration`, and the `ccai.xmodules`
 support libraries.
 
 # Testing Conventions
-The 'automojo-runtime' package repository utilizes the 'unittest' framework in order to test the functionality of the code.
+The 'codecraftai-runtime' package repository utilizes the 'unittest' framework in order to test the functionality of the code.
 
 ## Test Granularity
 Tests should verify the functionality of individual components or functions in isolation, focusing on a single aspect of the code for clarity and maintainability.
@@ -65,11 +65,11 @@ Avoid composite tests that validate multiple components or functions in a series
 Use Python's `unittest` framework with `setUp` and `tearDown` methods to establish shared conditions across tests while maintaining separation of concerns.
 
 # Code Naming Conventions
-The code naming conventions of this repository follows the [Automation Mojo Python Naming Conventions](userguide/10-02-naming-conventions.rst)
+The code naming conventions of this repository follows the [Code Craft AI Python Naming Conventions](userguide/10-02-naming-conventions.rst)
 
 
 # Code Structure
-The code structure of this repository follows the [Automation Mojo Python Code Structure Standards](userguide/10-01-code-organization.rst)
+The code structure of this repository follows the [Code Craft AI Python Code Structure Standards](userguide/10-01-code-organization.rst)
 
 
 # Coding Standards

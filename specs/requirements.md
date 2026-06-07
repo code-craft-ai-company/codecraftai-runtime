@@ -3,24 +3,24 @@
 ## 1. Introduction
 
 ### 1.1 Purpose
-This document specifies the requirements for the runtime foundation that `automojo-runtime` historically owned: a comprehensive runtime environment management system for automation testing frameworks providing application lifecycle management, configuration handling, logging activation, and resource path management across different execution contexts.
+This document specifies the requirements for the runtime foundation that `codecraftai-runtime` historically owned: a comprehensive runtime environment management system for automation testing frameworks providing application lifecycle management, configuration handling, logging activation, and resource path management across different execution contexts.
 
-That runtime foundation has now **moved into `automojo-this-app`** (`automojo.thisapp.{runtimevariables,paths,enumerations,activation}`). As a result, `automojo-runtime` is being **RETIRED**: its `runtimevariables.py`, `paths.py`, `enumerations.py`, and `activation.py` modules are now thin compatibility shims that re-export their `automojo.thisapp.*` counterparts, while `optionoverrides.py` (`AM_RUNTIME_OPTION_OVERRIDES`) remains as real code for now.
+That runtime foundation has now **moved into `codecraftai-this-app`** (`ccai.thisapp.{runtimevariables,paths,enumerations,activation}`). As a result, `codecraftai-runtime` is being **RETIRED**: its `runtimevariables.py`, `paths.py`, `enumerations.py`, and `activation.py` modules are now thin compatibility shims that re-export their `ccai.thisapp.*` counterparts, while `optionoverrides.py` (`AM_RUNTIME_OPTION_OVERRIDES`) remains as real code for now.
 
-The functional requirements below therefore now constrain the relocated foundation in `automojo.thisapp` (with the exception of the override requirements, which `automojo-runtime`'s `optionoverrides.py` still satisfies). They are retained here as the authoritative behavioral specification during the migration, plus added retirement/shim requirements that constrain `automojo-runtime` itself.
+The functional requirements below therefore now constrain the relocated foundation in `ccai.thisapp` (with the exception of the override requirements, which `codecraftai-runtime`'s `optionoverrides.py` still satisfies). They are retained here as the authoritative behavioral specification during the migration, plus added retirement/shim requirements that constrain `codecraftai-runtime` itself.
 
 ### 1.2 Scope
-The requirements cover the runtime foundation functionality (now owned by `automojo.thisapp`) including:
+The requirements cover the runtime foundation functionality (now owned by `ccai.thisapp`) including:
 - Runtime profile activation and management
 - Configuration variable management and environment integration
 - File system path management and directory structure organization
 - Logging system activation and configuration
 - Error handling and validation mechanisms
 
-They also cover the requirements specific to `automojo-runtime` during its retirement:
-- The transparent re-export shims that preserve the `automojo.runtime.X` import paths
+They also cover the requirements specific to `codecraftai-runtime` during its retirement:
+- The transparent re-export shims that preserve the `ccai.runtime.X` import paths
 - The runtime overrides (`AM_RUNTIME_OPTION_OVERRIDES`) that remain real code in this package
-- The migration/retirement plan toward removing the package once importers move to `automojo.thisapp`
+- The migration/retirement plan toward removing the package once importers move to `ccai.thisapp`
 
 ### 1.3 Definitions and Acronyms
 - **AM**: AutoMojo (prefix for environment variables)
@@ -28,8 +28,8 @@ They also cover the requirements specific to `automojo-runtime` during its retir
 - **Job Type**: Category of automation work (Build, Infrastructure, Orchestration, TestRun)
 - **Presence Directory**: Base directory for application runtime files
 - **Output Directory**: Directory where job results and artifacts are stored
-- **Runtime Foundation**: The runtime variables, well-known paths, enumerations, and activation sequence — now owned by `automojo.thisapp`
-- **Shim**: A thin compatibility module in `automojo-runtime` that re-exports symbols from its `automojo.thisapp` counterpart to preserve the legacy `automojo.runtime.X` import path
+- **Runtime Foundation**: The runtime variables, well-known paths, enumerations, and activation sequence — now owned by `ccai.thisapp`
+- **Shim**: A thin compatibility module in `codecraftai-runtime` that re-exports symbols from its `ccai.thisapp` counterpart to preserve the legacy `ccai.runtime.X` import path
 
 ## 2. Functional Requirements
 
@@ -150,7 +150,7 @@ They also cover the requirements specific to `automojo-runtime` during its retir
 ### 2.5 Logging Integration
 
 #### 2.5.1 Logging Activation
-**REQ-LOG-001**: The system SHALL integrate with the automojo logging framework for log activation.
+**REQ-LOG-001**: The system SHALL integrate with the ccai logging framework for log activation.
 
 **REQ-LOG-002**: Logging configuration SHALL be profile-specific with appropriate handlers and formatters.
 
@@ -183,26 +183,26 @@ They also cover the requirements specific to `automojo-runtime` during its retir
 
 **REQ-MOD-007**: The system SHALL support code container directory resolution for modules and packages.
 
-### 2.7 Relocation and Retirement (`automojo-runtime`)
+### 2.7 Relocation and Retirement (`codecraftai-runtime`)
 
 #### 2.7.1 Foundation Relocation
-**REQ-RETIRE-001**: The runtime foundation (runtime variables, well-known paths, enumerations, activation) SHALL be owned by `automojo.thisapp` in the modules `automojo.thisapp.{runtimevariables,paths,enumerations,activation}`.
+**REQ-RETIRE-001**: The runtime foundation (runtime variables, well-known paths, enumerations, activation) SHALL be owned by `ccai.thisapp` in the modules `ccai.thisapp.{runtimevariables,paths,enumerations,activation}`.
 
-**REQ-RETIRE-002**: `automojo-runtime`'s `runtimevariables.py`, `paths.py`, `enumerations.py`, and `activation.py` SHALL be thin compatibility shims that re-export their `automojo.thisapp.*` counterparts and SHALL NOT contain an independent implementation of the foundation.
+**REQ-RETIRE-002**: `codecraftai-runtime`'s `runtimevariables.py`, `paths.py`, `enumerations.py`, and `activation.py` SHALL be thin compatibility shims that re-export their `ccai.thisapp.*` counterparts and SHALL NOT contain an independent implementation of the foundation.
 
-**REQ-RETIRE-003**: Each shim SHALL re-export the full public surface of its `automojo.thisapp` counterpart so that existing `automojo.runtime.X` importers continue to work unchanged during the migration.
+**REQ-RETIRE-003**: Each shim SHALL re-export the full public surface of its `ccai.thisapp` counterpart so that existing `ccai.runtime.X` importers continue to work unchanged during the migration.
 
 #### 2.7.2 Retained Real Code
-**REQ-RETIRE-004**: `automojo-runtime` SHALL continue to ship `optionoverrides.py` as real code (`AM_RUNTIME_OPTION_OVERRIDES`), sourcing `ThisApplicationSingleton` and `RuntimeVariablesDesc` from `automojo.thisapp`.
+**REQ-RETIRE-004**: `codecraftai-runtime` SHALL continue to ship `optionoverrides.py` as real code (`AM_RUNTIME_OPTION_OVERRIDES`), sourcing `ThisApplicationSingleton` and `RuntimeVariablesDesc` from `ccai.thisapp`.
 
-**REQ-RETIRE-005**: The override requirements (REQ-CONF-005 through REQ-CONF-008) SHALL be satisfied by `automojo-runtime`'s `optionoverrides.py`; all other foundation requirements in this document SHALL be satisfied by `automojo.thisapp`.
+**REQ-RETIRE-005**: The override requirements (REQ-CONF-005 through REQ-CONF-008) SHALL be satisfied by `codecraftai-runtime`'s `optionoverrides.py`; all other foundation requirements in this document SHALL be satisfied by `ccai.thisapp`.
 
 #### 2.7.3 Pending Relocations and Removal
-**REQ-RETIRE-006**: The test-reporting path helpers (`get_path_for_testresults`, `get_path_for_diagnostics`, `get_path_for_testcase_by_products`, and the summary-template/static-resource helpers) re-exported by the `paths.py` shim SHALL relocate to `automojo-integration-runtime` alongside the result recorder that consumes them.
+**REQ-RETIRE-006**: The test-reporting path helpers (`get_path_for_testresults`, `get_path_for_diagnostics`, `get_path_for_testcase_by_products`, and the summary-template/static-resource helpers) re-exported by the `paths.py` shim SHALL relocate to `codecraftai-integration-runtime` alongside the result recorder that consumes them.
 
-**REQ-RETIRE-007**: New runtime-integrated test-execution work (e.g. `IntegratedTestJob`, runtime-backed output context/run metadata/recorder) SHALL belong to `automojo-integration-runtime`, not `automojo-runtime`.
+**REQ-RETIRE-007**: New runtime-integrated test-execution work (e.g. `IntegratedTestJob`, runtime-backed output context/run metadata/recorder) SHALL belong to `codecraftai-integration-runtime`, not `codecraftai-runtime`.
 
-**REQ-RETIRE-008**: Once all `automojo.runtime.X` importers have migrated to `automojo.thisapp` and a permanent home for `optionoverrides.py` is chosen, the shims SHALL be removed and the package retired.
+**REQ-RETIRE-008**: Once all `ccai.runtime.X` importers have migrated to `ccai.thisapp` and a permanent home for `optionoverrides.py` is chosen, the shims SHALL be removed and the package retired.
 
 ## 3. Non-Functional Requirements
 
@@ -237,9 +237,9 @@ They also cover the requirements specific to `automojo-runtime` during its retir
 
 **REQ-MAINT-003**: Each module SHALL have a single, well-defined responsibility following separation of concerns.
 
-**REQ-MAINT-004**: The system SHALL follow consistent naming conventions as specified in the Automation Mojo Python Naming Conventions.
+**REQ-MAINT-004**: The system SHALL follow consistent naming conventions as specified in the Code Craft AI Python Naming Conventions.
 
-**REQ-MAINT-005**: Code structure SHALL follow the Automation Mojo Python Code Structure Standards.
+**REQ-MAINT-005**: Code structure SHALL follow the Code Craft AI Python Code Structure Standards.
 
 ### 3.4 Security Requirements
 
@@ -267,7 +267,7 @@ They also cover the requirements specific to `automojo-runtime` during its retir
 
 ### 3.6 Testability Requirements
 
-> Because the foundation modules in `automojo-runtime` are now re-export shims, the real test surface in this package is limited to `optionoverrides.py` (and, optionally, shim re-export checks). Tests of the relocated foundation behavior belong with their home in `automojo-this-app`.
+> Because the foundation modules in `codecraftai-runtime` are now re-export shims, the real test surface in this package is limited to `optionoverrides.py` (and, optionally, shim re-export checks). Tests of the relocated foundation behavior belong with their home in `codecraftai-this-app`.
 
 **REQ-TEST-001**: All functionality SHALL be testable using the unittest framework.
 
@@ -283,12 +283,12 @@ They also cover the requirements specific to `automojo-runtime` during its retir
 
 ### 4.1 External Module Dependencies
 
-**REQ-INT-001**: The system SHALL integrate with the following automojo modules:
-- `automojo.errors` for exception handling and error reporting
-- `automojo.thisapp` for the application singleton AND for the relocated runtime foundation (runtime variables, paths, enumerations, activation)
-- `automojo.xmodules.xlogging` for logging system activation
-- `automojo.xmodules.xdatetime` for date/time formatting and parsing
-- `automojo.xmodules.fspath` for file system path utilities
+**REQ-INT-001**: The system SHALL integrate with the following ccai modules:
+- `ccai.errors` for exception handling and error reporting
+- `ccai.thisapp` for the application singleton AND for the relocated runtime foundation (runtime variables, paths, enumerations, activation)
+- `ccai.xmodules.xlogging` for logging system activation
+- `ccai.xmodules.xdatetime` for date/time formatting and parsing
+- `ccai.xmodules.fspath` for file system path utilities
 
 **REQ-INT-002**: Integration SHALL be through well-defined interfaces that support module independence.
 
@@ -352,7 +352,7 @@ They also cover the requirements specific to `automojo-runtime` during its retir
 
 ### 6.3 Integration Acceptance
 
-**AC-INT-001**: Integration with external automojo modules works correctly without circular dependencies.
+**AC-INT-001**: Integration with external ccai modules works correctly without circular dependencies.
 
 **AC-INT-002**: Application lifecycle integration provides proper initialization, activation, execution, and cleanup phases.
 
@@ -362,7 +362,7 @@ They also cover the requirements specific to `automojo-runtime` during its retir
 
 ### 7.1 Technical Constraints
 
-**CONST-001**: The system must be implemented in Python and compatible with the existing automojo framework architecture.
+**CONST-001**: The system must be implemented in Python and compatible with the existing ccai framework architecture.
 
 **CONST-002**: All environment variables must follow the `AM_*` naming convention for consistency.
 
@@ -372,7 +372,7 @@ They also cover the requirements specific to `automojo-runtime` during its retir
 
 ### 7.2 Assumptions
 
-**ASSUME-001**: The automojo framework modules (`automojo.errors`, `automojo.thisapp`, etc.) are available and properly installed.
+**ASSUME-001**: The ccai framework modules (`ccai.errors`, `ccai.thisapp`, etc.) are available and properly installed.
 
 **ASSUME-002**: The file system supports the required directory structure and permissions for path management.
 

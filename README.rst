@@ -1,8 +1,8 @@
 ========================
-Automation Mojo Runtime
+Code Craft AI Runtime
 ========================
 
-The ``automojo-runtime`` package provides the runtime-configuration and activation layer that automojo-based applications and tools share. It is responsible for establishing logging, runtime variables, and well-known paths early in a process's lifecycle so that downstream packages can rely on a consistent environment regardless of whether the caller is a CLI, a service, or a test runner.
+The ``codecraftai-runtime`` package provides the runtime-configuration and activation layer that codecraftai-based applications and tools share. It is responsible for establishing logging, runtime variables, and well-known paths early in a process's lifecycle so that downstream packages can rely on a consistent environment regardless of whether the caller is a CLI, a service, or a test runner.
 
 Highlights
 ==========

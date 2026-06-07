@@ -8,17 +8,17 @@ sys.path.insert(0, os.path.abspath("source/packages"))
 
 # Mock dependencies
 mock_modules = [
-    "automojo.errors.exceptions",
-    "automojo.xmodules.fspath",
-    "automojo.xmodules.xconvert",
-    "automojo.xmodules.xdatetime",
-    "automojo.xmodules.xlogging.levels",
-    "automojo.thisapp.appvardesc",
-    "automojo.thisapp.appvaraccessor",
-    "automojo.thisapp.personavariables",
-    "automojo.thisapp.wellknown",
-    # We do NOT mock automojo.thisapp.contextpaths completely, we want to control ContextPaths
-    "automojo.thisapp.enumerations"
+    "ccai.errors.exceptions",
+    "ccai.xmodules.fspath",
+    "ccai.xmodules.xconvert",
+    "ccai.xmodules.xdatetime",
+    "ccai.xmodules.xlogging.levels",
+    "ccai.thisapp.appvardesc",
+    "ccai.thisapp.appvaraccessor",
+    "ccai.thisapp.personavariables",
+    "ccai.thisapp.wellknown",
+    # We do NOT mock ccai.thisapp.contextpaths completely, we want to control ContextPaths
+    "ccai.thisapp.enumerations"
 ]
 
 for mod_name in mock_modules:
@@ -75,12 +75,12 @@ class MockContextPaths:
 
 mock_contextpaths_mod = MagicMock()
 mock_contextpaths_mod.ContextPaths = MockContextPaths
-sys.modules["automojo.thisapp.contextpaths"] = mock_contextpaths_mod
+sys.modules["ccai.thisapp.contextpaths"] = mock_contextpaths_mod
 
 # Import RuntimeVariables to trigger the error
-print("Attempting to import automojo.thisapp.runtimevariables...")
+print("Attempting to import ccai.thisapp.runtimevariables...")
 try:
-    from automojo.thisapp import runtimevariables
+    from ccai.thisapp import runtimevariables
     print("Import successful!")
 except AttributeError as e:
     # Check if the error is related to AM_OUTPUT_DIRECTORY which is expected
