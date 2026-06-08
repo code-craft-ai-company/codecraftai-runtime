@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "automojo-runtime"
-description = "Automation Mojo - Runtime"
+name = "codecraftai-runtime"
+description = "Code Craft AI - Runtime"
 version = "0.0.1"
 authors = [
     "Myron Walker"
@@ -15,16 +15,16 @@ classifiers = [
 keywords = [
     "python"
 ]
-packages = [{include="automojo", from="source/packages"}]
+packages = [{include="ccai", from="source/packages"}]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
 debugpy = "^1.8.12"
-automojo-errors = { git = "https://github.com/automationmojo/automojo-errors.git", branch = "main" }
-automojo-this-app = { git = "https://github.com/automationmojo/automojo-this-app.git", branch = "main" }
-automojo-xmodules = { git = "https://github.com/automationmojo/automojo-xmodules.git", branch = "main" }
-automojo-waiting = { git = "https://github.com/automationmojo/automojo-waiting.git", branch = "main" }
-automojo-configuration = { git = "https://github.com/automationmojo/automojo-configuration.git", branch = "main" }
+codecraftai-errors = { git = "https://github.com/automationmojo/codecraftai-errors.git", branch = "main" }
+codecraftai-this-app = { git = "https://github.com/automationmojo/codecraftai-this-app.git", branch = "main" }
+codecraftai-xmodules = { git = "https://github.com/automationmojo/codecraftai-xmodules.git", branch = "main" }
+codecraftai-waiting = { git = "https://github.com/automationmojo/codecraftai-waiting.git", branch = "main" }
+codecraftai-configuration = { git = "https://github.com/automationmojo/codecraftai-configuration.git", branch = "main" }
 
 
 [build-system]

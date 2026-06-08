@@ -4,18 +4,18 @@ import tempfile
 import unittest
 from datetime import datetime
 
-from automojo.thisapp.contextpaths import ContextPaths
-from automojo.thisapp import wellknown
-from automojo.thisapp.appvaraccessor import AppVarAccessor
-from automojo.thisapp.thisapplication import ThisApplication
+from ccai.thisapp.contextpaths import ContextPaths
+from ccai.thisapp import wellknown
+from ccai.thisapp.appvaraccessor import AppVarAccessor
+from ccai.thisapp.thisapplication import ThisApplication
 
 
-from automojo.runtime.optionoverrides import AM_RUNTIME_OPTION_OVERRIDES
-from automojo.thisapp.runtimevariables import RuntimeVariables, RuntimeVariablesDesc
+from ccai.runtime.optionoverrides import AM_RUNTIME_OPTION_OVERRIDES
+from ccai.thisapp.runtimevariables import RuntimeVariables, RuntimeVariablesDesc
 
 
 class OptionOverridesTestCase(unittest.TestCase):
-    """Tests for functions in :mod:`automojo.runtime.optionoverrides`."""
+    """Tests for functions in :mod:`ccai.runtime.optionoverrides`."""
 
     def setUp(self):
         self.temp_dir = tempfile.mkdtemp()

@@ -1,22 +1,22 @@
 """
-    .. module:: automojo.runtime.paths
+    .. module:: ccai.runtime.paths
     :synopsis: TEMPORARY compatibility shim.
 
-    The runtime foundation moved to :mod:`automojo.thisapp.paths` as part of the
+    The runtime foundation moved to :mod:`ccai.thisapp.paths` as part of the
     testbase / integration-runtime refactor (Phase 1). This shim re-exports those symbols so
-    existing ``automojo.runtime.paths`` importers keep working during the migration.
+    existing ``ccai.runtime.paths`` importers keep working during the migration.
 
     NOTE: the test-reporting path helpers (``get_path_for_testresults``,
     ``get_path_for_diagnostics``, ``get_path_for_testcase_by_products``,
     ``get_summary_html_template_source``, ``get_summary_static_resource_*``) relocate again to
-    ``automojo-integration-runtime`` in Phase 3, alongside the recorder that consumes them.
+    ``codecraftai-integration-runtime`` in Phase 3, alongside the recorder that consumes them.
 
-    REMOVE this shim when ``automojo-runtime`` is retired. See
+    REMOVE this shim when ``codecraftai-runtime`` is retired. See
     ``REFACTOR-TESTBASE-INTEGRATION-RUNTIME-ROADMAP.md`` at the monorepo root.
 """
 
-from automojo.thisapp.paths import *  # noqa: F401,F403
-from automojo.thisapp.paths import (  # noqa: F401
+from ccai.thisapp.paths import *  # noqa: F401,F403
+from ccai.thisapp.paths import (  # noqa: F401
     collect_python_modules,
     ensure_directory_is_package,
     get_directory_for_cached_files,
