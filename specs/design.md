@@ -1,4 +1,4 @@
-# AutoMojo Runtime Package Design Document
+# Code Craft AI Runtime Package Design Document
 
 ## Overview
 

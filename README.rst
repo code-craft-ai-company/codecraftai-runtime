@@ -7,11 +7,17 @@ The ``codecraftai-runtime`` package provides the runtime-configuration and activ
 Highlights
 ==========
 
-- ``activation.py`` drives the activation sequence that wires up logging and registers the current ``ThisApplication`` singleton.
-- ``runtimevariables.py`` defines the ``RuntimeVariables`` descriptor set with default-value handling.
-- ``enumerations.py`` provides ``ActivationProfile`` and ``JobType``.
-- ``paths.py`` centralises path discovery.
-- ``optionoverrides.py`` supports CLI-level option overrides.
+This package is being retired: the runtime foundation has moved into ``ccai.thisapp``
+as part of the testbase / integration-runtime refactor. Four of its modules are now
+TEMPORARY compatibility shims that re-export from ``ccai.thisapp`` so existing importers
+keep working during the migration; ``optionoverrides.py`` is the only remaining
+first-party implementation.
+
+- ``activation.py`` - compatibility shim re-exporting ``ccai.thisapp.activation``.
+- ``runtimevariables.py`` - compatibility shim re-exporting ``ccai.thisapp.runtimevariables``.
+- ``enumerations.py`` - compatibility shim re-exporting ``ccai.thisapp.enumerations``.
+- ``paths.py`` - compatibility shim re-exporting ``ccai.thisapp.paths``.
+- ``optionoverrides.py`` - first-party CLI-level option overrides (``AM_RUNTIME_OPTION_OVERRIDES``).
 
 Repository Structure
 ====================

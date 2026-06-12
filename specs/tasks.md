@@ -1,4 +1,4 @@
-# AutoMojo Runtime Package Retirement Tasks
+# Code Craft AI Runtime Package Retirement Tasks
 
 ## Overview
 

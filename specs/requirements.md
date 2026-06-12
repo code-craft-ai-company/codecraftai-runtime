@@ -1,4 +1,4 @@
-# AutoMojo Runtime Package Requirements
+# Code Craft AI Runtime Package Requirements
 
 ## 1. Introduction
 
@@ -23,7 +23,7 @@ They also cover the requirements specific to `codecraftai-runtime` during its re
 - The migration/retirement plan toward removing the package once importers move to `ccai.thisapp`
 
 ### 1.3 Definitions and Acronyms
-- **AM**: AutoMojo (prefix for environment variables)
+- **AM**: legacy short-brand prefix retained for environment-variable compatibility
 - **Runtime Profile**: Execution context configuration (Command, Console, Service, Job)
 - **Job Type**: Category of automation work (Build, Infrastructure, Orchestration, TestRun)
 - **Presence Directory**: Base directory for application runtime files
