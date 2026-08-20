@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "codecraftai-runtime"
 description = "Code Craft AI - Runtime"
-version = "0.0.1"
+version = "1.0.0"
 authors = [
     "Myron Walker <myron.walker@gmail.com>"
 ]
@@ -19,8 +19,13 @@ packages = [{include="ccai", from="source/packages"}]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
-codecraftai-this-app = { git = "https://github.com/code-craft-ai-company/codecraftai-this-app.git", branch = "main" }
+codecraftai-this-app = { version = "<2.0.0", source = "codecraftai" }
 
+
+[[tool.poetry.source]]
+name = "codecraftai"
+url = "https://code-craft.ai/licensed-repository/simple/"
+priority = "supplemental"
 
 [build-system]
 requires = ["poetry-core"]
