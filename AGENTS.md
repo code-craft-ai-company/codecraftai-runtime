@@ -50,8 +50,8 @@ runtime is now the separate `codecraftai-integration-runtime` package, which hos
 result recorder. New runtime-integrated test-execution work belongs there, not
 here.
 
-The package depends on `codecraftai-errors`, `codecraftai-this-app`,
-`codecraftai-waiting`, `codecraftai-configuration`, and the `ccai.xmodules`
+The package depends on `codecraftai-foundations`, `codecraftai-this-app`,
+`codecraftai-configuration`, and the `ccai.xmodules`
 support libraries.
 
 # Testing Conventions
