@@ -17,6 +17,10 @@ dependencies = [
     "codecraftai-this-app<2.0.0",
 ]
 
+[project.urls]
+Repository = "https://github.com/code-craft-ai-company/codecraftai-runtime"
+Issues = "https://github.com/code-craft-ai-company/codecraftai-runtime/issues"
+
 [tool.poetry]
 packages = [{include="ccai", from="source/packages"}]
 
